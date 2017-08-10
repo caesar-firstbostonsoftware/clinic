@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('patientvisitpage');
+    return view('patientlistpage');
 });
 
 Route::group(['middleware' => 'auth'], function () {
@@ -23,3 +23,6 @@ Route::group(['middleware' => 'auth'], function () {
     //Please do not remove this if you want adminlte:route and adminlte:link commands to works correctly.
     #adminlte_routes
 });
+
+Route::get('/visit/{id}', 'PatientsController@patientxray');
+Route::post('/visit/{id}', 'PatientsController@newpatientxray');

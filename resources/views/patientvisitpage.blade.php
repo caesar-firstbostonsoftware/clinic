@@ -9,26 +9,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.htmlheader')
 @show
 
-<!--
-BODY TAG OPTIONS:
-=================
-Apply one or more of the following classes to get the
-desired effect
-|---------------------------------------------------------|
-| SKINS         | skin-blue                               |
-|               | skin-black                              |
-|               | skin-purple                             |
-|               | skin-yellow                             |
-|               | skin-red                                |
-|               | skin-green                              |
-|---------------------------------------------------------|
-|LAYOUT OPTIONS | fixed                                   |
-|               | layout-boxed                            |
-|               | layout-top-nav                          |
-|               | sidebar-collapse                        |
-|               | sidebar-mini                            |
-|---------------------------------------------------------|
--->
+<style type="text/css">
+    .neg { 
+        margin-top: -.4%;
+    }
+    .nor{
+        margin-top: -1%;
+    }
+    .divxrayinfo{
+        margin-top: -2%;
+    }
+    .modalwidth{
+        width: 75%;
+    }
+</style>
+
 <body class="skin-blue sidebar-mini">
 <div id="app" v-cloak>
     <div class="wrapper">
@@ -61,7 +56,7 @@ desired effect
             <li class="treeview active"><a href="#"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                 <ul style="display: block;" class="treeview-menu menu-open">
                     <li class="active"><a href="#"><i class="fa fa-circle-o"></i> New Visit</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Patient List</a></li>
+                    <li><a href="/"><i class="fa fa-circle-o"></i> Patient List</a></li>
                     <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
                 </ul>
             </li>
@@ -165,7 +160,7 @@ desired effect
                 </div>
 
                 <div class="modal fade" id="modal_xraynew" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-dialog modalwidth" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -176,84 +171,86 @@ desired effect
 
                                 <div class="table-responsive">
                                     <div class="col-md-12">
-                                        <center><h3>NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
-                                        <center>North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</center>
-                                        <center>Tel. No. (035) 225-3544</center>
+                                        <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                        <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                        <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                         <h4><b>X-RAY / ULTRASOUND</b></h4>
 
-                                        <form class="form-horizontal">
+                                        <form class="form-horizontal" method="POST" action="/visit/1">
+                                        {!! csrf_field() !!}
                                             <div class="form-group">
                                                 <label class="col-sm-1 control-label">Name:</label>
                                                 <div class="col-sm-6">
+                                                    <input type="text" name="P_id" value="1" style="display: none;">
                                                     <input type="text" name="P_name" required="" class="form-control" placeholder="Name">
                                                 </div>
                                                 <label class="col-sm-2 control-label">O.R. No.</label>
                                                 <div class="col-sm-3">
-                                                    <input type="text" name="orno" required="" class="form-control" placeholder="O.R. No.">
+                                                    <input type="text" name="orno" class="form-control" placeholder="O.R. No.">
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group divxrayinfo">
                                                 <label class="col-sm-1 control-label">Address:</label>
                                                 <div class="col-sm-6">
                                                     <input type="text" name="address" required="" class="form-control" placeholder="Address">
                                                 </div>
                                                 <label class="col-sm-2 control-label">Age/Sex:</label>
                                                 <div class="col-sm-3">
-                                                    <select id="agesex" name="agesex" class="form-control"> 
+                                                    <select id="agesex" name="agesex" class="form-control" required=""> 
                                                         <option value="">- Select -</option>
                                                         <option value="Male">Male</option>
                                                         <option value="Female">Female</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group divxrayinfo">
                                                 <label class="col-sm-1 control-label">Physician:</label>
                                                 <div class="col-sm-6">
-                                                    <select id="physician" name="physician" class="form-control physician"> 
+                                                    <select id="physician" name="physician" class="form-control physician" required=""> 
                                                         <option value="">- Select -</option>
-                                                        <option value="SAMUEL S. MARTINEZ, M.D.-SONOLOGIST/RADIOLOGIST">SAMUEL S. MARTINEZ, M.D.</option>
-                                                        <option value="TERESITO V. ORBETA, M.D.-SONOLOGIST">TERESITO V. ORBETA, M.D.</option>
-                                                        <option value="JOSE U. CHU, M.D.-SONOLOGIST/RADIOLOGIST">JOSE U. CHU, M.D.</option>
-                                                        <option value="SYLVANO M. ALCANTARA, M.D.-SONOLOGIST/RADIOLOGIST">SYLVANO M. ALCANTARA, M.D.</option>
+                                                        <option data-id="SAMUEL S. MARTINEZ, M.D.-SONOLOGIST/RADIOLOGIST" value="1" >SAMUEL S. MARTINEZ, M.D.</option>
+                                                        <option data-id="TERESITO V. ORBETA, M.D.-SONOLOGIST" value="2">TERESITO V. ORBETA, M.D.</option>
+                                                        <option data-id="JOSE U. CHU, M.D.-SONOLOGIST/RADIOLOGIST" value="3">JOSE U. CHU, M.D.</option>
+                                                        <option data-id="SYLVANO M. ALCANTARA, M.D.-SONOLOGIST/RADIOLOGIST" value="4">SYLVANO M. ALCANTARA, M.D.</option>
                                                     </select>
                                                 </div>
                                                 <label class="col-sm-2 control-label">Date:</label>
                                                 <div class="col-sm-3">
-                                                    <input type="text" id="datepicker" name="xraydate" class="form-control xraydate">
+                                                <?php $datenow = date("Y-m-d"); ?>
+                                                    <input type="text" id="datepicker" name="xraydate" class="form-control xraydate" required="" value="{{$datenow}}">
                                                 </div>
                                             </div>
 
                                             <h5><b>Result / Finding :</b></h5>
 
-                                            <div class="form-group">
+                                            <div class="form-group divxrayinfo">
                                                 <div class="col-sm-6">
                                                     <div class="checkbox">
-                                                        <label><input type="checkbox" checked="" value="" class="noramlfinding">Normal</label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label><input type="checkbox" value="" class="notnoramlfinding">Not Normal</label>
+                                                        <label><input type="checkbox" name="finding" checked="" value="Normal" class="noramlfinding">Normal</label>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <label><input type="checkbox" value="Not Normal" class="notnoramlfinding">Not Normal</label>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <div class="form-group">
+                                            <div class="form-group divxrayinfo">
                                                 <div class="col-sm-12 fnnormal">
-                                                    <textarea class="form-control" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
+                                                    <textarea class="form-control txtcommnor" name="comm" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
                                                     </textarea>
                                                 </div>
                                                 <div class="col-sm-12 fnnotnormal" style="display: none;">
-                                                    <textarea class="form-control" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
+                                                    <textarea class="form-control txtcommnotnor" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
                                                     </textarea>
                                                 </div>
                                             </div>
 
-                                            <div class="form-group phyname"></div>
+                                            <div class="form-group phyname divxrayinfo"></div>
                                             <div class="form-group phypos"></div>
 
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="control-label"></label>
                                                 <div class="col-sm-3">
-                                                    <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                                    <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="submit" data-loading-text="Submitting..." autocomplete="off">Submit</button>
                                                 </div>
                                             </div>
 
@@ -291,7 +288,7 @@ desired effect
 
 <script type="text/javascript">
     $(".xraydate").datepicker({
-        dateFormat: "mm-dd-yy",
+        dateFormat: "yy-mm-dd",
         yearRange: "1950:2050",
         changeYear: true,
         changeMonth: true,
@@ -300,25 +297,38 @@ desired effect
     $('.noramlfinding').click(function() {
         if ($(this).is(':checked')) {
             $('.noramlfinding').attr('checked');
+            $('.noramlfinding').attr('name','finding');
+
             $('.notnoramlfinding').prop('checked', false);
+            $('.notnoramlfinding').removeAttr('name','finding');
 
             $('.fnnormal').show();
+            $('.txtcommnor').attr('name','comm');
+
             $('.fnnotnormal').hide();
+            $('.txtcommnotnor').removeAttr('name','comm');
         }
     });
     $('.notnoramlfinding').click(function() {
         if ($(this).is(':checked')) {
             $('.notnoramlfinding').attr('checked');
+            $('.notnoramlfinding').attr('name','finding');
+
             $('.noramlfinding').prop('checked', false);
+            $('.noramlfinding').removeAttr('name','finding');
 
             $('.fnnotnormal').show();
+            $('.txtcommnotnor').attr('name','comm');
+
             $('.fnnormal').hide();
+            $('.txtcommnor').removeAttr('name','comm');
         }
     });
 
     $( ".physician" ).change(function() {
+        var dataid = $(this).find(':selected').data('id');
         var phy  = $(this).val();
-        var phynamepos = phy.split('-');
+        var phynamepos = dataid.split('-');
         var name = phynamepos[0];
         var pos = phynamepos[1];
 

@@ -56,7 +56,7 @@ desired effect
  <!-- Default box -->
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">List of Patients <a href="http://demo_emr.jwits.co/patients/new-visit" class="btn btn-primary btn-sm">Add New</a></h3>
+                        <h3 class="box-title">List of Patients <a href="#" class="btn btn-primary btn-sm">Add New</a></h3>
                     </div>
                         <div class="box-body">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
@@ -151,7 +151,7 @@ desired effect
                                         <td>1</td>
                                         <td>2016-12-30 10:56 pm</td>
                                         <td>
-                                            <a href="#" target="_blank" class="btn btn-sm btn-info">View</a>
+                                            <a href="/visit/1" target="_blank" class="btn btn-sm btn-info">View</a>
                                         </td>
                                     </tr>
                                 </tbody>
