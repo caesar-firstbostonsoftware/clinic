@@ -30,12 +30,6 @@ desired effect
 |---------------------------------------------------------|
 -->
 <body class="skin-blue sidebar-mini">
-<script src="{{ asset('/jquery-ui-1.12.1.custom/jquery-ui.min.js') }}"></script>
-<script>
-  $( function() {
-    $( "#datepicker" ).datepicker();
-  } );
-  </script>
 <div id="app" v-cloak>
     <div class="wrapper">
 
@@ -177,7 +171,6 @@ desired effect
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title" id="myModalLabel">Patient X-ray</h4>
                             </div>
                             <div class="modal-body">
 
@@ -206,23 +199,27 @@ desired effect
                                                 </div>
                                                 <label class="col-sm-2 control-label">Age/Sex:</label>
                                                 <div class="col-sm-3">
-                                                    <input type="text" name="AgeSex" required="" class="form-control" placeholder="Age / Sex">
+                                                    <select id="agesex" name="agesex" class="form-control"> 
+                                                        <option value="">- Select -</option>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-1 control-label">Physician:</label>
                                                 <div class="col-sm-6">
-                                                    <select id="physician" name="physician" class="form-control"> 
+                                                    <select id="physician" name="physician" class="form-control physician"> 
                                                         <option value="">- Select -</option>
-                                                        <option value="SAMUEL S. MARTINEZ, M.D. (SONOLOGIST/RADIOLOGIST)">SAMUEL S. MARTINEZ, M.D.</option>
-                                                        <option value="TERESITO V. ORBETA, M.D. (SONOLOGIST)">TERESITO V. ORBETA, M.D.</option>
-                                                        <option value="JOSE U. CHU, M.D. (SONOLOGIST/RADIOLOGIST)">JOSE U. CHU, M.D.</option>
-                                                        <option value="SYLVANO M. ALCANTARA, M.D. (SONOLOGIST/RADIOLOGIST)">SYLVANO M. ALCANTARA, M.D.</option>
+                                                        <option value="SAMUEL S. MARTINEZ, M.D.-SONOLOGIST/RADIOLOGIST">SAMUEL S. MARTINEZ, M.D.</option>
+                                                        <option value="TERESITO V. ORBETA, M.D.-SONOLOGIST">TERESITO V. ORBETA, M.D.</option>
+                                                        <option value="JOSE U. CHU, M.D.-SONOLOGIST/RADIOLOGIST">JOSE U. CHU, M.D.</option>
+                                                        <option value="SYLVANO M. ALCANTARA, M.D.-SONOLOGIST/RADIOLOGIST">SYLVANO M. ALCANTARA, M.D.</option>
                                                     </select>
                                                 </div>
                                                 <label class="col-sm-2 control-label">Date:</label>
                                                 <div class="col-sm-3">
-                                                    <input type="text" id="datepicker" name="xraydate" class="form-control">
+                                                    <input type="text" id="datepicker" name="xraydate" class="form-control xraydate">
                                                 </div>
                                             </div>
 
@@ -231,26 +228,30 @@ desired effect
                                             <div class="form-group">
                                                 <div class="col-sm-6">
                                                     <div class="checkbox">
-                                                        <label><input type="checkbox" checked="" value="">Normal</label>
+                                                        <label><input type="checkbox" checked="" value="" class="noramlfinding">Normal</label>
                                                     </div>
                                                     <div class="checkbox">
-                                                        <label><input type="checkbox" value="">Not Normal</label>
+                                                        <label><input type="checkbox" value="" class="notnoramlfinding">Not Normal</label>
                                                     </div>
                                                 </div>
                                             </div>
                                             
                                             <div class="form-group">
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-12 fnnormal">
                                                     <textarea class="form-control" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
                                                     </textarea>
                                                 </div>
-                                                <div class="col-sm-12">
-                                                    <textarea class="form-control" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
+                                                <div class="col-sm-12 fnnotnormal" style="display: none;">
+                                                    <textarea class="form-control" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
                                                     </textarea>
                                                 </div>
                                             </div>
+
+                                            <div class="form-group phyname"></div>
+                                            <div class="form-group phypos"></div>
+
                                             <div class="form-group">
-                                                <label for="inputEmail3" class="col-sm-3 control-label"></label>
+                                                <label for="inputEmail3" class="control-label"></label>
                                                 <div class="col-sm-3">
                                                     <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
                                                 </div>
@@ -260,9 +261,6 @@ desired effect
                                     </div>
                                 </div>
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
@@ -291,5 +289,44 @@ desired effect
     @include('adminlte::layouts.partials.scripts')
 @show
 
+<script type="text/javascript">
+    $(".xraydate").datepicker({
+        dateFormat: "mm-dd-yy",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+    });
+    
+    $('.noramlfinding').click(function() {
+        if ($(this).is(':checked')) {
+            $('.noramlfinding').attr('checked');
+            $('.notnoramlfinding').prop('checked', false);
+
+            $('.fnnormal').show();
+            $('.fnnotnormal').hide();
+        }
+    });
+    $('.notnoramlfinding').click(function() {
+        if ($(this).is(':checked')) {
+            $('.notnoramlfinding').attr('checked');
+            $('.noramlfinding').prop('checked', false);
+
+            $('.fnnotnormal').show();
+            $('.fnnormal').hide();
+        }
+    });
+
+    $( ".physician" ).change(function() {
+        var phy  = $(this).val();
+        var phynamepos = phy.split('-');
+        var name = phynamepos[0];
+        var pos = phynamepos[1];
+
+        $('.phyname').empty();
+        $('.phypos').empty();
+        $('.phyname').append('<label class="col-sm-5 control-label" style="text-align: left;"><b>'+name+'</b></label>');
+        $('.phypos').append('<label class="col-sm-5 control-label" style="text-align: left; margin-top: -3%; font-size: 8pt;">'+pos+'</label>');
+    });
+</script>
 </body>
 </html>
