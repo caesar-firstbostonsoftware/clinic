@@ -9,26 +9,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.htmlheader')
 @show
 
-<!--
-BODY TAG OPTIONS:
-=================
-Apply one or more of the following classes to get the
-desired effect
-|---------------------------------------------------------|
-| SKINS         | skin-blue                               |
-|               | skin-black                              |
-|               | skin-purple                             |
-|               | skin-yellow                             |
-|               | skin-red                                |
-|               | skin-green                              |
-|---------------------------------------------------------|
-|LAYOUT OPTIONS | fixed                                   |
-|               | layout-boxed                            |
-|               | layout-top-nav                          |
-|               | sidebar-collapse                        |
-|               | sidebar-mini                            |
-|---------------------------------------------------------|
--->
 <body class="skin-blue sidebar-mini">
 <div id="app" v-cloak>
     <div class="wrapper">
@@ -61,58 +41,43 @@ desired effect
                         <div class="box-body">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
                                 <div class="row">
-                                    <div class="col-sm-9">
-                                        <div id="users-table_length" class="dataTables_length">
-                                            <label>Show 
-                                                <select class="form-control input-sm" aria-controls="users-table" name="users-table_length">
-                                                    <option value="10">10</option>
-                                                    <option value="25">25</option>
-                                                    <option value="50">50</option>
-                                                    <option value="100">100</option>
-                                                </select> 
-                                                entries</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="dataTables_filter" id="users-table_filter">
-                                            <label>Search:
-                                                <input aria-controls="users-table" placeholder="" class="form-control input-sm" type="search">
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-sm-12">
                                         <table style="width: 1069px;" aria-describedby="users-table_info" role="grid" id="users-table" class="table table-bordered table-hover dataTable no-footer">
                                             <thead>
                                                 <tr role="row">
                                                     <th aria-label="ID: activate to sort column descending" aria-sort="ascending" style="width: 30px;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="sorting_asc">ID</th>
-                                                    <th aria-label="Name: activate to sort column ascending" style="width: 101px;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="sorting">Name</th>
-                                                    <th aria-label="Gender: activate to sort column ascending" style="width: 59px;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Gender</th>
-                                                    <th aria-label="DOB: activate to sort column ascending" style="width: 70px;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">DOB</th>
-                                                    <th aria-label="Age: activate to sort column ascending" style="width: 32px;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Age</th>
-                                                    <th aria-label="Status: activate to sort column ascending" style="width: 52px;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Status</th>
-                                                    <th aria-label="Action" style="width: 475px;" colspan="1" rowspan="1" class="sorting_disabled">Action</th>
+                                                    <th aria-label="Name: activate to sort column ascending" style="width: 25%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="sorting">Name</th>
+                                                    <th aria-label="Gender: activate to sort column ascending" style="width: 5%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Gender</th>
+                                                    <th aria-label="DOB: activate to sort column ascending" style="width: 9%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">DOB</th>
+                                                    <th aria-label="Age: activate to sort column ascending" style="width: 5%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Age</th>
+                                                    <th aria-label="Status: activate to sort column ascending" style="width: 5%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Status</th>
+                                                    <th aria-label="Action" style="width: 45%;" colspan="1" rowspan="1" class="sorting_disabled">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                            @foreach ($patientlist as $patient)
+                                            <?php
+                                                $id = $patient->id;
+                                                $zero_id = sprintf("%04d", $id);
+                                            ?>
                                                 <tr class="odd" role="row">
-                                                    <td class="sorting_1">1</td>
-                                                    <td>John Carreon</td>
-                                                    <td class=" text-center">Male</td>
-                                                    <td class=" text-center">1984-03-08</td>
-                                                    <td class=" text-center">32</td>
+                                                    <td class="sorting_1">{{$zero_id}}</td>
+                                                    <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
+                                                    <td class=" text-center">{{$patient->gender}}</td>
+                                                    <td class=" text-center">{{$patient->dob}}</td>
+                                                    <td class=" text-center">{{$patient->age}}</td>
                                                     <td class=" text-center">
-                                                        <span class="label label-success">Active</span>
+                                                        <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
                                                     <td>
                                                         <button id="edit-1" class="btn btn-sm btn-primary btn-edit-patient" data-pid="1">Edit</button>
-                                                        <button id="visits-1" class="btn btn-sm btn-info btn-view-visits" data-pid="1" data-toggle="modal" data-target="#modal_visits">View Visits</button>
+                                                        <button id="visits-1" class="btn btn-sm btn-info btn-view-visits viewvisit" data-pid="1" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                         <a href="#" class="btn btn-sm btn-success" target="_blank">Add Follow-up Visit</a>
                                                         <a href="#" class="btn btn-sm btn-warning" target="_blank">Lab Flowsheet</a>
                                                         <a href="#" class="btn btn-sm bg-purple" target="_blank">Medication</a>
                                                     </td>
                                                 </tr>
+                                            @endforeach
                                             </tbody>
                                         </table>
                                             <div style="display: none;" class="dataTables_processing" id="users-table_processing">Processing...</div>
@@ -146,14 +111,8 @@ desired effect
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="visit_list">
-                                    <tr>
-                                        <td>1</td>
-                                        <td>2016-12-30 10:56 pm</td>
-                                        <td>
-                                            <a href="/visit/1" target="_blank" class="btn btn-sm btn-info">View</a>
-                                        </td>
-                                    </tr>
+                                <tbody id="visit_list" class="visitlist_modal">
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -244,6 +203,24 @@ desired effect
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
 @show
+
+<script type="text/javascript">
+    $('.viewvisit').on( 'click', function(e){
+        var p_id = $(this).data('id');
+        $('.visitlist_modal').empty();
+        $.get('api/modalavisit?p_id=' + p_id, function(data){
+            $.each(data, function(index, visit){
+                $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.id+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.id+'" target="_blank" class="btn btn-sm btn-info">View</a>\
+                    </td>\
+                </tr>');
+            })
+        })
+    });
+</script>
 
 </body>
 </html>

@@ -4,9 +4,9 @@
     <!-- Logo -->
     <a href="{{ url('/home') }}" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>EMR</b></span>
+        <span class="logo-mini"><b>DMO</b></span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>EMR</b></span>
+        <span class="logo-lg"><b>DEMO</b></span>
     </a>
 
     <!-- Header Navbar -->
@@ -29,11 +29,11 @@
                                 <img src="" class="img-circle">
                                 <p>DEMO -  Admin</p>
                             </li>
-                            <li class="user-footer">
+                            <!-- <li class="user-footer">
                                 <div class="pull-right">
                                     <a href="http://demo_emr.jwits.co/logout" class="btn btn-default btn-flat">Sign out</a>
                                 </div>
-                            </li>
+                            </li> -->
                         </ul>
                 </li>
             </ul>

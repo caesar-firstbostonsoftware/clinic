@@ -11,9 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('patientlistpage');
-});
+Route::get('/', 'PatientsController@patientlist');
+// Route::get('/', function () {
+//     return view('patientlistpage');
+// });
 
 Route::group(['middleware' => 'auth'], function () {
     //    Route::get('/link1', function ()    {
@@ -24,5 +25,10 @@ Route::group(['middleware' => 'auth'], function () {
     #adminlte_routes
 });
 
-Route::get('/visit/{id}', 'PatientsController@patientxray');
-Route::post('/visit/{id}', 'PatientsController@newpatientxray');
+Route::get('/newvisit', 'PatientsController@newvisit');
+Route::get('/visit/{id}/{vid}', 'PatientsController@patientxray');
+Route::post('/visit/{id}/{vid}', 'PatientsController@newpatientxray');
+
+
+//----API---
+Route::get('api/modalavisit','PatientsController@modalavisit');

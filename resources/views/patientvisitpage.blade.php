@@ -55,7 +55,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li class="header">MAIN NAVIGATION</li>
             <li class="treeview active"><a href="#"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                 <ul style="display: block;" class="treeview-menu menu-open">
-                    <li class="active"><a href="#"><i class="fa fa-circle-o"></i> New Visit</a></li>
+                    <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                     <li><a href="/"><i class="fa fa-circle-o"></i> Patient List</a></li>
                     <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
                 </ul>
@@ -145,13 +145,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </tr>
                                 </thead>
                                 <tbody id="medication_list">
+                                @foreach($patientxray as $xray)
                                     <tr id="med1">
-                                        <td>08/09/2017</td>
-                                        <td>Samuel S. Martinez, M.D. (Sonologist/Radiologist)</td>
-                                        <td>Normal</td>
-                                        <td>New</td>
+                                        <td>{{$xray->xray_date}}</td>
+                                        <td>
+                                            @foreach($doctor as $doc)
+                                                @if($doc->id == $xray->physician_id)
+                                                {{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}
+                                                @endif
+                                            @endforeach
+                                        </td>
+                                        <td>{{$xray->finding}}</td>
+                                        <td>{{$xray->status}}</td>
                                         <td><button class="btn btn-sm btn-primary btn-edit-xray">Edit</button></td>
                                     </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -176,13 +184,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                         <h4><b>X-RAY / ULTRASOUND</b></h4>
 
-                                        <form class="form-horizontal" method="POST" action="/visit/1">
+                                        <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}">
                                         {!! csrf_field() !!}
                                             <div class="form-group">
                                                 <label class="col-sm-1 control-label">Name:</label>
                                                 <div class="col-sm-6">
-                                                    <input type="text" name="P_id" value="1" style="display: none;">
-                                                    <input type="text" name="P_name" required="" class="form-control" placeholder="Name">
+                                                    <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                    <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                 </div>
                                                 <label class="col-sm-2 control-label">O.R. No.</label>
                                                 <div class="col-sm-3">
@@ -192,14 +200,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="form-group divxrayinfo">
                                                 <label class="col-sm-1 control-label">Address:</label>
                                                 <div class="col-sm-6">
-                                                    <input type="text" name="address" required="" class="form-control" placeholder="Address">
+                                                    <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
                                                 </div>
                                                 <label class="col-sm-2 control-label">Age/Sex:</label>
                                                 <div class="col-sm-3">
                                                     <select id="agesex" name="agesex" class="form-control" required=""> 
-                                                        <option value="">- Select -</option>
-                                                        <option value="Male">Male</option>
-                                                        <option value="Female">Female</option>
+                                                        <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -208,10 +214,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <div class="col-sm-6">
                                                     <select id="physician" name="physician" class="form-control physician" required=""> 
                                                         <option value="">- Select -</option>
-                                                        <option data-id="SAMUEL S. MARTINEZ, M.D.-SONOLOGIST/RADIOLOGIST" value="1" >SAMUEL S. MARTINEZ, M.D.</option>
-                                                        <option data-id="TERESITO V. ORBETA, M.D.-SONOLOGIST" value="2">TERESITO V. ORBETA, M.D.</option>
-                                                        <option data-id="JOSE U. CHU, M.D.-SONOLOGIST/RADIOLOGIST" value="3">JOSE U. CHU, M.D.</option>
-                                                        <option data-id="SYLVANO M. ALCANTARA, M.D.-SONOLOGIST/RADIOLOGIST" value="4">SYLVANO M. ALCANTARA, M.D.</option>
+                                                        @foreach($doctor as $doc)
+                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" >{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                                 <label class="col-sm-2 control-label">Date:</label>
