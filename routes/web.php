@@ -11,10 +11,9 @@
 |
 */
 
-Route::get('/', 'PatientsController@patientlist');
-// Route::get('/', function () {
-//     return view('patientlistpage');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::group(['middleware' => 'auth'], function () {
     //    Route::get('/link1', function ()    {
@@ -25,9 +24,14 @@ Route::group(['middleware' => 'auth'], function () {
     #adminlte_routes
 });
 
+Route::get('/NFHSI', 'PatientsController@patientlist');
+
 Route::get('/newvisit', 'PatientsController@newvisit');
-Route::get('/visit/{id}/{vid}', 'PatientsController@patientxray');
+Route::post('/newvisit', 'PatientsController@addnewvisit');
+Route::get('/visit/{id}/{vid}', 'PatientsController@patientvisitpage');
 Route::post('/visit/{id}/{vid}', 'PatientsController@newpatientxray');
+
+Route::get('/doctorspage', 'DoctorsController@doctorspatientlist');
 
 
 //----API---

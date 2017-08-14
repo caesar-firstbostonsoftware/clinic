@@ -24,7 +24,7 @@
             <li class="treeview active"><a href="#"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                 <ul style="display: block;" class="treeview-menu menu-open">
                     <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-                    <li class="active"><a href="/"><i class="fa fa-circle-o"></i> Patient List</a></li>
+                    <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
                     <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
                 </ul>
             </li>

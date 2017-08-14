@@ -59,7 +59,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li class="treeview active"><a href="#"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                 <ul style="display: block;" class="treeview-menu menu-open">
                     <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-                    <li><a href="/"><i class="fa fa-circle-o"></i> Patient List</a></li>
+                    <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
                     <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
                 </ul>
             </li>
@@ -89,34 +89,36 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">New Visit
+                <h3 class="box-title">Patient Visit 
+                    <a href="#" class="btn btn-warning btn-sm" target="_blank"> Generate Medical Certificate</a>
+                    <a href="#" class="btn btn-info btn-sm" target="_blank"> Preview</a>
                 </h3>
             </div>
             <div class="box-body">
                 <div class="nav-tabs-custom">
         
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a href="#personal_info" aria-controls="personal_info" role="tab" data-toggle="tab">Personal Info</a>
-                        </li>
-                    </ul>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#personal_info" aria-controls="personal_info" role="tab" data-toggle="tab">Personal Info</a>
+                    </li>
+                </ul>
     
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
                         <div class="col-md-5">
                             <h3>Personal Info</h3>
-                            <form id="frm_personal_info" class="form-horizontal" method="post">
-                                <input name="_token" value="HbMasNfwj9Ewv5M4a9aemF8jJFciISoBxgjSQmHw" type="hidden">
+                            <form id="frm_personal_info" class="form-horizontal" method="post" action="/newvisit">
+                                {!! csrf_field() !!}
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control" id="name" name="name" placeholder="First Name" required="" type="text">
+                                        <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text">
                                     </div>
                                     <div class="col-sm-2 nameleft">
-                                        <input class="form-control" id="name" name="name" placeholder="M" required="" type="text">
+                                        <input class="form-control" id="mname" name="mname" placeholder="M" type="text">
                                     </div>
                                     <div class="col-sm-4 nameleft">
-                                        <input class="form-control" id="name" name="name" placeholder="Last Name" required="" type="text">
+                                        <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
@@ -137,14 +139,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Birthdate</label>
-                                    <div class="col-sm-5">
-                                        <input type="text" id="datepicker" name="dob" class="form-control dob" required="" readonly="">
+                                    <div class="col-sm-7">
+                                        <input type="text" id="datepicker" name="dob" class="form-control dob" required="" placeholder="YYYY-MM-DD">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Age</label>
                                     <div class="col-sm-2">
-                                        <input class="form-control" id="age" name="age" placeholder="" readonly="" required="" type="text">
+                                        <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -155,7 +157,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                             </form>
                         </div>
-                        <div class="clearfix"></div>
                         </div>
                     </div>
 
@@ -180,9 +181,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
-@show
-
-<script type="text/javascript">
+    <script type="text/javascript">
     $(".dob").datepicker({
         dateFormat: "yy-mm-dd",
         yearRange: "1950:2050",
@@ -193,10 +192,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         var datenow = new Date();
                         var birthDate = new Date(dob);
                         var years = (datenow.getFullYear() - birthDate.getFullYear());
-                        document.getElementById('age').value = years;
+                        $('.age').val(years);
                     }
     });
 </script>
+@show
+
+
 
 </body>
 </html>

@@ -22,6 +22,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     .modalwidth{
         width: 75%;
     }
+    .nameleft{
+        margin-left: -4.1%;
+    }
+    .divxrayinfo2{
+        margin-top: -3%;
+    }
 </style>
 
 <body class="skin-blue sidebar-mini">
@@ -56,7 +62,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li class="treeview active"><a href="#"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                 <ul style="display: block;" class="treeview-menu menu-open">
                     <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-                    <li><a href="/"><i class="fa fa-circle-o"></i> Patient List</a></li>
+                    <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
                     <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
                 </ul>
             </li>
@@ -91,9 +97,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a href="#" class="btn btn-info btn-sm" target="_blank"> Preview</a>
                 </h3>
             </div>
-            <div class="box-body">
-                <input id="pid" name="pid" value="1" type="hidden">
-                <input id="vid" name="vid" value="1" type="hidden">
+            <div class="box-body"><!-- 
+                <input id="pid" name="pid" value="1" type="text">
+                <input id="vid" name="vid" value="1" type="text"> -->
             <div class="nav-tabs-custom">
     <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
@@ -101,71 +107,113 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#personal_info" aria-controls="personal_info" role="tab" data-toggle="tab">Personal Info</a>
                     </li>
                     <li role="presentation">
-                        <a href="#consult_reason" aria-controls="consult_reason" role="tab" data-toggle="tab">Reason for Consulation</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#medical_history" aria-controls="medical_history" role="tab" data-toggle="tab">Past Medical History</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#social_history" aria-controls="social_history" role="tab" data-toggle="tab">Social History</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#physical_exam" aria-controls="physical_exam" role="tab" data-toggle="tab">Physical Exam</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#diagnosis" aria-controls="diagnosis" role="tab" data-toggle="tab">Diagnosis</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#plan" aria-controls="plan" role="tab" data-toggle="tab">Plan</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#medications" aria-controls="medications" role="tab" data-toggle="tab">Medications</a>
-                    </li>
-                    <li role="presentation">
                         <a href="#xray" aria-controls="xrays" role="tab" data-toggle="tab">X-ray</a>
                     </li>
                 </ul>
+                
+                <div class="tab-content">
 
-                <div role="tabpanel" class="tab-pane fade" id="xray">
-                    <div class="col-md-12">
-                        <h3>X-ray 
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New
-                            </button>
-                            <a href="http://demo_emr.jwits.co/patients/visit/print-medication/1" target="_blank" class="btn btn-warning">Generate Record</a>
-                        </h3>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">Physician</th>
-                                        <th class="text-center">Result</th>
-                                        <th class="text-center">Status</th>
-                                        <th class="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="medication_list">
-                                @foreach($patientxray as $xray)
-                                    <tr id="med1">
-                                        <td>{{$xray->xray_date}}</td>
-                                        <td>
-                                            @foreach($doctor as $doc)
-                                                @if($doc->id == $xray->physician_id)
-                                                {{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}
-                                                @endif
-                                            @endforeach
-                                        </td>
-                                        <td>{{$xray->finding}}</td>
-                                        <td>{{$xray->status}}</td>
-                                        <td><button class="btn btn-sm btn-primary btn-edit-xray">Edit</button></td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                        <!-- Personal Info -->
+                        <div role="tabpanel" class="tab-pane active" id="personal_info">
+                            <div class="col-md-5">
+                                <h3>Personal Info</h3>
+                                <form id="frm_personal_info" class="form-horizontal" method="post" action="">
+                                    {!! csrf_field() !!}
+                                    <div class="form-group ">
+                                        <label class="col-sm-2 control-label">Name</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required=""    type="text" value="{{$patient->f_name}}">
+                                        </div>
+                                        <div class="col-sm-2 nameleft">
+                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" value="{{$patient->m_name}}">
+                                        </div>
+                                        <div class="col-sm-4 nameleft">
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required=""     type="text" value="{{$patient->l_name}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group divxrayinfo2">
+                                        <label class="col-sm-2 control-label">Address</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" id="address" name="address" placeholder="Address" required=""   type="text" value="{{$patient->address}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group divxrayinfo2">
+                                        <label class="col-sm-2 control-label">Gender</label>
+                                        <div class="col-sm-4">
+                                            <select id="gender" name="gender" class="form-control" required="">
+                                            @if($patient->gender == 'Male')
+                                                <option value="Male" selected="">Male</option>
+                                                <option value="Female">Female</option>
+                                            @else
+                                                <option value="Male">Male</option>
+                                                <option value="Female" selected="">Female</option>
+                                            @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group divxrayinfo2">
+                                        <label class="col-sm-2 control-label">Birthdate</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" id="datepicker" name="dob" class="form-control dob" required=""  placeholder="YYYY-MM-DD" value="{{$patient->dob}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group divxrayinfo2">
+                                        <label class="col-sm-2 control-label">Age</label>
+                                        <div class="col-sm-2">
+                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text" value="{{$patient->age}}">
+                                        </div>
+                                    </div>
+                                    <!-- <div class="form-group">
+                                        <label class="col-sm-2 control-label"></label>
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-lg btn-primary btn-block" id="btn-submit-personal_info" type="   submit">Submit</button>
+                                        </div>
+                                    </div> -->
+                                </form>
+                            </div>
                         </div>
+                        <!-- X-ray -->
+                        <div role="tabpanel" class="tab-pane fade" id="xray">
+                            <div class="col-md-12">
+                                <h3>X-ray 
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_xraynew"      data-backdrop="static">Add New
+                                    </button>
+                                    <a href="http://demo_emr.jwits.co/patients/visit/print-medication/1" target="_blank" class="    btn     btn-warning">Generate Record</a>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Date</th>
+                                                <th class="text-center">Physician</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="medication_list">
+                                        @foreach($patientxray as $xray)
+                                            <tr id="med1">
+                                                <td>{{$xray->xray_date}}</td>
+                                                <td>
+                                                    @foreach($doctor as $doc)
+                                                        @if($doc->id == $xray->physician_id)
+                                                        {{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                                <td>{{$xray->finding}}</td>
+                                                <td>{{$xray->status}}</td>
+                                                <td><button class="btn btn-sm btn-primary btn-edit-xray">Edit</button></td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="clearfix"></div>
-                </div>
 
                 <div class="modal fade" id="modal_xraynew" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog modalwidth" role="document">
@@ -297,6 +345,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
         yearRange: "1950:2050",
         changeYear: true,
         changeMonth: true,
+    });
+
+    $(".dob").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        var dob = $(this).val();
+                        var datenow = new Date();
+                        var birthDate = new Date(dob);
+                        var years = (datenow.getFullYear() - birthDate.getFullYear());
+                        $('.age').val(years);
+                    }
     });
     
     $('.noramlfinding').click(function() {

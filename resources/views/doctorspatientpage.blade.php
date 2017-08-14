@@ -15,7 +15,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     @include('adminlte::layouts.partials.mainheader')
 
-    @include('adminlte::layouts.partials.sidebar')
+    <!-- SIDEBAR -->
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            @if (! Auth::guest())
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="{{ Gravatar::get($user->email) }}" class="img-circle" alt="User Image" />
+                    </div>
+                    <div class="pull-left info">
+                        <p>{{ Auth::user()->name }}</p>
+                        <!-- Status -->
+                        <a href="#"><i class="fa fa-circle text-success"></i> {{ trans('adminlte_lang::message.online') }}</a>
+                    </div>
+                </div>
+            @endif
+            <ul class="sidebar-menu">
+                <li class="header">MAIN NAVIGATION</li>
+                <li class="treeview active"><a href="#"><i class="fa fa-users"></i> <span>Patients</span><span class="  pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+                    <ul style="display: block;" class="treeview-menu menu-open">
+                        <!-- <li><a href="#"><i class="fa fa-circle-o"></i> New Visit</a></li> -->
+                        <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+                <li><a href="#"><i class="fa fa-cogs"></i> <span>Settings</span></a></li>
+                <li><a href="#"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
+            </ul>
+        </section>
+    </aside>
+    <!-- END SIDEBAR -->
 
     <!-- Content Wrapper. Contains page content -->
     <div style="min-height: 245px;" class="content-wrapper">
@@ -36,7 +66,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
  <!-- Default box -->
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">List of Patients <a href="/newvisit" class="btn btn-primary btn-sm">Add New</a></h3>
+                        <h3 class="box-title">List of Patients <!-- <a href="#" class="btn btn-primary btn-sm">Add New</a> --></h3>
                     </div>
                         <div class="box-body">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
@@ -55,7 +85,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach ($patientlist as $patient)
+                                            @foreach ($xray as $patient)
                                             <?php
                                                 $id = $patient->id;
                                                 $zero_id = sprintf("%04d", $id);

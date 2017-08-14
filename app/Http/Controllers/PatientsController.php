@@ -17,13 +17,43 @@ class PatientsController extends Controller
     	return view('patientnewvisitpage');
     }
 
+    public function addnewvisit(Request $request)
+    {
+    	$fname = $request->input('fname');
+    	$mname = $request->input('mname');
+    	$lname = $request->input('lname');
+    	$address = $request->input('address');
+    	$gender = $request->input('gender');
+    	$dob = $request->input('dob');
+    	$age = $request->input('age');
+    	//return $fname.' *** '.$mname.' *** '.$lname.' *** '.$address.' *** '.$gender.' *** '.$dob.' *** '.$age;
+    	$patient = new Patient;
+    	$patient->f_name = $fname;
+    	$patient->m_name = $mname;
+    	$patient->l_name = $lname;
+    	$patient->gender = $gender;
+    	$patient->dob = $dob;
+    	$patient->age = $age;
+    	$patient->address = $address;
+    	$patient->save();
+
+    	$patientvisit = new PatientVisit;
+    	$patientvisit->patient_id = $patient->id;
+    	$datenow = date("Y-m-d");
+    	$patientvisit->visit_date = $datenow;
+    	$patientvisit->visitid = 1;
+    	$patientvisit->save();
+
+    	return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
+    }
+
 	public function patientlist()
     {
     	$patientlist = Patient::all();
     	return view('patientlistpage',compact('patientlist'));
     }
 
-	public function patientxray($id,$vid)
+	public function patientvisitpage($id,$vid)
     {
     	$patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->get();
     	$patient = Patient::where('id',$id)->first();
@@ -56,7 +86,7 @@ class PatientsController extends Controller
      	$patientxray->visitid = $vid;
      	$patientxray->save();
 	
-    	return redirect()->action('PatientsController@patientxray',['id' => $id, 'vid' => $vid]);
+    	return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
     }
 
     public function modalavisit(Request $request)
