@@ -15,7 +15,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     @include('adminlte::layouts.partials.mainheader')
 
-    @include('adminlte::layouts.partials.sidebar')
+<aside class="main-sidebar">
+    <ul class="sidebar-menu">
+        <li class="header">MAIN NAVIGATION</li>
+        @if(Session::get('user') != 0)
+        <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
+        @endif
+        <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
+            <ul style="display: block;" class="treeview-menu menu-open">
+                <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+                <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+            </ul>
+        </li>
+        @if(Session::get('user') == 1)
+        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        @endif
+        <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
+    </ul>
+</aside>
 
     <!-- Content Wrapper. Contains page content -->
     <div style="min-height: 245px;" class="content-wrapper">
@@ -24,6 +42,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <h1><i class="fa fa-users"></i> Patients</h1>
         <ol class="breadcrumb">
             <li><a href="#">Dashboard</a></li>
+            @if(Session::get('user') != 0)
+            <li><a href="/myinfo">My Info</a></li>
+            @endif
             <li class="active">Patients</li>
         </ol>
     </section>
@@ -42,16 +63,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <table style="width: 1069px;" aria-describedby="users-table_info" role="grid" id="users-table" class="table table-bordered table-hover dataTable no-footer">
+                                        <table class="table table-striped">
                                             <thead>
                                                 <tr role="row">
-                                                    <th aria-label="ID: activate to sort column descending" aria-sort="ascending" style="width: 30px;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="sorting_asc">ID</th>
-                                                    <th aria-label="Name: activate to sort column ascending" style="width: 25%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="sorting">Name</th>
-                                                    <th aria-label="Gender: activate to sort column ascending" style="width: 5%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Gender</th>
-                                                    <th aria-label="DOB: activate to sort column ascending" style="width: 9%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">DOB</th>
-                                                    <th aria-label="Age: activate to sort column ascending" style="width: 5%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Age</th>
-                                                    <th aria-label="Status: activate to sort column ascending" style="width: 5%;" colspan="1" rowspan="1" aria-controls="users-table" tabindex="0" class="text-center sorting">Status</th>
-                                                    <th aria-label="Action" style="width: 45%;" colspan="1" rowspan="1" class="sorting_disabled">Action</th>
+                                                    <th style="width: 5%;">ID</th>
+                                                    <th style="width: 25%;">Name</th>
+                                                    <th style="width: 5%;">Gender</th>
+                                                    <th style="width: 9%;">DOB</th>
+                                                    <th style="width: 5%;">Age</th>
+                                                    <th style="width: 5%;">Status</th>
+                                                    <th style="width: 45%;">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -60,18 +81,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 $id = $patient->id;
                                                 $zero_id = sprintf("%04d", $id);
                                             ?>
-                                                <tr class="odd" role="row">
-                                                    <td class="sorting_1">{{$zero_id}}</td>
+                                                <tr>
+                                                    <td>{{$zero_id}}</td>
                                                     <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
-                                                    <td class=" text-center">{{$patient->gender}}</td>
-                                                    <td class=" text-center">{{$patient->dob}}</td>
-                                                    <td class=" text-center">{{$patient->age}}</td>
-                                                    <td class=" text-center">
+                                                    <td>{{$patient->gender}}</td>
+                                                    <td>{{$patient->dob}}</td>
+                                                    <td>{{$patient->age}}</td>
+                                                    <td>
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
                                                     <td>
                                                         <button id="edit-1" class="btn btn-sm btn-primary btn-edit-patient" data-pid="1">Edit</button>
-                                                        <button id="visits-1" class="btn btn-sm btn-info btn-view-visits viewvisit" data-pid="1" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
+                                                        <button id="viewvisit" class="btn btn-sm btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                         <a href="#" class="btn btn-sm btn-success" target="_blank">Add Follow-up Visit</a>
                                                         <a href="#" class="btn btn-sm btn-warning" target="_blank">Lab Flowsheet</a>
                                                         <a href="#" class="btn btn-sm bg-purple" target="_blank">Medication</a>
@@ -202,9 +223,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
-@show
-
-<script type="text/javascript">
+    <script type="text/javascript">
     $('.viewvisit').on( 'click', function(e){
         var p_id = $(this).data('id');
         $('.visitlist_modal').empty();
@@ -221,6 +240,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         })
     });
 </script>
+@show
 
 </body>
 </html>

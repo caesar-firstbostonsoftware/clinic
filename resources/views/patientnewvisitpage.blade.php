@@ -33,43 +33,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     @include('adminlte::layouts.partials.mainheader')
 
-    <!-- Left side column. contains the logo and sidebar -->
 <aside class="main-sidebar">
-
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-
-        <!-- Sidebar user panel (optional) -->
-        @if (! Auth::guest())
-            <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="{{ Gravatar::get($user->email) }}" class="img-circle" alt="User Image" />
-                </div>
-                <div class="pull-left info">
-                    <p>{{ Auth::user()->name }}</p>
-                    <!-- Status -->
-                    <a href="#"><i class="fa fa-circle text-success"></i> {{ trans('adminlte_lang::message.online') }}</a>
-                </div>
-            </div>
+    <ul class="sidebar-menu">
+        <li class="header">MAIN NAVIGATION</li>
+        @if(Session::get('user') != 0)
+        <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
-
-        <!-- Sidebar Menu -->
-        <ul class="sidebar-menu">
-            <li class="header">MAIN NAVIGATION</li>
-            <li class="treeview active"><a href="#"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
-                <ul style="display: block;" class="treeview-menu menu-open">
-                    <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-                    <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
-                </ul>
-            </li>
-            <li><a href="#"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
-            <li><a href="#"><i class="fa fa-cogs"></i> <span>Settings</span></a></li>
-            <li><a href="#"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
-        </ul>
-        <!-- /.sidebar-menu -->
-    </section>
-    <!-- /.sidebar -->
+        <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
+            <ul style="display: block;" class="treeview-menu menu-open">
+                <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+                <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+            </ul>
+        </li>
+        @if(Session::get('user') == 1)
+        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        @endif
+        <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
+    </ul>
 </aside>
 
     <!-- Content Wrapper. Contains page content -->
@@ -79,8 +60,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <h1><i class="fa fa-users"></i> Patients</h1>
         <ol class="breadcrumb">
             <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Patients</a></li>
-            <li class="active">New Visit</li>
+            @if(Session::get('user') != 0)
+            <li><a href="/myinfo">My Info</a></li>
+            @endif
+            <li class="active">Patients</li>
         </ol>
     </section>
 

@@ -10,10 +10,13 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', 'Auth@checklogin');
+Route::post('/', 'Auth@getlogin');
+Route::get('/logout', 'Auth@logout');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::group(['middleware' => 'auth'], function () {
     //    Route::get('/link1', function ()    {
@@ -31,7 +34,11 @@ Route::post('/newvisit', 'PatientsController@addnewvisit');
 Route::get('/visit/{id}/{vid}', 'PatientsController@patientvisitpage');
 Route::post('/visit/{id}/{vid}', 'PatientsController@newpatientxray');
 
-Route::get('/doctorspage', 'DoctorsController@doctorspatientlist');
+//Route::get('/doctorspage', 'DoctorsController@doctorspatientlist');
+
+Route::get('/myinfo', 'DoctorsController@myinfo');
+Route::get('/NFHSI/users', 'DoctorsController@userdoctorpage');
+Route::post('/NFHSI/users', 'DoctorsController@adduserdoctorpage');
 
 
 //----API---

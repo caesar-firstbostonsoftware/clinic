@@ -2,7 +2,7 @@
 <header class="main-header">
 
     <!-- Logo -->
-    <a href="{{ url('/home') }}" class="logo">
+    <a href="#" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini"><b>DMO</b></span>
         <!-- logo for regular state and mobile devices -->
@@ -16,27 +16,28 @@
             <span class="sr-only">{{ trans('adminlte_lang::message.togglenav') }}</span>
         </a>
         <!-- Navbar Right Menu -->
-        <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
+        <!-- <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav"> -->
                 <!-- Control Sidebar Toggle Button -->
-                <li class="dropdown user user-menu">
+                <!-- <li class="dropdown user user-menu">
                     <a aria-expanded="false" href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-user"></span>
                     </a>
-                        <ul class="dropdown-menu" id="drop-reorder">
+                        <ul class="dropdown-menu" id="drop-reorder"> -->
                             <!-- User image -->
-                            <li class="user-header">
+                           <!--  <li class="user-header">
                                 <img src="" class="img-circle">
                                 <p>DEMO -  Admin</p>
-                            </li>
+                            </li> -->
                             <!-- <li class="user-footer">
                                 <div class="pull-right">
                                     <a href="http://demo_emr.jwits.co/logout" class="btn btn-default btn-flat">Sign out</a>
                                 </div>
                             </li> -->
-                        </ul>
+                        <!-- </ul>
                 </li>
             </ul>
-        </div>
+        </div> -->
+
     </nav>
 </header>

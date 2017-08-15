@@ -8,6 +8,7 @@ use App\Patientxray;
 use App\PatientVisit;
 use Response;
 use App\Doctor;
+use Session;
 
 class PatientsController extends Controller
 {
@@ -49,8 +50,22 @@ class PatientsController extends Controller
 
 	public function patientlist()
     {
-    	$patientlist = Patient::all();
-    	return view('patientlistpage',compact('patientlist'));
+
+        if(Session::has('user')){
+            $doctor_id = Session::get('user');
+            $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
+            ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
+            ->where('doctors.id',$doctor_id)
+            ->select('patients.*')
+            ->get();
+            //return Response::json($doctor_id, 200, array(), JSON_PRETTY_PRINT);
+             return view('patientlistpage',compact('patientlist'));
+            
+        }
+        else {
+            $patientlist = Patient::all();
+            return view('patientlistpage',compact('patientlist'));
+        }
     }
 
 	public function patientvisitpage($id,$vid)

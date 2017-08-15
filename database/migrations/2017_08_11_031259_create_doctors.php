@@ -20,6 +20,8 @@ class CreateDoctors extends Migration
             $table->string('l_name');
             $table->string('credential');
             $table->string('specialization');
+            $table->string('address');
+            $table->string('email');
             $table->timestamps();
         });
     }
