@@ -8,6 +8,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('htmlheader')
     @include('adminlte::layouts.partials.htmlheader')
 @show
+<style type="text/css">
+    .divxrayinfo{
+        margin-top: -2%;
+    }
+    .nameleft{
+        margin-left: -4.1%;
+    }
+</style>
 
 <body class="skin-blue sidebar-mini">
 <div id="app" v-cloak>
@@ -66,6 +74,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr role="row">
+                                                @if(Session::get('user') == 1)
+                                                    <th style="width: 1%;">ID</th>
+                                                    <th style="width: 20%;">Dr. in charge</th>
+                                                    <th style="width: 20%;">Name</th>
+                                                    <th style="width: 5%;">Gender</th>
+                                                    <th style="width: 5%;">Status</th>
+                                                    <th>Action</th>
+                                                @else
                                                     <th style="width: 5%;">ID</th>
                                                     <th style="width: 25%;">Name</th>
                                                     <th style="width: 5%;">Gender</th>
@@ -73,6 +89,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <th style="width: 5%;">Age</th>
                                                     <th style="width: 5%;">Status</th>
                                                     <th style="width: 45%;">Action</th>
+                                                @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -83,15 +100,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             ?>
                                                 <tr>
                                                     <td>{{$zero_id}}</td>
+                                                @if(Session::get('user') == 1)
+                                                    <td>{{$patient->doctor_fname}} {{$patient->doctor_mname}} {{$patient->doctor_lname}}, {{$patient->doctor_credential}}</td>
+                                                @endif
                                                     <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
                                                     <td>{{$patient->gender}}</td>
+                                                @if(Session::get('user') != 1)
                                                     <td>{{$patient->dob}}</td>
                                                     <td>{{$patient->age}}</td>
+                                                @endif
                                                     <td>
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
                                                     <td>
-                                                        <button id="edit-1" class="btn btn-sm btn-primary btn-edit-patient" data-pid="1">Edit</button>
+                                                        <button class="btn btn-sm btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
                                                         <button id="viewvisit" class="btn btn-sm btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                         <a href="#" class="btn btn-sm btn-success" target="_blank">Add Follow-up Visit</a>
                                                         <a href="#" class="btn btn-sm btn-warning" target="_blank">Lab Flowsheet</a>
@@ -144,6 +166,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
             </div>
         </div>
+
         <div class="modal fade" id="modal_edit_patient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -154,52 +177,55 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <h4 class="modal-title" id="myModalLabel">Edit Personal Info</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-success hidden" id="personal_info_succ">Information updated successfully.</div>
-                            <form id="frm_personal_info" class="form-horizontal">
-                                <div class="form-group" id="name_grp">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" id="name" name="name" placeholder="Full Name" type="text">
-                                        <span class="help-block hidden" id="name_err"></span>
+                            <form class="form-horizontal posteditpatient" id="posteditpatient" method="post" action="/NFHSI">
+                            {!! csrf_field() !!}
+                            <input class="edit_p_id" name="p_id" type="text" style="display: none;">
+                                <div class="form-group ">
+                                    <label class="col-sm-2 control-label">Name</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control edit_fname" id="fname" name="fname" placeholder="First Name" required="" type="text">
+                                    </div>
+                                    <div class="col-sm-2 nameleft">
+                                        <input class="form-control edit_mname" id="mname" name="mname" placeholder="M" type="text">
+                                    </div>
+                                    <div class="col-sm-4 nameleft">
+                                        <input class="form-control edit_lname" id="lname" name="lname" placeholder="Last Name" required="" type="text">
                                     </div>
                                 </div>
-                                <div class="form-group" id="gender_grp">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Gender</label>
+                                <div class="form-group divxrayinfo">
+                                    <label class="col-sm-2 control-label">Address</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control edit_address" id="address" name="address" placeholder="Address" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group divxrayinfo">
+                                    <label class="col-sm-2 control-label">Gender</label>
                                     <div class="col-sm-4">
-                                        <select id="gender" name="gender" class="form-control"> 
+                                        <select id="gender" name="gender" class="form-control edit_gender" required=""> 
                                             <option value="">- Select -</option>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                         </select>
-                                        <span class="help-block hidden" id="gender_err"></span>
                                     </div>
                                 </div>
-                                <div class="form-group" id="birthdate_grp">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Birthdate</label>
-                                    <div class="col-sm-5">
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input class="form-control pull-right" id="birthdate" name="birthdate" type="text">
-                                        </div>
-                                        <span class="help-block hidden" id="birthdate_err"></span>
+                                <div class="form-group divxrayinfo">
+                                    <label class="col-sm-2 control-label">Birthdate</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" id="datepicker" name="dob" class="form-control dob edit_dob" required="" placeholder="YYYY-MM-DD" readonly="">
                                     </div>
                                 </div>
-                                <div class="form-group" id="age_grp">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Age</label>
+                                <div class="form-group divxrayinfo">
+                                    <label class="col-sm-2 control-label">Age</label>
                                     <div class="col-sm-2">
-                                        <input class="form-control" id="age" name="age" placeholder="" readonly="" type="text">
-                                        <span class="help-block hidden" id="age_err"></span>
+                                        <input class="form-control age edit_age" id="age" name="age" placeholder="" readonly="" required="" type="text">
                                     </div>
                                 </div>
-                                <div class="clearfix"></div>
                             </form>
                     </div>
                     <div class="modal-footer">
                         <input id="pid" name="pid" value="" type="hidden">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary" id="btn-submit-personal_info" type="button" data-loading-text="Saving..." autocomplete="off">Save Changes</button>
+                        <button class="btn btn-primary" form="posteditpatient" id="btn-submit-personal_info" type="submit" data-loading-text="Saving..." autocomplete="off">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -224,6 +250,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
     <script type="text/javascript">
+    $(".dob").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        var dob = $(this).val();
+                        var datenow = new Date();
+                        var birthDate = new Date(dob);
+                        var years = (datenow.getFullYear() - birthDate.getFullYear());
+                        $('.age').val(years);
+                    }
+    });
+
     $('.viewvisit').on( 'click', function(e){
         var p_id = $(this).data('id');
         $('.visitlist_modal').empty();
@@ -237,6 +277,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </td>\
                 </tr>');
             })
+        })
+    });
+
+    $('.editpatient').on( 'click', function(e){
+        var p_id = $(this).data('id');
+        $('.edit_p_id').empty();
+        $('.edit_fname').empty();
+        $('.edit_mname').empty();
+        $('.edit_lname').empty();
+        $('.edit_address').empty();
+        $('.edit_gender').empty();
+        $('.edit_dob').empty();
+        $('.edit_age').empty();
+        $.get('api/modalaeditpatient?p_id=' + p_id, function(data){
+            $('.edit_p_id').val(data.id);
+            $('.edit_fname').val(data.f_name);
+            $('.edit_mname').val(data.m_name);
+            $('.edit_lname').val(data.l_name);
+            $('.edit_address').val(data.address);
+            if (data.gender == "Male") {
+                $('.edit_gender').append('<option value="">- Select -</option>\
+                                            <option value="Male" selected>Male</option>\
+                                            <option value="Female">Female</option>');
+            }
+            else {
+                $('.edit_gender').append('<option value="">- Select -</option>\
+                                            <option value="Male">Male</option>\
+                                            <option value="Female" selected>Female</option>');
+            }
+            $('.edit_dob').val(data.dob);
+            $('.edit_age').val(data.age);
         })
     });
 </script>

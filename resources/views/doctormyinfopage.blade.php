@@ -57,7 +57,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="nav-tabs-custom">
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
                             <div class="col-md-7"><br>
-                                <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
+                                <form id="frm_personal_info" class="form-horizontal" method="post" action="/myinfo">
+                                <input class="edit_doc_id" name="doc_id" type="text" style="display: none;" value="{{$info->id}}">
                                     {!! csrf_field() !!}
                                     <div class="form-group ">
                                         <label class="col-sm-2 control-label">Name</label>
@@ -101,18 +102,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <input class="form-control" id="username" name="username" placeholder="Username" type="text" required="" value="{{$user->username}}">
                                         </div>
                                     </div>
-                                    <!-- <div class="form-group divxrayinfo">
+                                    <div class="form-group divxrayinfo">
                                         <label class="col-sm-2 control-label">Password</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="password" name="password" placeholder="Password" type="text" required="">
+                                            <input class="form-control" id="password" name="password" placeholder="Password" type="text">
                                         </div>
-                                    </div> -->
-                                    <!-- <div class="form-group">
+                                    </div>
+                                    <div class="form-group">
                                         <label class="col-sm-2 control-label"></label>
                                         <div class="col-sm-4">
-                                            <button class="btn btn-lg btn-primary btn-block" id="btn-submit-personal_info" type="submit">Submit</button>
+                                            <button class="btn btn-lg btn-primary btn-block" id="btn-submit-personal_info" type="submit">Save Changes</button>
                                         </div>
-                                    </div> -->
+                                    </div>
                                 </form>
                             </div>
                         </div>

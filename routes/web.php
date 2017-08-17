@@ -40,6 +40,12 @@ Route::get('/myinfo', 'DoctorsController@myinfo');
 Route::get('/NFHSI/users', 'DoctorsController@userdoctorpage');
 Route::post('/NFHSI/users', 'DoctorsController@adduserdoctorpage');
 
+Route::post('/NFHSI', 'PatientsController@editpatient');
+Route::post('/myinfo', 'DoctorsController@editmyinfo');
+
 
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');
+Route::get('api/modalaeditpatient','PatientsController@modalaeditpatient');
+
+Route::get('api/modalxrayedit','PatientsController@modalxrayedit');

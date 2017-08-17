@@ -121,7 +121,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </button>
                     </div>
                     <div class="modal-body">
-                            <form class="form-horizontal" action="/NFHSI/users" method="post">
+                            <form class="form-horizontal" id="adddoctoruser" action="/NFHSI/users" method="post">
                             {!! csrf_field() !!}
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
@@ -171,15 +171,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control" id="password" name="password" placeholder="Password" type="text" required="">
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label"></label>
-                                    <div class="col-sm-4">
-                                        <button class="btn btn-lg btn-primary btn-block" id="btn-submit-personal_info" type="submit">Submit</button>
-                                    </div>
-                                </div>
                             </form>
                     </div>
                     <div class="modal-footer">
+                        <button class="btn btn-primary" form="adddoctoruser" type="submit">Submit</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>

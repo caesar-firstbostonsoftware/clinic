@@ -53,13 +53,21 @@ class PatientsController extends Controller
 
         if(Session::has('user')){
             $doctor_id = Session::get('user');
-            $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
-            ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
-            ->where('doctors.id',$doctor_id)
-            ->select('patients.*')
-            ->get();
-            //return Response::json($doctor_id, 200, array(), JSON_PRETTY_PRINT);
-             return view('patientlistpage',compact('patientlist'));
+            if ($doctor_id != 1) {
+                $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
+                ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
+                ->where('doctors.id',$doctor_id)
+                ->select('patients.*')
+                ->get();
+            }
+            else {
+                $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
+                ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
+                ->select('patients.*','doctors.f_name as doctor_fname','doctors.m_name as doctor_mname','doctors.l_name as doctor_lname','doctors.credential as doctor_credential')
+                ->get();
+            }
+            //return Response::json($patientlist, 200, array(), JSON_PRETTY_PRINT);
+            return view('patientlistpage',compact('patientlist'));
             
         }
         else {
@@ -109,6 +117,48 @@ class PatientsController extends Controller
     	$p_id = $request->input('p_id');
     	$patientvisit = PatientVisit::where('patient_id',$p_id)->get();
     	return Response::json($patientvisit, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function modalaeditpatient(Request $request)
+    {   
+        $p_id = $request->input('p_id');
+        $patient = Patient::where('id',$p_id)->first();
+        return Response::json($patient, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function editpatient(Request $request)
+    {   
+        $p_id = $request->input('p_id');
+        $fname = $request->input('fname');
+        $mname = $request->input('mname');
+        $lname = $request->input('lname');
+        $address = $request->input('address');
+        $gender = $request->input('gender');
+        $dob = $request->input('dob');
+        $age = $request->input('age');
+        //return $fname.' *** '.$mname.' *** '.$lname.' *** '.$address.' *** '.$gender.' *** '.$dob.' *** '.$age;
+        $patient = Patient::where('id',$p_id)->first();
+        $patient->f_name = $fname;
+        $patient->m_name = $mname;
+        $patient->l_name = $lname;
+        $patient->gender = $gender;
+        $patient->dob = $dob;
+        $patient->age = $age;
+        $patient->address = $address;
+        $patient->save();
+
+        return redirect()->action('PatientsController@patientlist');
+    }
+
+    public function modalxrayedit(Request $request)
+    {   
+        $xray_id = $request->input('dataid');
+        //$patientxray = Patientxray::where('id',$xray_id)->first();
+        $patientxray = Patientxray::join('doctors','patientxrays.physician_id','=','doctors.id')
+        ->where('patientxrays.id',$xray_id)
+        ->select('doctors.*','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info')
+        ->first();
+        return Response::json($patientxray, 200, array(), JSON_PRETTY_PRINT);
     }
     
 }

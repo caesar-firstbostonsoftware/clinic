@@ -90,7 +90,45 @@ class DoctorsController extends Controller
         }
         else {
             return view('welcome');
-        }
-        
+        } 
     }
+
+    public function editmyinfo(Request $request)
+    {   
+        if(Session::has('user')){
+            $doc_id = $request->input('doc_id');
+            $fname = $request->input('fname');
+            $mname = $request->input('mname');
+            $lname = $request->input('lname');
+            $credential = $request->input('credential');
+            $specialization = $request->input('specialization');
+            $address = $request->input('address');
+            $email = $request->input('email');
+            $username = $request->input('username');
+            $password = bcrypt($request->input('password'));
+            
+            $doctor = Doctor::where('id',$doc_id)->first();
+            $doctor->f_name = $fname;
+            $doctor->m_name = $mname;
+            $doctor->l_name = $lname;
+            $doctor->credential = $credential;
+            $doctor->specialization = $specialization;
+            $doctor->address = $address;
+            $doctor->email = $email;
+            $doctor->save();
+
+            $user = User::where('doc_id',$doctor->id)->first();
+            $user->username = $username;
+            if ($request->input('password') != "") {
+                $user->password = $password;
+            }
+            $user->save();
+
+            return redirect()->action('DoctorsController@myinfo');
+        }
+        else {
+            return view('welcome');
+        } 
+    }
+
 }
