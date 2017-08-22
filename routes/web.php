@@ -49,3 +49,18 @@ Route::get('api/modalavisit','PatientsController@modalavisit');
 Route::get('api/modalaeditpatient','PatientsController@modalaeditpatient');
 
 Route::get('api/modalxrayedit','PatientsController@modalxrayedit');
+
+Route::get('api/addreasonforconsulation','PatientsController@addreasonforconsulation');
+Route::get('api/editreasonforconsulation','PatientsController@editreasonforconsulation');
+
+Route::get('api/addpastmedicalhistory','PatientsController@addpastmedicalhistory');
+Route::get('api/addsurgery','PatientsController@addsurgery');
+Route::get('api/addhospitalization','PatientsController@addhospitalization');
+Route::get('api/adddisease','PatientsController@adddisease');
+Route::get('api/addvaccination','PatientsController@addvaccination');
+
+Route::get('api/editpastmedicalhistory','PatientsController@editpastmedicalhistory');
+Route::get('api/addsocialhistory','PatientsController@addsocialhistory');
+Route::get('api/addphysicalexam','PatientsController@addphysicalexam');
+Route::get('api/adddiagnosis','PatientsController@adddiagnosis');
+Route::get('api/addplan','PatientsController@addplan');

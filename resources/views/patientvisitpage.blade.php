@@ -110,11 +110,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li role="presentation">
                         <a href="#medications" role="tab" data-toggle="tab">Medications</a>
                     </li>
-                    @if(Session::get('user') != 0)
                     <li role="presentation">
                         <a href="#xray" role="tab" data-toggle="tab">X-ray</a>
                     </li>
-                    @endif
                 </ul>
                 
                 <div class="tab-content">
@@ -169,12 +167,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text" value="{{$patient->age}}">
                                         </div>
                                     </div>
-                                    <!-- <div class="form-group">
+                                    @if(!Session::get('user'))
+                                    @else
+                                    <div class="form-group">
                                         <label class="col-sm-2 control-label"></label>
                                         <div class="col-sm-4">
-                                            <button class="btn btn-lg btn-primary btn-block" id="btn-submit-personal_info" type="   submit">Submit</button>
+                                            <button class="btn btn-lg btn-primary btn-block" id="btn-submit-personal_info" type="   submit">Save Changes</button>
                                         </div>
-                                    </div> -->
+                                    </div>
+                                    @endif
                                 </form>
                             </div>
                         </div>
@@ -183,26 +184,47 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div role="tabpanel" class="tab-pane fade" id="reasonforconsulation">
                             <div class="col-md-12">
                                 <h3>Reason for Consultation</h3>
-                                    <form id="frm_consult_reason" class="form-horizontal">
+                                    <form id="frm_consult_reason" class="form-horizontal frm_consult_reason">
                                     {!! csrf_field() !!}
+                                    <input type="text" name="RFCpatient_id" class="RFCpatient_id" style="display: none;" value="{{$id}}">
+                                    <input type="text" name="RFCvisit_id" class="RFCvisit_id" style="display: none;" value="{{$vid}}">
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Chief Complaint</label>
                                             <div class="col-sm-10">
-                                                <textarea class="form-control" id="chief_complaint" name="chief_complaint"></textarea>
+                                            @if(!$reasonforconsulation)
+                                                <input type="text" name="RFC_id" class="RFC_id" style="display: none;" value="">
+                                                <textarea class="form-control chief_complaint" id="chief_complaint" name="chief_complaint"></textarea>
+                                            @else
+                                                 <input type="text" name="RFC_id" class="RFC_id" style="display: none;" value="{{$reasonforconsulation->id}}">
+                                                <textarea class="form-control chief_complaint" id="chief_complaint" name="chief_complaint">{{$reasonforconsulation->chief_complaint}}</textarea>
+                                            @endif
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="inputEmail3" class="col-sm-2 control-label">History fo Present Illness</label>
+                                            <label for="inputEmail3" class="col-sm-2 control-label">History of Present Illness</label>
                                             <div class="col-sm-10">
-                                                <textarea class="form-control height500" rows="5" id="history_illness"></textarea>
+                                            @if(!$reasonforconsulation)
+                                                <textarea class="form-control height500 history_illness" rows="5" id="history_illness"></textarea>
+                                            @else
+                                                <textarea class="form-control height500 history_illness" rows="5" id="history_illness">{{$reasonforconsulation->history_of_present_illness}}</textarea>
+                                            @endif
                                             </div>
                                         </div>
+                                        @if(!Session::get('user'))
+                                        @else
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label"></label>
-                                            <div class="col-sm-3">
-                                                <button class="btn btn-lg btn-primary btn-block" id="btn-submit-consult_reason" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                            @if(!$reasonforconsulation)
+                                            <div class="col-sm-3 subsubRFC">
+                                                <button class="btn btn-lg btn-primary btn-block submit_RFC" id="btn-submit-consult_reason" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
                                             </div>
+                                            @else
+                                            <div class="col-sm-3">
+                                                <button class="btn btn-lg btn-primary btn-block edit_RFC" id="btn-submit-consult_reason" type="button" data-loading-text="Submitting..." autocomplete="off">Save Changes</button>
+                                            </div>
+                                            @endif
                                         </div>
+                                        @endif
                                     </form>
                             </div>
                         </div>
@@ -214,27 +236,80 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <form id="frm_consult_reason" class="form-horizontal">
                                     {!! csrf_field() !!}
                                         <div class="col-sm-5">
+                                        @if(!$PMH)
+                                            <input type="text" name="PMH_patient_id" class="PMH_patient_id" value="{{$id}}" style="display: none;">
+                                            <input type="text" name="PMH_visit_id" class="PMH_visit_id" value="{{$vid}}" style="display: none;">
+                                            <input type="text" name="PMH_id" class="PMH_id" value="" style="display:;">
                                             <div class="checkbox">
-                                                <label><input type="checkbox" class="surgery_check" value=""><b>Surgery</b></label>
+                                                <label><input type="checkbox" class="surgery_check"><b>Surgery</b></label>
                                             </div>
                                             <div class="checkbox">
-                                                <label><input type="checkbox" value=""><b>Hypertension</b></label>
+                                                <label><input type="checkbox" class="hypertension"><b>Hypertension</b></label>
                                             </div>
                                             <div class="checkbox">
-                                                <label><input type="checkbox" value=""><b>Diabetes Mellitus</b></label>
+                                                <label><input type="checkbox" class="diabetes"><b>Diabetes Mellitus</b></label>
                                             </div>
                                             <div class="checkbox">
-                                                <label><input type="checkbox" class="PR_check" value=""><b>Previous Hospitalization</b></label>
+                                                <label><input type="checkbox" class="PR_check"><b>Previous Hospitalization</b></label>
                                             </div>
                                             <div class="checkbox">
-                                                <label><input type="checkbox" class="DD_check" value=""><b>Diseases Diagnosed</b></label>
+                                                <label><input type="checkbox" class="DD_check"><b>Diseases Diagnosed</b></label>
                                             </div>
                                             <div class="checkbox">
-                                                <label><input type="checkbox" class="vaccine_check" value=""><b>Vaccinations</b></label>
+                                                <label><input type="checkbox" class="vaccine_check"><b>Vaccinations</b></label>
                                             </div>
+                                        @else
+                                            <input type="text" name="PMH_patient_id" class="PMH_patient_id" value="{{$id}}" style="display: none;">
+                                            <input type="text" name="PMH_visit_id" class="PMH_visit_id" value="{{$vid}}" style="display: none;">
+                                            <input type="text" name="PMH_id" class="PMH_id" style="display: none;" value="{{$PMH->id}}">
+                                            <div class="checkbox">
+                                                @if($PMH->surgery == "Yes")
+                                                <label><input type="checkbox" class="surgery_check" checked=""><b>Surgery</b></label>
+                                                @else
+                                                <label><input type="checkbox" class="surgery_check"><b>Surgery</b></label>
+                                                @endif
+                                            </div>
+                                            <div class="checkbox">
+                                                @if($PMH->hypertension == "Yes")
+                                                <label><input type="checkbox" class="hypertension" checked=""><b>Hypertension</b></label>
+                                                @else
+                                                <label><input type="checkbox" class="hypertension"><b>Hypertension</b></label>
+                                                @endif
+                                                
+                                            </div>
+                                            <div class="checkbox">
+                                                @if($PMH->diabetes_mellitus == "Yes")
+                                                <label><input type="checkbox" class="diabetes" checked=""><b>Diabetes Mellitus</b></label>
+                                                @else
+                                                <label><input type="checkbox" class="diabetes"><b>Diabetes Mellitus</b></label>
+                                                @endif
+                                            </div>
+                                            <div class="checkbox">
+                                                @if($PMH->previous_hospitalization == "Yes")
+                                                <label><input type="checkbox" class="PR_check" checked=""><b>Previous Hospitalization</b></label>
+                                                @else
+                                                <label><input type="checkbox" class="PR_check"><b>Previous Hospitalization</b></label>
+                                                @endif
+                                            </div>
+                                            <div class="checkbox">
+                                                @if($PMH->diseases_diagnosed == "Yes")
+                                                <label><input type="checkbox" class="DD_check" checked=""><b>Diseases Diagnosed</b></label>
+                                                @else
+                                                <label><input type="checkbox" class="DD_check"><b>Diseases Diagnosed</b></label>
+                                                @endif
+                                            </div>
+                                            <div class="checkbox">
+                                                @if($PMH->vaccination == "Yes")
+                                                <label><input type="checkbox" class="vaccine_check" checked=""><b>Vaccinations</b></label>
+                                                @else
+                                                <label><input type="checkbox" class="vaccine_check"><b>Vaccinations</b></label>
+                                                @endif
+                                            </div>
+                                        @endif
                                         </div>
                                         <div class="col-sm-7">
 
+                                        @if(!$PMH)
                                             <ul id="surgery_list" class="list-unstyled surgery_list" style="display: none;">
                                                 <li>
                                                     <div class="row">
@@ -261,7 +336,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <div class="row">
                                                         <div class="col-sm-3">
                                                             <div class="form-group">
-                                                                <input type="text" id="datepicker1" name="surgery_date" class="form-control surgery_date" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" id="datepicker1" name="surgery_date" class="form-control surgery_date surdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter" class="counter" value="1" style="display: none;">
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-9">
@@ -299,7 +375,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <div class="row">
                                                         <div class="col-sm-3">
                                                             <div class="form-group">
-                                                                <input type="text" id="hospitalization_date" name="hospitalization_date" class="form-control hospitalization_date" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" id="hospitalization_date" name="hospitalization_date" class="form-control hospitalization_date hosdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter2" class="counter2" value="1" style="display: none;">
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-9">
@@ -337,7 +414,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <div class="row">
                                                         <div class="col-sm-3">
                                                             <div class="form-group">
-                                                                <input type="text" id="disease_date" name="disease_date" class="form-control disease_date" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" id="disease_date" name="disease_date" class="form-control disease_date disdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter3" class="counter3" value="1" style="display: none;">
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-9">
@@ -375,7 +453,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <div class="row">
                                                         <div class="col-sm-3">
                                                             <div class="form-group">
-                                                                <input type="text" id="vaccination_date" name="vaccination_date" class="form-control vaccination_date" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" id="vaccination_date" name="vaccination_date" class="form-control vaccination_date vaccdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter4" class="counter4" value="1" style="display: none;">
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-9">
@@ -387,14 +466,420 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 </li>
                                             </ul>
 
+
+                                        @else
+                                            @if($PMH->surgery == "Yes")
+                                            <ul id="surgery_list" class="list-unstyled surgery_list">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Surgeries &nbsp;&nbsp;
+                                                                        <button type="button" class="btn btn-primary btn-sm add_surgery" id="add-surgery" title="Add More">
+                                                                            <i class="fa fa-plus"></i>
+                                                                        </button>
+                                                                    </h4>
+                                                                    Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 35%;">&nbsp;</h4>Operation </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="surgery-item">
+                                                @foreach($PMH_sur as $surgery1001)
+                                                    @if(!$surgery1001->id)
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="datepicker1" name="surgery_date" class="form-control surgery_date surdataid1" placeholder="YYYY-MM-DD" readonly="" value="">
+                                                                <input type="text" name="counter" class="counter" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control surgery_operation" name="surgery_operation" value="" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @else
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="datepicker{{$surgery1001->counter}}" name="surgery_date" class="form-control surgery_date surdataid{{$surgery1001->counter}}" placeholder="YYYY-MM-DD" readonly="" value="{{$surgery1001->date}}">
+                                                                <input type="text" name="counter" class="counter" value="{{$surgery1001->counter}}" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control surgery_operation" name="surgery_operation" value="{{$surgery1001->operation}}" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                @endforeach
+                                                </li>
+                                            </ul>
+                                            @else
+                                            <ul id="surgery_list" class="list-unstyled surgery_list" style="display: none;">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Surgeries &nbsp;&nbsp;
+                                                                        <button type="button" class="btn btn-primary btn-sm add_surgery" id="add-surgery" title="Add More">
+                                                                            <i class="fa fa-plus"></i>
+                                                                        </button>
+                                                                    </h4>
+                                                                    Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 35%;">&nbsp;</h4>Operation </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="surgery-item">
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="datepicker1" name="surgery_date" class="form-control surgery_date surdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter" class="counter" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control surgery_operation" name="surgery_operation" value="" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            @endif
+
+                                            @if($PMH->previous_hospitalization == "Yes")
+                                            <ul id="hospitalization_list" class="list-unstyled hospitalization_list">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Hospitalizations &nbsp;&nbsp;
+                                                                        <button type="button" class="btn btn-primary btn-sm add_hospitalization" id="add-hospitalization" title="Add More">
+                                                                            <i class="fa fa-plus"></i>
+                                                                        </button>
+                                                                    </h4>
+                                                                    Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8 ">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 35%;">&nbsp;</h4>Diagnosis </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="hospitalization-item">
+                                                @foreach($PMH_hos as $hospital)
+                                                    @if(!$hospital->id)
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="hospitalization_date" name="hospitalization_date" class="form-control hospitalization_date hosdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter2" class="counter2" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <textarea class="form-control hospitalization_diagnosis" name="hospitalization_diagnosis"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @else
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="hospitalization_date{{$hospital->counter}}" name="hospitalization_date" class="form-control hospitalization_date hosdataid{{$hospital->counter}}" placeholder="YYYY-MM-DD" readonly="" value="{{$hospital->date}}">
+                                                                <input type="text" name="counter22" class="counter2" value="{{$hospital->counter}}" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <textarea class="form-control hospitalization_diagnosis" name="hospitalization_diagnosis">{{$hospital->diagnosis}}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                @endforeach
+                                                </li>
+                                            </ul>
+                                            @else
+                                            <ul id="hospitalization_list" class="list-unstyled hospitalization_list" style="display: none;">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Hospitalizations &nbsp;&nbsp;
+                                                                        <button type="button" class="btn btn-primary btn-sm add_hospitalization" id="add-hospitalization" title="Add More">
+                                                                            <i class="fa fa-plus"></i>
+                                                                        </button>
+                                                                    </h4>
+                                                                    Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8 ">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 35%;">&nbsp;</h4>Diagnosis </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="hospitalization-item">
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="hospitalization_date" name="hospitalization_date" class="form-control hospitalization_date hosdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter2" class="counter2" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <textarea class="form-control hospitalization_diagnosis" name="hospitalization_diagnosis"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            @endif
+
+                                            @if($PMH->diseases_diagnosed == "Yes")
+                                            <ul id="disease_list" class="list-unstyled disease_list">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-5">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Diseases Diagnosed &nbsp;&nbsp;
+                                                                    <button type="button" class="btn btn-primary btn-sm add_disease" id="add-disease" title="Add More">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>
+                                                                    </h4>
+                                                                Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-7">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 40%;">&nbsp;</h4>Disease </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="disease-item">
+                                                @foreach($PMH_dis as $diseases)
+                                                    @if(!$diseases->id)
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="disease_date" name="disease_date" class="form-control disease_date disdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter3" class="counter3" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control disease" name="disease" value="" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @else
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="disease_date{{$diseases->counter}}" name="disease_date" class="form-control disease_date disdataid{{$diseases->counter}}" placeholder="YYYY-MM-DD" readonly="" value="{{$diseases->date}}">
+                                                                <input type="text" name="counter3" class="counter3" value="{{$diseases->counter}}" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control disease" name="disease" value="{{$diseases->disease}}" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                @endforeach
+                                                </li>
+                                            </ul>
+                                            @else
+                                            <ul id="disease_list" class="list-unstyled disease_list" style="display: none;">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-5">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Diseases Diagnosed &nbsp;&nbsp;
+                                                                    <button type="button" class="btn btn-primary btn-sm add_disease" id="add-disease" title="Add More">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>
+                                                                    </h4>
+                                                                Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-7">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 40%;">&nbsp;</h4>Disease </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="disease-item">
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="disease_date" name="disease_date" class="form-control disease_date disdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter3" class="counter3" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control disease" name="disease" value="" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            @endif
+
+                                            @if($PMH->vaccination == "Yes")
+                                            <ul id="vaccination_list" class="list-unstyled vaccination_list">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Vaccinations &nbsp;&nbsp;
+                                                                    <button type="button" class="btn btn-primary btn-sm add_vaccination" id="add-vaccination" title="Add More">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>
+                                                                    </h4>
+                                                                Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 45%;">&nbsp;</h4>Vaccine </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="vaccination-item">
+                                                @foreach($PMH_vacc as $vaccine)
+                                                    @if(!$vaccine->id)
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="vaccination_date" name="vaccination_date" class="form-control vaccination_date vaccdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter4" class="counter4" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control vaccination" name="vaccination" value="" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @else
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="vaccination_date{{$vaccine->counter}}" name="vaccination_date" class="form-control vaccination_date vaccdataid{{$vaccine->counter}}" placeholder="YYYY-MM-DD" readonly="" value="{{$vaccine->date}}">
+                                                                <input type="text" name="counter4" class="counter4" value="{{$vaccine->counter}}" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control vaccination" name="vaccination" value="{{$vaccine->vaccine}}" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                @endforeach
+                                                </li>
+                                            </ul>
+                                            @else
+                                            <ul id="vaccination_list" class="list-unstyled vaccination_list" style="display: none;">
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label>
+                                                                    <h4>Vaccinations &nbsp;&nbsp;
+                                                                    <button type="button" class="btn btn-primary btn-sm add_vaccination" id="add-vaccination" title="Add More">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>
+                                                                    </h4>
+                                                                Date
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="form-group">
+                                                                <label><h4 style="margin-bottom: 45%;">&nbsp;</h4>Vaccine </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="vaccination-item">
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <input type="text" id="vaccination_date" name="vaccination_date" class="form-control vaccination_date vaccdataid1" placeholder="YYYY-MM-DD" readonly="">
+                                                                <input type="text" name="counter4" class="counter4" value="1" style="display: none;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <div class="form-group">
+                                                                <input class="form-control vaccination" name="vaccination" value="" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            @endif
+                                            
+
+                                        @endif
+
                                         </div>
+
                                         <div class="clearfix"></div><br>
+                                        @if(!Session::get('user'))
+                                        @else
                                         <div class="form-group">
                                             <label for="inputEmail3" class=" control-label"></label>
-                                            <div class="col-sm-3">
-                                                <button class="btn btn-lg btn-primary btn-block" id="btn-submit-medical_history" type="button">Submit</button>
+                                            <div class="col-sm-3 med_his_butt">
+                                            @if(!$PMH)
+                                            <button class="btn btn-lg btn-primary btn-block medical_history" id="btn-submit-medical_history" type="button">Submit</button>
+                                            <button class="btn btn-lg btn-primary btn-block edit_medical_history" id="btn-submit-medical_history" type="button" style="display: none;">Save Changes</button>
+                                            @else
+                                            <button class="btn btn-lg btn-primary btn-block edit_medical_history" id="btn-submit-medical_history" type="button">Save Changes</button>
+                                            @endif  
                                             </div>
                                         </div>
+                                        @endif
                                     </form>
                             </div>
                         </div>
@@ -405,6 +890,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <h3>Social History</h3>
                                     <form class="form-horizontal">
                                     {!! csrf_field() !!}
+                                        <input type="text" name="SH_patient_id" class="SH_patient_id" value="{{$id}}" style="display: none;">
+                                        <input type="text" name="SH_visit_id" class="SH_visit_id" value="{{$vid}}" style="display: none;">
+                                        @if(!$SH)
+                                        <input type="text" name="SH_id" class="SH_id" value="" style="display: none;">
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">Allergies?</label>
                                             <div class="col-sm-2">
@@ -444,12 +933,87 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <input class="form-control packs" name="packs" id="packs" placeholder="Packs - Years " value="" type="text" style="display: none;">
                                             </div>
                                         </div>
+                                        @if(!Session::get('user'))
+                                        @else
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label"></label>
                                             <div class="col-sm-3">
-                                                <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                                <button class="btn btn-lg btn-primary btn-block addsocial_history" id="btn-submit-social_history" type="button">Submit</button>
                                             </div>
                                         </div>
+                                        @endif
+                                        @else
+                                        <input type="text" name="SH_id" class="SH_id" value="{{$SH->id}}" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Allergies?</label>
+                                            <div class="col-sm-2">
+                                                <select id="allergies" name="allergies" class="form-control allergies"> 
+                                                    <option value="">- Select -</option>
+                                                    @if($SH->allergy == "Yes")
+                                                    <option value="Yes" selected="">Yes</option>
+                                                    <option value="No">No</option>
+                                                    @else
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No" selected="">No</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                @if($SH->allergy == "Yes")
+                                                <textarea class="form-control allergies_list" id="allergies_list" name="allergies_list">{{$SH->allergy_desc}}</textarea>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Do you drink alcohol?</label>
+                                            <div class="col-sm-2">
+                                                <select id="drink-alcohol" name="drink-alcohol" class="form-control drink_alcohol"> 
+                                                    <option value="">- Select -</option>
+                                                    @if($SH->alcohol == "Yes")
+                                                    <option value="Yes" selected="">Yes</option>
+                                                    <option value="No">No</option>
+                                                    @else
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No" selected="">No</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                @if($SH->alcohol == "Yes")
+                                                <input class="form-control how_much_drink" name="how_much_drink" id="how_much_drink" placeholder="How much?" value="{{$SH->allergy_desc}}" type="text">
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Do you smoke?</label>
+                                            <div class="col-sm-2">
+                                                <select id="smoke" name="smoke" class="form-control smoke"> 
+                                                    <option value="">- Select -</option>
+                                                    @if($SH->smoke == "Yes")
+                                                    <option value="Yes" selected="">Yes</option>
+                                                    <option value="No">No</option>
+                                                    @else
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No" selected="">No</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                @if($SH->smoke == "Yes")
+                                                <input class="form-control packs" name="packs" id="packs" placeholder="Packs - Years " value="{{$SH->allergy_desc}}" type="text">
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if(!Session::get('user'))
+                                        @else
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label"></label>
+                                            <div class="col-sm-3">
+                                                <button class="btn btn-lg btn-primary btn-block addsocial_history" id="btn-submit-social_history" type="button">Save Changes</button>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        @endif
                                     </form>
                             </div>
                         </div>
@@ -460,10 +1024,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <h3>Physical Exam</h3>
                                     <form class="form-horizontal" id="frm_physical_exam">
                                     {!! csrf_field() !!}
+                                        <input type="text" name="PE_patient_id" class="PE_patient_id" value="{{$id}}" style="display: none;">
+                                        <input type="text" name="PE_visit_id" class="PE_visit_id" value="{{$vid}}" style="display: none;">
+                                        @if(!$PE)
+                                        <input type="text" name="PE_id" class="PE_id" value="" style="display: none;">
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Gen. Survey</label>
                                             <div class="col-sm-6">
-                                                <textarea class="form-control" id="gen_survey" name="gen_survey"></textarea>
+                                                <textarea class="form-control gen_survey" id="gen_survey" name="gen_survey"></textarea>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -472,81 +1040,177 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">BP</label>
                                             <div class="col-sm-1">
-                                                <input class="form-control" id="bp" name="bp" value="" type="text">
+                                                <input class="form-control bp" id="bp" name="bp" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">HR</label>
                                             <div class="col-sm-1">
-                                                <input class="form-control" id="hr" name="hr" value="" type="text">
+                                                <input class="form-control hr" id="hr" name="hr" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">RR</label>
                                             <div class="col-sm-1">
-                                                <input class="form-control" id="rr" name="rr" value="" type="text">
+                                                <input class="form-control rr" id="rr" name="rr" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">Temp.</label>
                                             <div class="col-sm-1">
-                                                <input class="form-control" id="temp" name="temp" value="" type="text">
+                                                <input class="form-control temp" id="temp" name="temp" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Head</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="head" name="head" value="" type="text">
+                                                <input class="form-control head" id="head" name="head" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Neck</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="neck" name="neck" value="" type="text">
+                                                <input class="form-control neck" id="neck" name="neck" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Chest/Lungs</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="chest_lungs" name="chest_lungs" value="" type="text">
+                                                <input class="form-control chest_lungs" id="chest_lungs" name="chest_lungs" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Heart</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="heart" name="heart" value="" type="text">
+                                                <input class="form-control heart" id="heart" name="heart" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Abdomen</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="abdomen" name="abdomen" value="" type="text">
+                                                <input class="form-control abdomen" id="abdomen" name="abdomen" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Back</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="back" name="back" value="" type="text">
+                                                <input class="form-control back" id="back" name="back" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Extremities</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="extremities" name="extremities" value="" type="text">
+                                                <input class="form-control extremities" id="extremities" name="extremities" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Neuro Exam</label>
                                             <div class="col-sm-6">
-                                                <input class="form-control" id="neuro_exam" name="neuro_exam" value="" type="text">
+                                                <input class="form-control neuro_exam" id="neuro_exam" name="neuro_exam" value="" type="text">
                                             </div>
                                         </div>
+                                        @if(!Session::get('user'))
+                                        @else
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label"></label>
                                             <div class="col-sm-3">
-                                                <button class="btn btn-lg btn-primary btn-block" id="btn-submit-physical_exam" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                                <button class="btn btn-lg btn-primary btn-block addphysical_exam" id="btn-submit-physical_exam" type="button">Submit</button>
                                             </div>
                                         </div>
+                                        @endif
+                                        @else
+                                        <input type="text" name="PE_id" class="PE_id" value="{{$PE->id}}" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Gen. Survey</label>
+                                            <div class="col-sm-6">
+                                                <textarea class="form-control gen_survey" id="gen_survey" name="gen_survey">{{$PE->gen_survey}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Vital Signs:</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">BP</label>
+                                            <div class="col-sm-1">
+                                                <input class="form-control bp" id="bp" name="bp" value="{{$PE->bp}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">HR</label>
+                                            <div class="col-sm-1">
+                                                <input class="form-control hr" id="hr" name="hr" value="{{$PE->hr}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">RR</label>
+                                            <div class="col-sm-1">
+                                                <input class="form-control rr" id="rr" name="rr" value="{{$PE->rr}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Temp.</label>
+                                            <div class="col-sm-1">
+                                                <input class="form-control temp" id="temp" name="temp" value="{{$PE->temp}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Head</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control head" id="head" name="head" value="{{$PE->head}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Neck</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control neck" id="neck" name="neck" value="{{$PE->neck}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Chest/Lungs</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control chest_lungs" id="chest_lungs" name="chest_lungs" value="{{$PE->chest_lung}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Heart</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control heart" id="heart" name="heart" value="{{$PE->heart}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Abdomen</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control abdomen" id="abdomen" name="abdomen" value="{{$PE->abdomen}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Back</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control back" id="back" name="back" value="{{$PE->back}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Extremities</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control extremities" id="extremities" name="extremities" value="{{$PE->extremity}}" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Neuro Exam</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control neuro_exam" id="neuro_exam" name="neuro_exam" value="{{$PE->neuro_exam}}" type="text">
+                                            </div>
+                                        </div>
+                                        @if(!Session::get('user'))
+                                        @else
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-3">
+                                                <button class="btn btn-lg btn-primary btn-block addphysical_exam" id="btn-submit-physical_exam" type="button">Save Changes</button>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        @endif
                                     </form>
                             </div>
                         </div>
@@ -557,16 +1221,39 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <h3>Diagnosis</h3>
                                     <form class="form-horizontal" id="frm_diagnosis">
                                     {!! csrf_field() !!}
+                                        <input type="text" name="diag_patient_id" class="diag_patient_id" value="{{$id}}" style="display: none;">
+                                        <input type="text" name="diag_visit_id" class="diag_visit_id" value="{{$vid}}" style="display: none;">
+                                        @if(!$diagnosis)
+                                        <input type="text" name="diag_id" class="diag_id" value="" style="display: none;">
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <textarea class="form-control height500" id="diagnosis_input" name="diagnosis_input" rows="8"></textarea>
+                                                <textarea class="form-control height500 diagnosis" id="diagnosis_input" name="diagnosis_input" rows="8"></textarea>
                                             </div>
                                         </div>
+                                        @if(!Session::get('user'))
+                                        @else
                                         <div class="form-group">
                                             <div class="col-sm-3">
-                                                <button class="btn btn-lg btn-primary btn-block" id="btn-submit-diagnosis" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                                <button class="btn btn-lg btn-primary btn-block adddiagnosis" id="btn-submit-diagnosis" type="button">Submit</button>
                                             </div>
                                         </div>
+                                        @endif
+                                        @else
+                                        <input type="text" name="diag_id" class="diag_id" value="{{$diagnosis->id}}" style="display: none;">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <textarea class="form-control height500 diagnosis" id="diagnosis_input" name="diagnosis_input" rows="8">{{$diagnosis->diagnosis}}</textarea>
+                                            </div>
+                                        </div>
+                                        @if(!Session::get('user'))
+                                        @else
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <button class="btn btn-lg btn-primary btn-block adddiagnosis" id="btn-submit-diagnosis" type="button">Save Changes</button>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        @endif
                                     </form>
                             </div>
                         </div>
@@ -577,16 +1264,39 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <h3>Plan</h3>
                                     <form class="form-horizontal" id="frm_plan">
                                     {!! csrf_field() !!}
+                                        <input type="text" name="plan_patient_id" class="plan_patient_id" value="{{$id}}" style="display: none;">
+                                        <input type="text" name="plan_visit_id" class="plan_visit_id" value="{{$vid}}" style="display: none;">
+                                        @if(!$plan)
+                                        <input type="text" name="plan_id" class="plan_id" value="" style="display: none;">
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <textarea class="form-control height500" id="plan_input" name="plan_input" rows="8"></textarea>
+                                                <textarea class="form-control height500 plan" id="plan_input" name="plan_input" rows="8"></textarea>
                                             </div>
                                         </div>
+                                        @if(!Session::get('user'))
+                                        @else
                                         <div class="form-group">
                                             <div class="col-sm-3">
-                                                <button class="btn btn-lg btn-primary btn-block" id="btn-submit-plan" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                                <button class="btn btn-lg btn-primary btn-block addplan" id="btn-submit-plan" type="button">Submit</button>
                                             </div>
                                         </div>
+                                        @endif
+                                        @else
+                                        <input type="text" name="plan_id" class="plan_id" value="{{$plan->id}}" style="display: none;">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <textarea class="form-control height500 plan" id="plan_input" name="plan_input" rows="8">{{$plan->plan}}</textarea>
+                                            </div>
+                                        </div>
+                                        @if(!Session::get('user'))
+                                        @else
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <button class="btn btn-lg btn-primary btn-block addplan" id="btn-submit-plan" type="button">Save Changes</button>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        @endif
                                     </form>
                             </div>
                         </div>
@@ -1025,14 +1735,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $('.phypos').append('<label class="col-sm-5 control-label" style="text-align: left; margin-top: -3%; font-size: 8pt;">'+pos+'</label>');
     });
 
-    var i;
-    i = 1;
+    $(document).ready(function() {
+        var i;
+        i = parseInt($('.counter:last').val());
+    
     $('.add_surgery').click(function() {
         i = i + 1;
         $('.surgery-item').append('<div class="row">\
                             <div class="col-sm-3">\
                                 <div class="form-group">\
-                                    <input type="text" id="datepicker'+i+'" name="surgery_date" class="form-control surgery_date" placeholder="YYYY-MM-DD" readonly="">\
+                                    <input type="text" id="datepicker'+i+'" name="surgery_date" class="form-control surgery_date surdataid'+i+'" placeholder="YYYY-MM-DD" readonly="">\
+                                    <input type="text" name="counter" class="counter" value="'+i+'" style="display: none;">\
                                 </div>\
                             </div>\
                             <div class="col-sm-9">\
@@ -1049,14 +1762,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
     });
 
+
     var x;
-    x = 1;
+    x = parseInt($('.counter2:last').val());
+
     $('.add_hospitalization').click(function() {
         x = x + 1;
         $('.hospitalization-item').append('<div class="row">\
                         <div class="col-sm-3">\
                             <div class="form-group">\
-                                <input type="text" id="hospitalization_date'+x+'" name="hospitalization_date" class="form-control hospitalization_date" placeholder="YYYY-MM-DD" readonly="">\
+                                <input type="text" id="hospitalization_date'+x+'" name="hospitalization_date" class="form-control hospitalization_date hosdataid'+x+'" placeholder="YYYY-MM-DD" readonly="">\
+                                <input type="text" name="counter2" class="counter2" value="'+x+'" style="display: none;">\
                             </div>\
                         </div>\
                         <div class="col-sm-9">\
@@ -1073,14 +1789,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
     });
 
+
     var y;
-    y = 1;
+    y = parseInt($('.counter3:last').val());
     $('.add_disease').click(function() {
         y = y + 1;
         $('.disease-item').append('<div class="row">\
                         <div class="col-sm-3">\
                             <div class="form-group">\
-                                <input type="text" id="disease_date'+y+'" name="disease_date" class="form-control disease_date" placeholder="YYYY-MM-DD" readonly="">\
+                                <input type="text" id="disease_date'+y+'" name="disease_date" class="form-control disease_date disdataid'+y+'" placeholder="YYYY-MM-DD" readonly="">\
+                                <input type="text" name="counter3" class="counter3" value="'+y+'" style="display: none;">\
                             </div>\
                         </div>\
                         <div class="col-sm-9">\
@@ -1097,14 +1815,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
     });
     });
 
+
     var z;
-    z = 1;
+    z = parseInt($('.counter4:last').val());
     $('.add_vaccination').click(function() {
         z = z + 1;
         $('.vaccination-item').append('<div class="row">\
                         <div class="col-sm-3">\
                             <div class="form-group">\
-                                <input type="text" id="vaccination_date'+z+'" name="vaccination_date" class="form-control vaccination_date" placeholder="YYYY-MM-DD" readonly="">\
+                                <input type="text" id="vaccination_date'+z+'" name="vaccination_date" class="form-control vaccination_date vaccdataid'+z+'" placeholder="YYYY-MM-DD" readonly="">\
+                                <input type="text" name="counter4" class="counter4" value="'+z+'" style="display: none;">\
                             </div>\
                         </div>\
                         <div class="col-sm-9">\
@@ -1120,6 +1840,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         changeMonth: true,
     });
     });
+
+    })
+    
 
     $('.surgery_check').click(function() {
         if ($(this).is(':checked')) {
@@ -1257,6 +1980,316 @@ scratch. This page gets rid of all links and provides the needed markup only.
             }
             });
         })
+    })
+
+    $('.submit_RFC').on('click',function() {
+        var RFCpatient_id = $('.RFCpatient_id').val();
+        var RFCvisit_id = $('.RFCvisit_id').val();
+        var chief_complaint = $('.chief_complaint').val();
+        var history_illness = $('.history_illness').val();
+        if (chief_complaint == "" && history_illness == "") {
+            alert('Please Fill Up the Form.');
+        }
+        else {
+            $.get('../../api/addreasonforconsulation?patient_id=' + RFCpatient_id + '&visit_id=' + RFCvisit_id + '&chief_complaint=' + chief_complaint + '&history_illness=' + history_illness, function(data){
+            $('.RFC_id').val(data.id);
+            $('.subsubRFC').empty();
+            $('.subsubRFC').append('<button class="btn btn-lg btn-primary btn-block edit_RFC" id="btn-submit-consult_reason" type="button" data-loading-text="Submitting..." autocomplete="off">Save Changes</button>');
+            });
+        }
+    });
+
+     $('.edit_RFC').on('click',function() {
+        var RFC_id = $('.RFC_id').val();
+        var chief_complaint = $('.chief_complaint').val();
+        var history_illness = $('.history_illness').val();
+        $.get('../../api/editreasonforconsulation?RFC_id=' + RFC_id + '&chief_complaint=' + chief_complaint + '&history_illness=' + history_illness, function(data){
+
+        });
+     });
+
+     $('.medical_history').on('click',function() {
+        var PMH_patient_id = $('.PMH_patient_id').val();
+        var PMH_visit_id = $('.PMH_visit_id').val();
+        if ($('.surgery_check').is(':checked')) {
+            var surgery_check = "Yes";
+        }
+        else {
+            var surgery_check = "No";
+        }
+
+        if ($('.hypertension').is(':checked')) {
+            var hypertension = "Yes";
+        }
+        else {
+            var hypertension = "No";
+        }
+
+        if ($('.diabetes').is(':checked')) {
+            var diabetes = "Yes";
+        }
+        else {
+            var diabetes = "No";
+        }
+
+        if ($('.PR_check').is(':checked')) {
+            var PR_check = "Yes";
+        }
+        else {
+            var PR_check = "No";
+        }
+
+        if ($('.DD_check').is(':checked')) {
+            var DD_check = "Yes";
+        }
+        else {
+            var DD_check = "No";
+        }
+
+        if ($('.vaccine_check').is(':checked')) {
+            var vaccine_check = "Yes";
+        }
+        else {
+            var vaccine_check = "No";
+        }
+
+        $.get('../../api/addpastmedicalhistory?PMH_patient_id=' + PMH_patient_id + '&PMH_visit_id=' + PMH_visit_id + '&surgery=' + surgery_check + '&hypertension=' + hypertension + '&diabetes=' + diabetes + '&PR_check=' + PR_check + '&DD_check=' + DD_check + '&vaccine_check=' + vaccine_check, function(data){
+            $('.PMH_id').attr('value',data.id);
+            $('.medical_history').hide();
+            $('.edit_medical_history').show();
+
+            if (surgery_check == "Yes") {
+                $('.surgery_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.surgery_date').val();
+                    var counter = $(this).parent().parent().parent().find('.counter').val();
+                    var operation = $(this).parent().parent().parent().find('.surgery_operation').val();
+                    if (!truedate) {}
+                        else{
+                                $.get('../../api/addsurgery?PMH_id=' + PMH_id + '&sur_date=' + truedate + '&operation=' + operation + '&counter=' + counter, function(data1){
+                                });        
+                            }   
+                });
+            }
+
+            if (PR_check == "Yes") {
+                $('.hospitalization_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.hospitalization_date').val();
+                    var counter2 = $(this).parent().parent().parent().find('.counter2').val();
+                    var diagnosis = $(this).parent().parent().parent().find('.hospitalization_diagnosis').val();
+                    if (!truedate) {}
+                    else{
+                        $.get('../../api/addhospitalization?PMH_id=' + PMH_id + '&hos_date=' + truedate + '&diagnosis=' + diagnosis + '&counter2=' + counter2, function(data2){
+                        });
+                    }
+                });
+            }
+
+            if (DD_check == "Yes") {
+                $('.disease_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.disease_date').val();
+                    var counter3 = $(this).parent().parent().parent().find('.counter3').val();
+                    var disease = $(this).parent().parent().parent().find('.disease').val();
+                    if (!truedate) {}
+                    else{
+                        $.get('../../api/adddisease?PMH_id=' + PMH_id + '&dis_date=' + truedate + '&disease=' + disease + '&counter3=' + counter3, function(data3){
+                        });
+                    }
+                });
+            }
+
+            if (vaccine_check == "Yes") {
+                $('.vaccination_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.vaccination_date').val();
+                    var counter4 = $(this).parent().parent().parent().find('.counter4').val();
+                    var vaccination = $(this).parent().parent().parent().find('.vaccination').val();
+                    if (!truedate) {}
+                    else{
+                        $.get('../../api/addvaccination?PMH_id=' + PMH_id + '&vac_date=' + truedate + '&vaccination=' + vaccination + '&counter4=' + counter4, function(data4){
+                        });
+                    }
+                });
+            }
+
+        });
+
+     });
+
+    $('.edit_medical_history').on('click',function() {
+        var PMH_patient_id = $('.PMH_patient_id').val();
+        var PMH_visit_id = $('.PMH_visit_id').val();
+        var PMH_id = $('.PMH_id').val();
+
+        if ($('.surgery_check').is(':checked')) {
+            var surgery_check = "Yes";
+        }
+        else {
+            var surgery_check = "No";
+        }
+
+        if ($('.hypertension').is(':checked')) {
+            var hypertension = "Yes";
+        }
+        else {
+            var hypertension = "No";
+        }
+
+        if ($('.diabetes').is(':checked')) {
+            var diabetes = "Yes";
+        }
+        else {
+            var diabetes = "No";
+        }
+
+        if ($('.PR_check').is(':checked')) {
+            var PR_check = "Yes";
+        }
+        else {
+            var PR_check = "No";
+        }
+
+        if ($('.DD_check').is(':checked')) {
+            var DD_check = "Yes";
+        }
+        else {
+            var DD_check = "No";
+        }
+
+        if ($('.vaccine_check').is(':checked')) {
+            var vaccine_check = "Yes";
+        }
+        else {
+            var vaccine_check = "No";
+        }
+
+        $.get('../../api/editpastmedicalhistory?PMH_id=' + PMH_id + '&surgery=' + surgery_check + '&hypertension=' + hypertension + '&diabetes=' + diabetes + '&PR_check=' + PR_check + '&DD_check=' + DD_check + '&vaccine_check=' + vaccine_check, function(data){
+
+            if (surgery_check == "Yes") {
+                $('.surgery_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.surgery_date').val();
+                    var counter = $(this).parent().parent().parent().find('.counter').val();
+                    var operation = $(this).parent().parent().parent().find('.surgery_operation').val();
+                    if (!truedate) {}
+                        else{
+                                $.get('../../api/addsurgery?PMH_id=' + PMH_id + '&sur_date=' + truedate + '&operation=' + operation + '&counter=' + counter, function(data1){
+                                });        
+                            }   
+                });
+            }
+
+            if (PR_check == "Yes") {
+                $('.hospitalization_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.hospitalization_date').val();
+                    var counter2 = $(this).parent().parent().parent().find('.counter2').val();
+                    var diagnosis = $(this).parent().parent().parent().find('.hospitalization_diagnosis').val();
+                    if (!truedate) {}
+                    else{
+                        $.get('../../api/addhospitalization?PMH_id=' + PMH_id + '&hos_date=' + truedate + '&diagnosis=' + diagnosis + '&counter2=' + counter2, function(data2){
+                        });
+                    }
+                });
+            }
+
+            if (DD_check == "Yes") {
+                $('.disease_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.disease_date').val();
+                    var counter3 = $(this).parent().parent().parent().find('.counter3').val();
+                    var disease = $(this).parent().parent().parent().find('.disease').val();
+                    if (!truedate) {}
+                    else{
+                        $.get('../../api/adddisease?PMH_id=' + PMH_id + '&dis_date=' + truedate + '&disease=' + disease + '&counter3=' + counter3, function(data3){
+                        });
+                    }
+                });
+            }
+
+            if (vaccine_check == "Yes") {
+                $('.vaccination_date').each(function() {
+                    var PMH_id = data.id;
+                    var truedate = $(this).parent().parent().parent().find('.vaccination_date').val();
+                    var counter4 = $(this).parent().parent().parent().find('.counter4').val();
+                    var vaccination = $(this).parent().parent().parent().find('.vaccination').val();
+                    if (!truedate) {}
+                    else{
+                        $.get('../../api/addvaccination?PMH_id=' + PMH_id + '&vac_date=' + truedate + '&vaccination=' + vaccination + '&counter4=' + counter4, function(data4){
+                        });
+                    }
+                });
+            }
+
+        });
+
+     });
+    
+    $('.addsocial_history').on('click',function() {
+        var SH_id = $('.SH_id').val();
+        var SH_patient_id = $('.SH_patient_id').val();
+        var SH_visit_id = $('.SH_visit_id').val();
+        var allergies = $('.allergies').val();
+        var allergies_list = $('.allergies_list').val();
+        var drink_alcohol = $('.drink_alcohol').val();
+        var how_much_drink = $('.how_much_drink').val();
+        var smoke = $('.smoke').val();
+        var packs = $('.packs').val();
+
+        $.get('../../api/addsocialhistory?SH_id=' + SH_id + '&SH_patient_id=' + SH_patient_id + '&SH_visit_id=' + SH_visit_id + '&allergies=' + allergies + '&allergies_list=' + allergies_list + '&drink_alcohol=' + drink_alcohol + '&how_much_drink=' + how_much_drink + '&smoke=' + smoke + '&packs=' + packs, function(data){
+            $('.addsocial_history').html('Save Changes');
+            $('.SH_id').attr('value',data.id);
+        });
+    })
+
+    $('.addphysical_exam').on('click',function() {
+        var PE_id = $('.PE_id').val();
+        var PE_patient_id = $('.PE_patient_id').val();
+        var PE_visit_id = $('.PE_visit_id').val();
+        var gen_survey = $('.gen_survey').val();
+        var bp = $('.bp').val();
+        var hr = $('.hr').val();
+        var rr = $('.rr').val();
+        var temp = $('.temp').val();
+        var head = $('.head').val();
+        var neck = $('.neck').val();
+        var chest_lungs = $('.chest_lungs').val();
+        var heart = $('.heart').val();
+        var abdomen = $('.abdomen').val();
+        var back = $('.back').val();
+        var extremities = $('.extremities').val();
+        var neuro_exam = $('.neuro_exam').val();
+
+        $.get('../../api/addphysicalexam?PE_id=' + PE_id + '&PE_patient_id=' + PE_patient_id + '&PE_visit_id=' + PE_visit_id + '&gen_survey=' + gen_survey + '&bp=' + bp + '&hr=' + hr + '&rr=' + rr + '&temp=' + temp + '&head=' + head + '&neck=' + neck + '&chest_lungs=' + chest_lungs + '&heart=' + heart + '&abdomen=' + abdomen + '&back=' + back + '&extremities=' + extremities + '&neuro_exam=' + neuro_exam, function(data){
+            $('.addphysical_exam').html('Save Changes');
+            $('.PE_id').attr('value',data.id);
+        });
+    })
+
+    $('.adddiagnosis').on('click',function() {
+        var diag_id = $('.diag_id').val();
+        var diag_patient_id = $('.diag_patient_id').val();
+        var diag_visit_id = $('.diag_visit_id').val();
+        var diagnosis = $('.diagnosis').val();
+
+        $.get('../../api/adddiagnosis?diag_id=' + diag_id + '&diag_patient_id=' + diag_patient_id + '&diag_visit_id=' + diag_visit_id + '&diagnosis=' + diagnosis, function(data){
+            $('.adddiagnosis').html('Save Changes');
+            $('.diag_id').attr('value',data.id);
+        });
+    })
+
+    $('.addplan').on('click',function() {
+        var plan_id = $('.plan_id').val();
+        var plan_patient_id = $('.plan_patient_id').val();
+        var plan_visit_id = $('.plan_visit_id').val();
+        var plan = $('.plan').val();
+
+        $.get('../../api/addplan?plan_id=' + plan_id + '&plan_patient_id=' + plan_patient_id + '&plan_visit_id=' + plan_visit_id + '&plan=' + plan, function(data){
+            $('.addplan').html('Save Changes');
+            $('.plan_id').attr('value',data.id);
+        });
     })
 
 </script>

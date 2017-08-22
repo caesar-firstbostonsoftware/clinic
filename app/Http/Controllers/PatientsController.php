@@ -9,6 +9,16 @@ use App\PatientVisit;
 use Response;
 use App\Doctor;
 use Session;
+use App\ReasonForConsulation;
+use App\PastMedicalHistory;
+use App\Surgery;
+use App\Hospitalization;
+use App\Disease;
+use App\Vaccination;
+use App\SocialHistory;
+use App\PhysicalExam;
+use App\Diagnoses;
+use App\Plan;
 
 class PatientsController extends Controller
 {
@@ -79,9 +89,32 @@ class PatientsController extends Controller
 	public function patientvisitpage($id,$vid)
     {
     	$patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->get();
+        $reasonforconsulation = ReasonForConsulation::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $PMH = PastMedicalHistory::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $PMH_sur = PastMedicalHistory::leftJoin('surgeries','past_medical_histories.id','=','surgeries.pmh_id')
+        ->where('past_medical_histories.patient_id',$id)
+        ->select('surgeries.*')
+        ->get();
+        $PMH_hos = PastMedicalHistory::leftJoin('hospitalizations','past_medical_histories.id','=','hospitalizations.pmh_id')
+        ->where('past_medical_histories.patient_id',$id)
+        ->select('hospitalizations.*')
+        ->get();
+        $PMH_dis = PastMedicalHistory::leftJoin('diseases','past_medical_histories.id','=','diseases.pmh_id')
+        ->where('past_medical_histories.patient_id',$id)
+        ->select('diseases.*')
+        ->get();
+        $PMH_vacc = PastMedicalHistory::leftJoin('vaccinations','past_medical_histories.id','=','vaccinations.pmh_id')
+        ->where('past_medical_histories.patient_id',$id)
+        ->select('vaccinations.*')
+        ->get();
+        $SH = SocialHistory::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $PE = PhysicalExam::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $diagnosis = Diagnoses::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
+        //return Response::json($PMH_hos, 200, array(), JSON_PRETTY_PRINT);
     	$patient = Patient::where('id',$id)->first();
     	$doctor = Doctor::all();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor'));
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -159,6 +192,413 @@ class PatientsController extends Controller
         ->select('doctors.*','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info')
         ->first();
         return Response::json($patientxray, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addreasonforconsulation(Request $request)
+    {   
+        $patient_id = $request->input('patient_id');
+        $visit_id = $request->input('visit_id');
+        $chief_complaint = $request->input('chief_complaint');
+        $history_illness = $request->input('history_illness');
+
+        $reasonforconsulation = new ReasonForConsulation;
+        $reasonforconsulation->patient_id = $patient_id;
+        $reasonforconsulation->visit_id = $visit_id;
+        $reasonforconsulation->chief_complaint = $chief_complaint;
+        $reasonforconsulation->history_of_present_illness = $history_illness;
+        $reasonforconsulation->save();
+
+        return Response::json($reasonforconsulation, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function editreasonforconsulation(Request $request)
+    {   
+        $RFC_id = $request->input('RFC_id');
+        $chief_complaint = $request->input('chief_complaint');
+        $history_illness = $request->input('history_illness');
+
+        $reasonforconsulation = ReasonForConsulation::where('id',$RFC_id)->first();
+        $reasonforconsulation->chief_complaint = $chief_complaint;
+        $reasonforconsulation->history_of_present_illness = $history_illness;
+        $reasonforconsulation->save();
+
+        return Response::json($reasonforconsulation, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addpastmedicalhistory(Request $request)
+    {   
+        $PMH_patient_id = $request->input('PMH_patient_id');
+        $PMH_visit_id = $request->input('PMH_visit_id');
+        $surgery = $request->input('surgery');
+        $hypertension = $request->input('hypertension');
+        $diabetes = $request->input('diabetes');
+        $PR_check = $request->input('PR_check');
+        $DD_check = $request->input('DD_check');
+        $vaccine_check = $request->input('vaccine_check');
+
+        $PMH = new PastMedicalHistory;
+        $PMH->patient_id = $PMH_patient_id;
+        $PMH->visit_id = $PMH_visit_id;
+        $PMH->surgery = $surgery;
+        $PMH->hypertension = $hypertension;
+        $PMH->diabetes_mellitus = $diabetes;
+        $PMH->previous_hospitalization = $PR_check;
+        $PMH->diseases_diagnosed = $DD_check;
+        $PMH->vaccination = $vaccine_check;
+        $PMH->save();
+
+        return Response::json($PMH, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addsurgery(Request $request)
+    {   
+        $PMH_id = $request->input('PMH_id');
+        $sur_date = $request->input('sur_date');
+        $operation = $request->input('operation');
+        $counter = $request->input('counter');
+
+        $Surgery = Surgery::where('pmh_id',$PMH_id)->where('counter',$counter)->first();
+        if (!$Surgery) {
+            $Surgery = new Surgery;
+            $Surgery->pmh_id = $PMH_id;
+            $Surgery->date = $sur_date;
+            $Surgery->operation = $operation;
+            $Surgery->counter = $counter;
+            $Surgery->save();
+        }
+        else if ($Surgery->counter == $counter) {
+            $Surgery->date = $sur_date;
+            $Surgery->operation = $operation;
+            $Surgery->counter = $counter;
+            $Surgery->save();
+        }
+        else {
+            $Surgery = new Surgery;
+            $Surgery->pmh_id = $PMH_id;
+            $Surgery->date = $sur_date;
+            $Surgery->operation = $operation;
+            $Surgery->counter = $counter;
+            $Surgery->save();
+        }
+
+        return Response::json($Surgery, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addhospitalization(Request $request)
+    {   
+        $PMH_id = $request->input('PMH_id');
+        $hos_date = $request->input('hos_date');
+        $diagnosis = $request->input('diagnosis');
+        $counter2 = $request->input('counter2');
+
+        $Hospitalization = Hospitalization::where('pmh_id',$PMH_id)->where('counter',$counter2)->first();
+        if (!$Hospitalization) {
+            $Hospitalization = new Hospitalization;
+            $Hospitalization->pmh_id = $PMH_id;
+            $Hospitalization->date = $hos_date;
+            $Hospitalization->diagnosis = $diagnosis;
+            $Hospitalization->counter = $counter2;
+            $Hospitalization->save();
+        }
+        else if ($Hospitalization->counter == $counter2) {
+            $Hospitalization->date = $hos_date;
+            $Hospitalization->diagnosis = $diagnosis;
+            $Hospitalization->counter = $counter2;
+            $Hospitalization->save();
+        }
+        else {
+            $Hospitalization = new Hospitalization;
+            $Hospitalization->pmh_id = $PMH_id;
+            $Hospitalization->date = $hos_date;
+            $Hospitalization->diagnosis = $diagnosis;
+            $Hospitalization->counter = $counter2;
+            $Hospitalization->save();
+        }
+
+        return Response::json($Hospitalization, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function adddisease(Request $request)
+    {   
+        $PMH_id = $request->input('PMH_id');
+        $dis_date = $request->input('dis_date');
+        $disease = $request->input('disease');
+        $counter3 = $request->input('counter3');
+
+        $Disease = Disease::where('pmh_id',$PMH_id)->where('counter',$counter3)->first();
+        if (!$Disease) {
+            $Disease = new Disease;
+            $Disease->pmh_id = $PMH_id;
+            $Disease->date = $dis_date;
+            $Disease->disease = $disease;
+            $Disease->counter = $counter3;
+            $Disease->save();
+        }
+        else if ($Disease->counter == $counter3) {
+            $Disease->date = $dis_date;
+            $Disease->disease = $disease;
+            $Disease->counter = $counter3;
+            $Disease->save();
+        }
+        else {
+            $Disease = new Disease;
+            $Disease->pmh_id = $PMH_id;
+            $Disease->date = $dis_date;
+            $Disease->disease = $disease;
+            $Disease->counter = $counter3;
+            $Disease->save();
+        }
+
+        return Response::json($Disease, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addvaccination(Request $request)
+    {   
+        $PMH_id = $request->input('PMH_id');
+        $vac_date = $request->input('vac_date');
+        $vaccination = $request->input('vaccination');
+        $counter4 = $request->input('counter4');
+
+        $Vaccination = Vaccination::where('pmh_id',$PMH_id)->where('counter',$counter4)->first();
+        if (!$Vaccination) {
+            $Vaccination = new Vaccination;
+            $Vaccination->pmh_id = $PMH_id;
+            $Vaccination->date = $vac_date;
+            $Vaccination->vaccine = $vaccination;
+            $Vaccination->counter = $counter4;
+            $Vaccination->save();
+        }
+        else if ($Vaccination->counter == $counter4) {
+            $Vaccination->date = $vac_date;
+            $Vaccination->vaccine = $vaccination;
+            $Vaccination->counter = $counter4;
+            $Vaccination->save();
+        }
+        else {
+            $Vaccination = new Vaccination;
+            $Vaccination->pmh_id = $PMH_id;
+            $Vaccination->date = $vac_date;
+            $Vaccination->vaccine = $vaccination;
+            $Vaccination->counter = $counter4;
+            $Vaccination->save();
+        }
+
+        return Response::json($Vaccination, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function editpastmedicalhistory(Request $request)
+    {      
+        $PMH_id = $request->input('PMH_id');
+
+        $surgery = $request->input('surgery');
+        $hypertension = $request->input('hypertension');
+        $diabetes = $request->input('diabetes');
+        $PR_check = $request->input('PR_check');
+        $DD_check = $request->input('DD_check');
+        $vaccine_check = $request->input('vaccine_check');
+
+        $PMH = PastMedicalHistory::where('id',$PMH_id)->first();
+        $PMH->surgery = $surgery;
+        $PMH->hypertension = $hypertension;
+        $PMH->diabetes_mellitus = $diabetes;
+        $PMH->previous_hospitalization = $PR_check;
+        $PMH->diseases_diagnosed = $DD_check;
+        $PMH->vaccination = $vaccine_check;
+        $PMH->save();
+
+        return Response::json($PMH, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addsocialhistory(Request $request)
+    {      
+        $SH_id = $request->input('SH_id');
+        $SH_patient_id = $request->input('SH_patient_id');
+        $SH_visit_id = $request->input('SH_visit_id');
+        $allergies = $request->input('allergies');
+        $allergies_list = $request->input('allergies_list');
+        $drink_alcohol = $request->input('drink_alcohol');
+        $how_much_drink = $request->input('how_much_drink');
+        $smoke = $request->input('smoke');
+        $packs = $request->input('packs');
+
+        $SocialHistory = SocialHistory::where('id',$SH_id)->first();
+        if (!$SocialHistory) {
+            $SocialHistory = new SocialHistory;
+            $SocialHistory->patient_id = $SH_patient_id;
+            $SocialHistory->visit_id = $SH_visit_id;
+            $SocialHistory->allergy = $allergies;
+            $SocialHistory->allergy_desc = $allergies_list;
+            $SocialHistory->alcohol = $drink_alcohol;
+            $SocialHistory->alcohol_desc = $how_much_drink;
+            $SocialHistory->smoke = $smoke;
+            $SocialHistory->smoke_desc = $packs;
+            $SocialHistory->save();
+        }
+        else if ($SocialHistory->id == $SH_id) {
+            $SocialHistory->allergy = $allergies;
+            $SocialHistory->allergy_desc = $allergies_list;
+            $SocialHistory->alcohol = $drink_alcohol;
+            $SocialHistory->alcohol_desc = $how_much_drink;
+            $SocialHistory->smoke = $smoke;
+            $SocialHistory->smoke_desc = $packs;
+            $SocialHistory->save();
+        }
+        else {
+            $SocialHistory = new SocialHistory;
+            $SocialHistory->patient_id = $SH_patient_id;
+            $SocialHistory->visit_id = $SH_visit_id;
+            $SocialHistory->allergy = $allergies;
+            $SocialHistory->allergy_desc = $allergies_list;
+            $SocialHistory->alcohol = $drink_alcohol;
+            $SocialHistory->alcohol_desc = $how_much_drink;
+            $SocialHistory->smoke = $smoke;
+            $SocialHistory->smoke_desc = $packs;
+            $SocialHistory->save();
+        }
+
+        return Response::json($SocialHistory, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addphysicalexam(Request $request)
+    {      
+        $PE_id = $request->input('PE_id');
+        $PE_patient_id = $request->input('PE_patient_id');
+        $PE_visit_id = $request->input('PE_visit_id');
+
+        $gen_survey = $request->input('gen_survey');
+        $bp = $request->input('bp');
+        $hr = $request->input('hr');
+        $rr = $request->input('rr');
+        $temp = $request->input('temp');
+        $head = $request->input('head');
+        $neck = $request->input('neck');
+        $chest_lungs = $request->input('chest_lungs');
+        $heart = $request->input('heart');
+        $abdomen = $request->input('abdomen');
+        $back = $request->input('back');
+        $extremities = $request->input('extremities');
+        $neuro_exam = $request->input('neuro_exam');
+        
+
+        $PhysicalExam = PhysicalExam::where('id',$PE_id)->first();
+        if (!$PhysicalExam) {
+            $PhysicalExam = new PhysicalExam;
+            $PhysicalExam->patient_id = $PE_patient_id;
+            $PhysicalExam->visit_id = $PE_visit_id;
+            $PhysicalExam->gen_survey = $gen_survey;
+            $PhysicalExam->bp = $bp;
+            $PhysicalExam->hr = $hr;
+            $PhysicalExam->rr = $rr;
+            $PhysicalExam->temp = $temp;
+            $PhysicalExam->head = $head;
+            $PhysicalExam->neck = $neck;
+            $PhysicalExam->chest_lung = $chest_lungs;
+            $PhysicalExam->heart = $heart;
+            $PhysicalExam->abdomen = $abdomen;
+            $PhysicalExam->back = $back;
+            $PhysicalExam->extremity = $extremities;
+            $PhysicalExam->neuro_exam = $neuro_exam;
+            $PhysicalExam->save();
+        }
+        else if ($PhysicalExam->id == $PE_id) {
+            $PhysicalExam->gen_survey = $gen_survey;
+            $PhysicalExam->bp = $bp;
+            $PhysicalExam->hr = $hr;
+            $PhysicalExam->rr = $rr;
+            $PhysicalExam->temp = $temp;
+            $PhysicalExam->head = $head;
+            $PhysicalExam->neck = $neck;
+            $PhysicalExam->chest_lung = $chest_lungs;
+            $PhysicalExam->heart = $heart;
+            $PhysicalExam->abdomen = $abdomen;
+            $PhysicalExam->back = $back;
+            $PhysicalExam->extremity = $extremities;
+            $PhysicalExam->neuro_exam = $neuro_exam;
+            $PhysicalExam->save();
+        }
+        else {
+            $PhysicalExam = new PhysicalExam;
+            $PhysicalExam->patient_id = $PE_patient_id;
+            $PhysicalExam->visit_id = $PE_visit_id;
+            $PhysicalExam->gen_survey = $gen_survey;
+            $PhysicalExam->bp = $bp;
+            $PhysicalExam->hr = $hr;
+            $PhysicalExam->rr = $rr;
+            $PhysicalExam->temp = $temp;
+            $PhysicalExam->head = $head;
+            $PhysicalExam->neck = $neck;
+            $PhysicalExam->chest_lung = $chest_lungs;
+            $PhysicalExam->heart = $heart;
+            $PhysicalExam->abdomen = $abdomen;
+            $PhysicalExam->back = $back;
+            $PhysicalExam->extremity = $extremities;
+            $PhysicalExam->neuro_exam = $neuro_exam;
+            $PhysicalExam->save();
+        }
+
+        return Response::json($PhysicalExam, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function adddiagnosis(Request $request)
+    {      
+        $diag_id = $request->input('diag_id');
+        $diag_patient_id = $request->input('diag_patient_id');
+        $diag_visit_id = $request->input('diag_visit_id');
+        $diagnosis = $request->input('diagnosis');
+        
+
+        $Diagnosis = Diagnoses::where('id',$diag_id)->first();
+        if (!$Diagnosis) {
+            $Diagnosis = new Diagnoses;
+            $Diagnosis->patient_id = $diag_patient_id;
+            $Diagnosis->visit_id = $diag_visit_id;
+            $Diagnosis->diagnosis = $diagnosis;
+            $Diagnosis->save();
+        }
+        else if ($Diagnosis->id == $diag_id) {
+            $Diagnosis->diagnosis = $diagnosis;
+            $Diagnosis->save();
+        }
+        else {
+            $Diagnosis = new Diagnoses;
+            $Diagnosis->patient_id = $diag_patient_id;
+            $Diagnosis->visit_id = $diag_visit_id;
+            $Diagnosis->diagnosis = $diagnosis;
+            $Diagnosis->save();
+        }
+
+        return Response::json($Diagnosis, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function addplan(Request $request)
+    {      
+        $plan_id = $request->input('plan_id');
+        $plan_patient_id = $request->input('plan_patient_id');
+        $plan_visit_id = $request->input('plan_visit_id');
+        $plan = $request->input('plan');
+        
+
+        $Plan = Plan::where('id',$plan_id)->first();
+        if (!$Plan) {
+            $Plan = new Plan;
+            $Plan->patient_id = $plan_patient_id;
+            $Plan->visit_id = $plan_visit_id;
+            $Plan->plan = $plan;
+            $Plan->save();
+        }
+        else if ($Plan->id == $plan_id) {
+            $Plan->plan = $plan;
+            $Plan->save();
+        }
+        else {
+            $Plan = new Plan;
+            $Plan->patient_id = $plan_patient_id;
+            $Plan->visit_id = $plan_visit_id;
+            $Plan->plan = $plan;
+            $Plan->save();
+        }
+
+        return Response::json($Plan, 200, array(), JSON_PRETTY_PRINT);
     }
     
 }
