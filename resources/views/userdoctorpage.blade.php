@@ -46,6 +46,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @endif
         @if(Session::get('user') == 1)
         <li class="active"><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1)
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
         <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
     </ul>
@@ -60,7 +63,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li><a href="#">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
-            <li class="active">Users</li>
+            <li class="active"><a href="/NFHSI/users"><b>Users</b></a></li>
         </ol>
     </section>
     <section class="content">
@@ -68,7 +71,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">List of Users <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addnewuser">Add New</button></h3>
+                        <h3 class="box-title">List of Users <button class="btn btn-primary btn-sm addnew" data-toggle="modal" data-target="#addnewuser" data-backdrop="static">Add New</button></h3>
                     </div>
                         <div class="box-body">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
@@ -78,11 +81,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <thead>
                                                 <tr role="row">
                                                     <th style="width: 5%;">ID</th>
-                                                    <th style="width: 25%;">Name</th>
+                                                    <th style="width: 20%;">Name</th>
                                                     <th style="width: 5%;">Credential</th>
                                                     <th style="width: 10%;">Specialization</th>
                                                     <th style="width: 15%;">Address</th>
                                                     <th style="width: 15%;">Email</th>
+                                                    <th style="width: 5%">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -98,6 +102,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <td>{{$u_doctor->specialization}}</td>
                                                     <td>{{$u_doctor->address}}</td>
                                                     <td>{{$u_doctor->email}}</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary btn-edit-patient edituser" data-toggle="modal" data-target="#addnewuser" data-id="{{$u_doctor->id}}" data-backdrop="static">Edit</button>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                             </tbody>
@@ -126,56 +133,57 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text">
+                                        <input class="form-control user_id" id="user_id" name="user_id" type="text" style="display: none;">
+                                        <input class="form-control fname" id="fname" name="fname" placeholder="First Name" required="" type="text">
                                     </div>
                                     <div class="col-sm-2 nameleft">
-                                        <input class="form-control" id="mname" name="mname" placeholder="M" type="text">
+                                        <input class="form-control mname" id="mname" name="mname" placeholder="M" type="text">
                                     </div>
                                     <div class="col-sm-4 nameleft">
-                                        <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text">
+                                        <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Credential</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control" id="credential" name="credential" placeholder="Credential" required="" type="text">
+                                        <input class="form-control credential" id="credential" name="credential" placeholder="Credential" required="" type="text">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Specialization</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" id="specialization" name="specialization" placeholder="Specialization" required="" type="text">
+                                        <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" required="" type="text">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Address</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" id="address" name="address" placeholder="Address" type="text" required="">
+                                        <input class="form-control address" id="address" name="address" placeholder="Address" type="text" required="">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Email</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" id="email" name="email" placeholder="Email" type="email" required="">
+                                        <input class="form-control email" id="email" name="email" placeholder="Email" type="email" required="">
                                     </div>
                                 </div><br>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Username</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" id="username" name="username" placeholder="Username" type="text" required="">
+                                        <input class="form-control username" id="username" name="username" placeholder="Username" type="text" required="">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Password</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" id="password" name="password" placeholder="Password" type="text" required="">
+                                        <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="">
                                     </div>
                                 </div>
                             </form>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" form="adddoctoruser" type="submit">Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                     </div>
                 </div>
             </div>
@@ -194,6 +202,44 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
+    <script type="text/javascript">
+        $('.addnew').on('click',function() {
+                $('.user_id').removeAttr('value');
+                $('.fname').removeAttr('value');
+                $('.mname').removeAttr('value');
+                $('.lname').removeAttr('value');
+                $('.credential').removeAttr('value');
+                $('.specialization').removeAttr('value');
+                $('.address').removeAttr('value');
+                $('.email').removeAttr('value');
+                $('.username').removeAttr('value');
+        })
+
+        $('.edituser').on('click',function() {
+            var user_id = $(this).data('id');
+            $.get('../../api/getuserinfo?user_id=' + user_id, function(data){
+                $('.user_id').removeAttr('value');
+                $('.fname').removeAttr('value');
+                $('.mname').removeAttr('value');
+                $('.lname').removeAttr('value');
+                $('.credential').removeAttr('value');
+                $('.specialization').removeAttr('value');
+                $('.address').removeAttr('value');
+                $('.email').removeAttr('value');
+                $('.username').removeAttr('value');
+
+                $('.user_id').attr('value',data.id);
+                $('.fname').attr('value',data.f_name);
+                $('.mname').attr('value',data.m_name);
+                $('.lname').attr('value',data.l_name);
+                $('.credential').attr('value',data.credential);
+                $('.specialization').attr('value',data.specialization);
+                $('.address').attr('value',data.address);
+                $('.email').attr('value',data.email);
+                $('.username').attr('value',data.user.username);
+            })
+        })
+    </script>
 @show
 
 </body>

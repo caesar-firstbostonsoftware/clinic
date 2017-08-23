@@ -48,6 +48,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
         @if(Session::get('user') == 1)
         <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1)
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
         <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
     </ul>
@@ -63,7 +66,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             @if(Session::get('user') != 0)
             <li><a href="/myinfo">My Info</a></li>
             @endif
-            <li class="active">Patients</li>
+            <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
         </ol>
     </section>
 
@@ -73,8 +76,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Patient Visit 
-                    <a href="#" class="btn btn-warning btn-sm" target="_blank"> Generate Medical Certificate</a>
-                    <a href="#" class="btn btn-info btn-sm" target="_blank"> Preview</a>
+                    <!-- <a href="#" class="btn btn-warning btn-sm" target="_blank"> Generate Medical Certificate</a>
+                    <a href="#" class="btn btn-info btn-sm" target="_blank"> Preview</a> -->
                 </h3>
             </div>
             <div class="box-body">

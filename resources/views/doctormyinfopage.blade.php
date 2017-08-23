@@ -34,8 +34,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
         @if(Session::get('user') == 1)
         <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1)
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
-
         <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
     </ul>
 </aside>
@@ -47,7 +49,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <h1><i class="fa fa-stethoscope"></i> My Info</h1>
         <ol class="breadcrumb">
             <li><a href="#">Dashboard</a></li>
-            <li class="active"><a href="/myinfo">My Info</a></li>
+            <li class="active"><a href="/myinfo"><b>My Info</b></a></li>
         </ol>
     </section>
     

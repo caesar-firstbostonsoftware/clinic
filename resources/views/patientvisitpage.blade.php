@@ -51,6 +51,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
         @if(Session::get('user') == 1)
         <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1)
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
         <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
     </ul>
@@ -66,7 +69,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             @if(Session::get('user') != 0)
             <li><a href="/myinfo">My Info</a></li>
             @endif
-            <li class="active">Patients</li>
+            <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
         </ol>
     </section>
 
@@ -76,8 +79,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Patient Visit 
-                    <a href="#" class="btn btn-warning btn-sm" target="_blank"> Generate Medical Certificate</a>
-                    <a href="#" class="btn btn-info btn-sm" target="_blank"> Preview</a>
+                    <!-- <a href="#" class="btn btn-warning btn-sm" target="_blank"> Generate Medical Certificate</a>
+                    <a href="#" class="btn btn-info btn-sm" target="_blank"> Preview</a> -->
                 </h3>
             </div>
             <div class="box-body"><!-- 
@@ -87,31 +90,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
-                        <a href="#personal_info" role="tab" data-toggle="tab">Personal Info</a>
+                        <a href="#personal_info" role="tab" data-toggle="tab" style="font-size: 8pt;">Personal Info</a>
                     </li>
                     <li role="presentation">
-                        <a href="#reasonforconsulation" role="tab" data-toggle="tab">Reason for Consulation</a>
+                        <a href="#reasonforconsulation" role="tab" data-toggle="tab" style="font-size: 8pt;">Reason for Consulation</a>
                     </li>
                     <li role="presentation">
-                        <a href="#PMH" role="tab" data-toggle="tab">Past Medical History</a>
+                        <a href="#PMH" role="tab" data-toggle="tab" style="font-size: 8pt;">Past Medical History</a>
                     </li>
                     <li role="presentation">
-                        <a href="#SH" role="tab" data-toggle="tab">Social History</a>
+                        <a href="#SH" role="tab" data-toggle="tab" style="font-size: 8pt;">Social History</a>
                     </li>
                     <li role="presentation">
-                        <a href="#PE" role="tab" data-toggle="tab">Physical Exam</a>
+                        <a href="#PE" role="tab" data-toggle="tab" style="font-size: 8pt;">Physical Exam</a>
                     </li>
                     <li role="presentation">
-                        <a href="#diagnosis" role="tab" data-toggle="tab">Diagnosis</a>
+                        <a href="#diagnosis" role="tab" data-toggle="tab" style="font-size: 8pt;">Diagnosis</a>
                     </li>
                     <li role="presentation">
-                        <a href="#plan" role="tab" data-toggle="tab">Plan</a>
+                        <a href="#plan" role="tab" data-toggle="tab" style="font-size: 8pt;">Plan</a>
                     </li>
                     <li role="presentation">
-                        <a href="#medications" role="tab" data-toggle="tab">Medications</a>
+                        <a href="#medications" role="tab" data-toggle="tab" style="font-size: 8pt;">Medications</a>
                     </li>
                     <li role="presentation">
-                        <a href="#xray" role="tab" data-toggle="tab">X-ray</a>
+                        <a href="#xray" role="tab" data-toggle="tab" style="font-size: 8pt;">X-ray</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#labtest" role="tab" data-toggle="tab" style="font-size: 8pt;">Lab Test</a>
                     </li>
                 </ul>
                 
@@ -126,25 +132,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="form-group ">
                                         <label class="col-sm-2 control-label">Name</label>
                                         <div class="col-sm-4">
-                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required=""    type="text" value="{{$patient->f_name}}">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required=""    type="text" value="{{$patient->f_name}}" readonly="">
                                         </div>
                                         <div class="col-sm-2 nameleft">
-                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" value="{{$patient->m_name}}">
+                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" value="{{$patient->m_name}}" readonly="">
                                         </div>
                                         <div class="col-sm-4 nameleft">
-                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required=""     type="text" value="{{$patient->l_name}}">
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required=""     type="text" value="{{$patient->l_name}}" readonly="">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo2">
                                         <label class="col-sm-2 control-label">Address</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control" id="address" name="address" placeholder="Address" required=""   type="text" value="{{$patient->address}}">
+                                            <input class="form-control" id="address" name="address" placeholder="Address" required=""   type="text" value="{{$patient->address}}" readonly="">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo2">
                                         <label class="col-sm-2 control-label">Gender</label>
                                         <div class="col-sm-4">
-                                            <select id="gender" name="gender" class="form-control" required="">
+                                            <select id="gender" name="gender" class="form-control" required="" disabled="">
                                             @if($patient->gender == 'Male')
                                                 <option value="Male" selected="">Male</option>
                                                 <option value="Female">Female</option>
@@ -158,7 +164,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="form-group divxrayinfo2">
                                         <label class="col-sm-2 control-label">Birthdate</label>
                                         <div class="col-sm-7">
-                                            <input type="text" id="datepicker" name="dob" class="form-control dob" required=""  placeholder="YYYY-MM-DD" value="{{$patient->dob}}">
+                                            <input type="text" id="datepicker" name="dob" class="form-control dob" required=""  placeholder="YYYY-MM-DD" value="{{$patient->dob}}" disabled="">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo2">
@@ -167,15 +173,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text" value="{{$patient->age}}">
                                         </div>
                                     </div>
-                                    @if(!Session::get('user'))
-                                    @else
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label"></label>
-                                        <div class="col-sm-4">
-                                            <button class="btn btn-lg btn-primary btn-block" id="btn-submit-personal_info" type="   submit">Save Changes</button>
-                                        </div>
-                                    </div>
-                                    @endif
                                 </form>
                             </div>
                         </div>
@@ -239,7 +236,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @if(!$PMH)
                                             <input type="text" name="PMH_patient_id" class="PMH_patient_id" value="{{$id}}" style="display: none;">
                                             <input type="text" name="PMH_visit_id" class="PMH_visit_id" value="{{$vid}}" style="display: none;">
-                                            <input type="text" name="PMH_id" class="PMH_id" value="" style="display:;">
+                                            <input type="text" name="PMH_id" class="PMH_id" value="" style="display: none;">
                                             <div class="checkbox">
                                                 <label><input type="checkbox" class="surgery_check"><b>Surgery</b></label>
                                             </div>
@@ -1305,7 +1302,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div role="tabpanel" class="tab-pane fade" id="medications">
                             <div class="col-md-12">
                                 <h3>Medications 
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> <a href="#" target="_blank" class="btn btn-warning">Generate Rx</a>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
+                                    <!-- <a href="#" target="_blank" class="btn btn-warning">Generate Rx</a> -->
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -1380,13 +1378,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- X-ray -->
                         <div role="tabpanel" class="tab-pane fade" id="xray">
                             <div class="col-md-12">
-                                <h3>X-ray 
+                                <h3>X-ray
+                                @if(!Session::get('user'))
+                                @else 
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
+                                @endif
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
                                         <thead>
                                             <tr>
+                                                <th>ID</th>
                                                 <th class="text-center">Date</th>
                                                 <th class="text-center">Physician</th>
                                                 <th class="text-center">Result</th>
@@ -1397,6 +1399,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <tbody id="medication_list">
                                         @foreach($patientxray as $xray)
                                             <tr id="med1">
+                                                <td>{{$xray->id}}</td>
                                                 <td class="text-center">{{$xray->xray_date}}</td>
                                                 <td class="text-center">
                                                     @foreach($doctor as $doc)
@@ -1408,8 +1411,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <td class="text-center">{{$xray->finding}}</td>
                                                 <td class="text-center">{{$xray->status}}</td>
                                                 <td class="text-center">
+                                                @if(!Session::get('user'))
+                                                @else
                                                     <button type="button" class="btn btn-sm btn-primary editpatientxray" data-toggle="modal" data-target="#modal_xraynew_edit" data-backdrop="static" data-id="{{$xray->id}}">Edit</button>
                                                     <button class="btn btn-sm btn-success">Print</button>
+                                                @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -1437,11 +1443,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                                     <h4><b>X-RAY / ULTRASOUND</b></h4>
 
-                                                    <form class="form-horizontal" method="POST" action="#">
+                                                    <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/edit">
                                                     {!! csrf_field() !!}
                                                         <div class="form-group">
                                                             <label class="col-sm-1 control-label">Name:</label>
                                                             <div class="col-sm-6">
+                                                                <input type="text" class="xray_id" name="xray_id" value="" style="display: none;">
                                                                 <input type="text" name="P_id_edit" value="{{$id}}" style="display: none;">
                                                                 <input type="text" name="P_name_edit" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
@@ -1482,7 +1489,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             <label class="col-sm-2 control-label">Edit Date:</label>
                                                             <div class="col-sm-3">
                                                             <?php $datenow = date("Y-m-d"); ?>
-                                                                <input type="text" id="datepickerxray" name="xraydate_edit_edit" class="form-control xraydate" required="" value="{{$datenow}}" readonly="">
+                                                                <input type="text" id="datepickerxray" name="xraydate_edit_edit" class="form-control xraydate" required="" value="{{$datenow}}" readonly="" disabled="">
                                                             </div>
                                                         </div>
 
@@ -1499,6 +1506,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="form-group phyname divxrayinfo"></div>
                                                         <div class="form-group phypos"></div>
 
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                            </div>
+                                                        </div>
                                                     </form>
                                                 </div>
                                             </div>
@@ -1509,8 +1522,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </div>
                             <!-- END MODAL -->
 
-                    </div>
-
+                <!-- XRAY NEW MODAL -->
                 <div class="modal fade" id="modal_xraynew" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog modalwidth" role="document">
                         <div class="modal-content">
@@ -1548,7 +1560,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 </div>
                                                 <label class="col-sm-2 control-label">Age/Sex:</label>
                                                 <div class="col-sm-3">
-                                                    <select id="agesex" name="agesex" class="form-control" required=""> 
+                                                    <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
                                                         <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
                                                     </select>
                                                 </div>
@@ -1566,7 +1578,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <label class="col-sm-2 control-label">Date:</label>
                                                 <div class="col-sm-3">
                                                 <?php $datenow = date("Y-m-d"); ?>
-                                                    <input type="text" id="datepicker" name="xraydate" class="form-control xraydate" required="" value="{{$datenow}}">
+                                                    <input type="text" id="datepicker" name="xraydate" class="form-control xraydate" required="" value="{{$datenow}}" disabled="">
                                                 </div>
                                             </div>
 
@@ -1599,7 +1611,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="control-label"></label>
                                                 <div class="col-sm-3">
-                                                    <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="submit" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                                    <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="submit">Submit</button>
                                                 </div>
                                             </div>
 
@@ -1610,7 +1622,194 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>            
+                <!-- END MODAL -->
+
+                        <!-- Lab Test -->
+                        <div role="tabpanel" class="tab-pane fade" id="labtest">
+                            <ul class="nav nav-tabs" role="tablist" style="margin-left: 2%;">
+                                <li role="presentation" class="active">
+                                    <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#OGTT" role="tab" data-toggle="tab" style="font-size: 8pt;">Oral Glucose Tolerance Test</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#hematology" role="tab" data-toggle="tab" style="font-size: 8pt;">Hematology</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#chemistry" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry II</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+
+                            <div role="tabpanel" class="tab-pane active" id="urinalysis">
+                            <div class="col-md-12">
+                                <h3>Urinalysis
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th class="text-center">Date</th>
+                                                <th class="text-center">Physician</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="urinalysis_list">
+                                            <tr>
+                                                <td>1</td>
+                                                <td>2</td>
+                                                <td>3</td>
+                                                <td>4</td>
+                                                <td>5</td>
+                                                <td>6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane fade" id="fecalysis">
+                            <div class="col-md-12">
+                                <h3>Fecalysis
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th class="text-center">Date</th>
+                                                <th class="text-center">Physician</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="fecalysis_list">
+                                            <tr>
+                                                <td>1</td>
+                                                <td>2</td>
+                                                <td>3</td>
+                                                <td>4</td>
+                                                <td>5</td>
+                                                <td>6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane fade" id="OGTT">
+                            <div class="col-md-12">
+                                <h3>Oral Glucose Tolerance Test
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th class="text-center">Date</th>
+                                                <th class="text-center">Physician</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="OGTT_list">
+                                            <tr>
+                                                <td>1</td>
+                                                <td>2</td>
+                                                <td>3</td>
+                                                <td>4</td>
+                                                <td>5</td>
+                                                <td>6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane fade" id="hematology">
+                            <div class="col-md-12">
+                                <h3>Hematology
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th class="text-center">Date</th>
+                                                <th class="text-center">Physician</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="hematology_list">
+                                            <tr>
+                                                <td>1</td>
+                                                <td>2</td>
+                                                <td>3</td>
+                                                <td>4</td>
+                                                <td>5</td>
+                                                <td>6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane fade" id="chemistry">
+                            <div class="col-md-12">
+                                <h3>Chemistry II
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th class="text-center">Date</th>
+                                                <th class="text-center">Physician</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="chemistry_list">
+                                            <tr>
+                                                <td>1</td>
+                                                <td>2</td>
+                                                <td>3</td>
+                                                <td>4</td>
+                                                <td>5</td>
+                                                <td>6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
+
+                            </div>
+                        </div>
+
+                    </div>
 
             </div>
             </div>
@@ -1915,7 +2114,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $('.results_info_edit').empty();
         $('.phyname').empty();
         $('.phypos').empty();
+        $('.xray_id').removeAttr('value');
         $.get('../../api/modalxrayedit?dataid=' + dataid, function(data){
+            $('.xray_id').attr('value',data.xray_id);
             $('.xraydate_edit').val(data.xray_date);
             $('.physician_edit').append('<option>'+data.f_name+' '+data.m_name+' '+data.l_name+', '+data.credential+'</option>');
 

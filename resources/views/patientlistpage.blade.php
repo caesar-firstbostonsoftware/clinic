@@ -38,6 +38,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
         @if(Session::get('user') == 1)
         <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1)
+        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
         <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
     </ul>
@@ -53,7 +56,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             @if(Session::get('user') != 0)
             <li><a href="/myinfo">My Info</a></li>
             @endif
-            <li class="active">Patients</li>
+            <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
         </ol>
     </section>
 
@@ -227,7 +230,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </div>
                     <div class="modal-footer">
                         <input id="pid" name="pid" value="" type="hidden">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                         <button class="btn btn-primary" form="posteditpatient" id="btn-submit-personal_info" type="submit" data-loading-text="Saving..." autocomplete="off">Save Changes</button>
                     </div>
                 </div>

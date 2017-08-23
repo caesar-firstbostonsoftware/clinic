@@ -21,7 +21,7 @@ class DoctorsController extends Controller
             return view('doctormyinfopage',compact('info','user'));
         }
         else {
-            return view('welcome');
+            return redirect()->action('Auth@checklogin');
         }
         
     }
@@ -49,7 +49,7 @@ class DoctorsController extends Controller
             return view('userdoctorpage',compact('users'));
         }
         else {
-            return view('welcome');
+            return redirect()->action('Auth@checklogin');
         }
         
     }
@@ -57,6 +57,8 @@ class DoctorsController extends Controller
     public function adduserdoctorpage(Request $request)
     {   
         if(Session::has('user')){
+
+            $user_id = $request->input('user_id');
             $fname = $request->input('fname');
             $mname = $request->input('mname');
             $lname = $request->input('lname');
@@ -66,30 +68,56 @@ class DoctorsController extends Controller
             $email = $request->input('email');
             $username = $request->input('username');
             $password = bcrypt($request->input('password'));
-            
-            $doctor = new Doctor;
-            $doctor->f_name = $fname;
-            $doctor->m_name = $mname;
-            $doctor->l_name = $lname;
-            $doctor->credential = $credential;
-            $doctor->specialization = $specialization;
-            $doctor->address = $address;
-            $doctor->email = $email;
-            $doctor->save();
 
-            $user = new User;
-            $user->doc_id = $doctor->id;
-            $user->username = $username;
-            $user->password = $password;
-            $user->save();
+            if (!$user_id) {
+                $doctor = new Doctor;
+                $doctor->f_name = $fname;
+                $doctor->m_name = $mname;
+                $doctor->l_name = $lname;
+                $doctor->credential = $credential;
+                $doctor->specialization = $specialization;
+                $doctor->address = $address;
+                $doctor->email = $email;
+                $doctor->save();
 
-            $users = User::join('doctors','users.doc_id','=','doctors.id')
-            ->select('doctors.*')
-            ->get();
-            return view('userdoctorpage',compact('users'));
+                $user = new User;
+                $user->doc_id = $doctor->id;
+                $user->username = $username;
+                $user->password = $password;
+                $user->save();
+
+                $users = User::join('doctors','users.doc_id','=','doctors.id')
+                ->select('doctors.*')
+                ->get();
+                return view('userdoctorpage',compact('users'));
+            }
+            else {
+                $doctor = Doctor::where('id',$user_id)->first();
+                $doctor->f_name = $fname;
+                $doctor->m_name = $mname;
+                $doctor->l_name = $lname;
+                $doctor->credential = $credential;
+                $doctor->specialization = $specialization;
+                $doctor->address = $address;
+                $doctor->email = $email;
+                $doctor->save();
+
+                $user = User::where('doc_id',$user_id)->first();
+                $user->username = $username;
+                $user->password = $password;
+                $user->save();
+
+                $users = User::join('doctors','users.doc_id','=','doctors.id')
+                ->select('doctors.*')
+                ->get();
+                return view('userdoctorpage',compact('users'));
+            }
+
         }
         else {
-            return view('welcome');
+
+            return redirect()->action('Auth@checklogin');
+
         } 
     }
 
@@ -127,8 +155,51 @@ class DoctorsController extends Controller
             return redirect()->action('DoctorsController@myinfo');
         }
         else {
-            return view('welcome');
+            return redirect()->action('Auth@checklogin');
         } 
+    }
+
+    public function getuserinfo(Request $request)
+    {      
+        if(Session::has('user')){
+            $user_id = $request->input('user_id');
+            $Doctor = Doctor::where('id',$user_id)->with('user')->first();
+
+            return Response::json($Doctor, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function reports(Request $request, $id)
+    {   
+        if(Session::has('user')){
+            return view('reports',compact('id'));
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        } 
+    }
+
+    public function reportsreports(Request $request)
+    {      
+        if(Session::has('user')){
+            $id = $request->input('id');
+            $datefrom = $request->input('datefrom');
+            $dateto = $request->input('dateto');
+            if ($id == 1) {
+                $Patientxray = Patientxray::where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+            }
+            else {
+                $Patientxray = Patientxray::where('physician_id',$id)->where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+            }
+
+            return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
 }

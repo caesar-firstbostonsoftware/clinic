@@ -43,6 +43,9 @@ Route::post('/NFHSI/users', 'DoctorsController@adduserdoctorpage');
 Route::post('/NFHSI', 'PatientsController@editpatient');
 Route::post('/myinfo', 'DoctorsController@editmyinfo');
 
+Route::post('/visit/{id}/{vid}/edit', 'PatientsController@editpatientxray');
+Route::get('/reports/{id}', 'DoctorsController@reports');
+
 
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');
@@ -64,3 +67,6 @@ Route::get('api/addsocialhistory','PatientsController@addsocialhistory');
 Route::get('api/addphysicalexam','PatientsController@addphysicalexam');
 Route::get('api/adddiagnosis','PatientsController@adddiagnosis');
 Route::get('api/addplan','PatientsController@addplan');
+
+Route::get('api/getuserinfo','DoctorsController@getuserinfo');
+Route::get('api/reportsreports','DoctorsController@reportsreports');
