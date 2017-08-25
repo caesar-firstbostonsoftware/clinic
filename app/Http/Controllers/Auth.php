@@ -52,12 +52,16 @@ class Auth extends Controller
 			if (Hash::check($pass, $auth->password)) {
 				Session::put('user', $auth->doc_id);
 				Session::put('adminpassword', $pass);
+				Session::put('position', $auth->position);
 				Session::save();
 				
 				$user_id = Session::get('user');
 				$user = User::where('doc_id',$user_id)->first();
-				if ($user->id == 1) {
+				if ($user->position == "Doctor") {
 					return redirect('/myinfo');
+				}
+				elseif ($user->position != "Doctor") {
+					return redirect('/NFHSI');
 				}
 				else{
 					return redirect('/')->with('error','Inactive Account');

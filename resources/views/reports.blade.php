@@ -171,17 +171,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 $.each(data, function(index, report){
                     count++;
-                    if (!report.patient.m_name) {
+                    if (!report.P_m_name) {
                         var m_name = "";
                     }
                     else {
-                        var m_name = report.patient.m_name;
+                        var m_name = report.P_m_name;
                     }
                     $('.tbodyreports').append('<tr>\
-                            <td>'+report.id+'</td>\
-                            <td>'+report.doctor.f_name+' '+report.doctor.m_name+' '+report.doctor.l_name+', '+report.doctor.credential+'</td>\
-                            <td>'+report.patient.f_name+' '+m_name+' '+report.patient.l_name+'</td>\
-                            <td>'+report.xray_date+'</td>\
+                            <td>'+report.patient_id+'</td>\
+                            <td>'+report.D_f_name+' '+report.D_m_name+' '+report.D_l_name+', '+report.D_credential+'</td>\
+                            <td>'+report.P_f_name+' '+m_name+' '+report.P_l_name+'</td>\
+                            <td>'+report.date+'</td>\
                         </tr>');
                 })
 

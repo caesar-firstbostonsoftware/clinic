@@ -20,6 +20,7 @@ use App\PhysicalExam;
 use App\Diagnoses;
 use App\Plan;
 use App\PatientXrayLog;
+use App\Urinalyses;
 
 class PatientsController extends Controller
 {
@@ -63,18 +64,22 @@ class PatientsController extends Controller
     {
         if(Session::has('user')){
             $doctor_id = Session::get('user');
-            if ($doctor_id != 1) {
+            $doctor_pos = Session::get('position');
+            if ($doctor_id != 1 && $doctor_pos == "Doctor") {
                 $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
                 ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
                 ->where('doctors.id',$doctor_id)
                 ->select('patients.*')
                 ->get();
             }
-            else {
+            elseif($doctor_id == 1 ) {
                 $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
                 ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
                 ->select('patients.*','doctors.f_name as doctor_fname','doctors.m_name as doctor_mname','doctors.l_name as doctor_lname','doctors.credential as doctor_credential')
                 ->get();
+            }
+            else {
+                $patientlist = Patient::all();
             }
             //return Response::json($patientlist, 200, array(), JSON_PRETTY_PRINT);
             return view('patientlistpage',compact('patientlist'));
@@ -89,14 +94,34 @@ class PatientsController extends Controller
 	public function patientvisitpage($id,$vid)
     {
         $doctor_id = Session::get('user');
+        $doctor_pos = Session::get('position');
         if (!$doctor_id) {
             $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->get();
+            $xraycount = Patientxray::where('patient_id',$id)->where('visitid',$vid)->count();
+
+            $Urinalysis = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->get();
+            $uricount = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->count();
         }
         else if($doctor_id == 1) {
             $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->get();
+            $xraycount = Patientxray::where('patient_id',$id)->where('visitid',$vid)->count();
+
+            $Urinalysis = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->get();
+            $uricount = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->count();
+        }
+        else if ($doctor_id != 1 && $doctor_pos == "Doctor") {
+            $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->where('physician_id',$doctor_id)->get();
+            $xraycount = Patientxray::where('patient_id',$id)->where('visitid',$vid)->where('physician_id',$doctor_id)->count();
+
+            $Urinalysis = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->where('physician_id',$doctor_id)->get();
+            $uricount = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->where('physician_id',$doctor_id)->count();
         }
         else {
-            $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->where('physician_id',$doctor_id)->get();
+            $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->get();
+            $xraycount = Patientxray::where('patient_id',$id)->where('visitid',$vid)->count();
+
+            $Urinalysis = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->get();
+            $uricount = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->count();
         }
     	    
         $reasonforconsulation = ReasonForConsulation::where('patient_id',$id)->where('visit_id',$vid)->first();
@@ -121,10 +146,11 @@ class PatientsController extends Controller
         $PE = PhysicalExam::where('patient_id',$id)->where('visit_id',$vid)->first();
         $diagnosis = Diagnoses::where('patient_id',$id)->where('visit_id',$vid)->first();
         $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
+
         //return Response::json($PMH_hos, 200, array(), JSON_PRETTY_PRINT);
     	$patient = Patient::where('id',$id)->first();
-    	$doctor = Doctor::all();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan'));
+    	$doctor = Doctor::with('user')->get();
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -142,12 +168,13 @@ class PatientsController extends Controller
     	   $xraydate = $request->input('xraydate');
     	   $finding = $request->input('finding');
     	   $comm = $request->input('comm');
+           $now = date("Y-m-d");
      	
      	  $patientxray = new Patientxray;
      	  $patientxray->patient_id = $P_id;
      	  $patientxray->or_no = $orno;
      	  $patientxray->physician_id = $physician;
-     	  $patientxray->xray_date = $xraydate;
+     	  $patientxray->xray_date = $now;
      	  $patientxray->finding = $finding;
      	  $patientxray->finding_info = $comm;
      	  $patientxray->visitid = $vid;
@@ -726,5 +753,171 @@ class PatientsController extends Controller
             return redirect()->action('Auth@checklogin');
         }
     }
+
+    public function xraylogs(Request $request)
+    {      
+        if(Session::has('user')){
+            $dataid = $request->input('dataid');
+            $PatientXrayLog = PatientXrayLog::where('xray_id',$dataid)->get();
+            return Response::json($PatientXrayLog, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newurinalysis(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $uri_id = $request->input('uri_id');
+            $physician_id = $request->input('physician');
+            $orno = $request->input('orno');
+            $now = date("Y-m-d");
+
+            $physical = $request->input('physical');
+            if ($physical == "Yes") {
+                $phy = $physical;
+            }
+            else {
+                $phy = "No";
+            }
+            $color = $request->input('color');
+            $transparency = $request->input('transparency');
+            $SG = $request->input('SG');
+
+            $microscopic = $request->input('microscopic');
+            if ($microscopic == "Yes") {
+                $mic = $microscopic;
+            }
+            else {
+                $mic = "No";
+            }
+            $wbc = $request->input('wbc');
+            $rbc = $request->input('rbc');
+            $EC = $request->input('EC');
+            $bacteria = $request->input('bacteria');
+            $cast = $request->input('cast');
+            $cast2 = $request->input('cast2');
+            $crystal = $request->input('crystal');
+            $crystal2 = $request->input('crystal2');
+            $AM = $request->input('AM');
+            $MT = $request->input('MT');
+            $others = $request->input('others');
+            $others2 = $request->input('others2');
+            $others3 = $request->input('others3');
+
+            $chemical = $request->input('chemical');
+            if ($chemical == "Yes") {
+                $che = $chemical;
+            }
+            else {
+                $che = "No";
+            }
+            $glucose = $request->input('glucose');
+            $bilirubin = $request->input('bilirubin');
+            $ketone = $request->input('ketone');
+            $blood = $request->input('blood');
+            $ph = $request->input('ph');
+            $protein = $request->input('protein');
+            $urobilingen = $request->input('urobilingen');
+            $nitrites = $request->input('nitrites');
+            $leucocytes = $request->input('leucocytes');
+            
+            if(!$uri_id) {
+                $Urinalysis = new Urinalyses;
+                $Urinalysis->patient_id = $id;
+                $Urinalysis->visit_id = $vid;
+                $Urinalysis->physician_id = $physician_id;
+                $Urinalysis->user_id = Session::get('user');
+                $Urinalysis->date = $now;
+                $Urinalysis->or_no = $orno;
+
+                $Urinalysis->physical = $phy;
+                $Urinalysis->color = $color;
+                $Urinalysis->transparency = $transparency;
+                $Urinalysis->specific_gravity = $SG;
+
+                $Urinalysis->microscopic = $mic;
+                $Urinalysis->wbc = $wbc;
+                $Urinalysis->rbc = $rbc;
+                $Urinalysis->epith_cell = $EC;
+                $Urinalysis->bacteria = $bacteria;
+                $Urinalysis->cast = $cast;
+                $Urinalysis->cast2 = $cast2;
+                $Urinalysis->crystal = $crystal;
+                $Urinalysis->crystal2 = $crystal2;
+                $Urinalysis->amorphous_material = $AM;
+                $Urinalysis->mucus_thread = $MT;
+                $Urinalysis->other = $others;
+                $Urinalysis->other2 = $others2;
+                $Urinalysis->other3 = $others3;
+
+                $Urinalysis->chemical = $che;
+                $Urinalysis->glucose = $glucose;
+                $Urinalysis->bilirubin = $bilirubin;
+                $Urinalysis->ketone = $ketone;
+                $Urinalysis->blood = $blood;
+                $Urinalysis->ph = $ph;
+                $Urinalysis->protein = $protein;
+                $Urinalysis->urobilinogen = $urobilingen;
+                $Urinalysis->nitrites = $nitrites;
+                $Urinalysis->leucocytes = $leucocytes;
+                $Urinalysis->save();
+            }
+            else {
+                $Urinalysis = Urinalyses::where('id',$uri_id)->first();
+
+                $Urinalysis->physical = $phy;
+                $Urinalysis->color = $color;
+                $Urinalysis->transparency = $transparency;
+                $Urinalysis->specific_gravity = $SG;
+
+                $Urinalysis->microscopic = $mic;
+                $Urinalysis->wbc = $wbc;
+                $Urinalysis->rbc = $rbc;
+                $Urinalysis->epith_cell = $EC;
+                $Urinalysis->bacteria = $bacteria;
+                $Urinalysis->cast = $cast;
+                $Urinalysis->cast2 = $cast2;
+                $Urinalysis->crystal = $crystal;
+                $Urinalysis->crystal2 = $crystal2;
+                $Urinalysis->amorphous_material = $AM;
+                $Urinalysis->mucus_thread = $MT;
+                $Urinalysis->other = $others;
+                $Urinalysis->other2 = $others2;
+                $Urinalysis->other3 = $others3;
+
+                $Urinalysis->chemical = $che;
+                $Urinalysis->glucose = $glucose;
+                $Urinalysis->bilirubin = $bilirubin;
+                $Urinalysis->ketone = $ketone;
+                $Urinalysis->blood = $blood;
+                $Urinalysis->ph = $ph;
+                $Urinalysis->protein = $protein;
+                $Urinalysis->urobilinogen = $urobilingen;
+                $Urinalysis->nitrites = $nitrites;
+                $Urinalysis->leucocytes = $leucocytes;
+                $Urinalysis->save();
+            }
+    
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function editurinalysis(Request $request)
+    {      
+        if(Session::has('user')){
+            $uri_id = $request->input('uri_id');
+            $Urinalysis = Urinalyses::where('id',$uri_id)->with('phy','user')->first();
+            return Response::json($Urinalysis, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
     
 }

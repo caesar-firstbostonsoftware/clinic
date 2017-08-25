@@ -46,6 +46,8 @@ Route::post('/myinfo', 'DoctorsController@editmyinfo');
 Route::post('/visit/{id}/{vid}/edit', 'PatientsController@editpatientxray');
 Route::get('/reports/{id}', 'DoctorsController@reports');
 
+Route::post('/visit/{id}/{vid}/urinalysis', 'PatientsController@newurinalysis');
+
 
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');
@@ -70,3 +72,7 @@ Route::get('api/addplan','PatientsController@addplan');
 
 Route::get('api/getuserinfo','DoctorsController@getuserinfo');
 Route::get('api/reportsreports','DoctorsController@reportsreports');
+
+Route::get('api/xraylogs','PatientsController@xraylogs');
+
+Route::get('api/editurinalysis','PatientsController@editurinalysis');

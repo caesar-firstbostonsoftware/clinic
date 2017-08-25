@@ -130,7 +130,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="modal-body">
                             <form class="form-horizontal" id="adddoctoruser" action="/NFHSI/users" method="post">
                             {!! csrf_field() !!}
-                                <div class="form-group ">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Position</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control position" name="position" required="">
+                                            <option value="">-- Select One --</option>
+                                            <option value="Doctor">Doctor</option>
+                                            <option value="Xray">Xray</option>
+                                            <option value="Labtest">Lab Test</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
                                         <input class="form-control user_id" id="user_id" name="user_id" type="text" style="display: none;">
@@ -143,16 +154,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group divxrayinfo divcredential">
                                     <label class="col-sm-2 control-label">Credential</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control credential" id="credential" name="credential" placeholder="Credential" required="" type="text">
+                                        <input class="form-control credential" id="credential" name="credential" placeholder="Credential" type="text">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group divxrayinfo divspecialization">
                                     <label class="col-sm-2 control-label">Specialization</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" required="" type="text">
+                                        <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" type="text">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
@@ -213,6 +224,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.address').removeAttr('value');
                 $('.email').removeAttr('value');
                 $('.username').removeAttr('value');
+                $('.position').empty();
+                $('.position').append('<option value+"">-- Select One --</option>\
+                                            <option value="Doctor">Doctor</option>\
+                                            <option value="Xray">Xray</option>\
+                                            <option value="Labtest">Lab Test</option>');
         })
 
         $('.edituser').on('click',function() {
@@ -227,6 +243,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.address').removeAttr('value');
                 $('.email').removeAttr('value');
                 $('.username').removeAttr('value');
+                $('.position').empty();
 
                 $('.user_id').attr('value',data.id);
                 $('.fname').attr('value',data.f_name);
@@ -237,8 +254,51 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.address').attr('value',data.address);
                 $('.email').attr('value',data.email);
                 $('.username').attr('value',data.user.username);
+
+                if (data.user.position == "Doctor") {
+                    $('.divcredential').show();
+                    $('.divspecialization').show();
+                    $('.position').append('<option value="">-- Select One --</option>\
+                                            <option value="Doctor" selected >Doctor</option>\
+                                            <option value="Xray">Xray</option>\
+                                            <option value="Labtest">Lab Test</option>');
+                }
+                else if (data.user.position == "Xray"){
+                    $('.divcredential').hide();
+                    $('.divspecialization').hide();
+                    $('.position').append('<option value="">-- Select One --</option>\
+                                            <option value="Doctor">Doctor</option>\
+                                            <option value="Xray" selected >Xray</option>\
+                                            <option value="Labtest">Lab Test</option>');
+                }   
+                else if (data.user.position == "Labtest"){
+                    $('.divcredential').hide();
+                    $('.divspecialization').hide();
+                    $('.position').append('<option value="">-- Select One --</option>\
+                                            <option value="Doctor">Doctor</option>\
+                                            <option value="Xray">Xray</option>\
+                                            <option value="Labtest" selected >Lab Test</option>');
+                }
+
             })
         })
+
+        $('.position').on('change',function() {
+        var optionSelected = $(this).val();
+            if (optionSelected == "Doctor") {
+                $('.divcredential').show();
+                $('.divspecialization').show();
+            }
+            else if (optionSelected == "Xray") {
+                $('.divcredential').hide();
+                $('.divspecialization').hide();
+            }
+            else if (optionSelected == "Labtest") {
+                $('.divcredential').hide();
+                $('.divspecialization').hide();
+            }
+        })
+
     </script>
 @show
 

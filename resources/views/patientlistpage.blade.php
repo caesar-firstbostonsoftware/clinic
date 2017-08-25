@@ -26,7 +26,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
         <li class="header">MAIN NAVIGATION</li>
-        @if(Session::get('user') != 0)
+        @if(Session::get('position') == "Doctor")
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
         <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
@@ -39,7 +39,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('user') == 1)
         <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        @elseif(Session::get('user') > 1)
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
         <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
@@ -53,7 +53,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <h1><i class="fa fa-users"></i> Patients</h1>
         <ol class="breadcrumb">
             <li><a href="#">Dashboard</a></li>
-            @if(Session::get('user') != 0)
+            @if(Session::get('position') == "Doctor")
             <li><a href="/myinfo">My Info</a></li>
             @endif
             <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
@@ -121,9 +121,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <button class="btn btn-sm btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
                                                     @endif
                                                         <button id="viewvisit" class="btn btn-sm btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
-                                                        <a href="#" class="btn btn-sm btn-success" target="_blank">Add Follow-up Visit</a>
+                                                        <!-- <a href="#" class="btn btn-sm btn-success" target="_blank">Add Follow-up Visit</a>
                                                         <a href="#" class="btn btn-sm btn-warning" target="_blank">Lab Flowsheet</a>
-                                                        <a href="#" class="btn btn-sm bg-purple" target="_blank">Medication</a>
+                                                        <a href="#" class="btn btn-sm bg-purple" target="_blank">Medication</a> -->
                                                     </td>
                                                 </tr>
                                             @endforeach

@@ -9,6 +9,8 @@ use App\Doctor;
 use App\Patientxray;
 use Session;
 use App\User;
+use App\Urinalyses;
+use DB;
 
 class DoctorsController extends Controller
 {
@@ -68,6 +70,7 @@ class DoctorsController extends Controller
             $email = $request->input('email');
             $username = $request->input('username');
             $password = bcrypt($request->input('password'));
+            $position = $request->input('position');
 
             if (!$user_id) {
                 $doctor = new Doctor;
@@ -84,6 +87,7 @@ class DoctorsController extends Controller
                 $user->doc_id = $doctor->id;
                 $user->username = $username;
                 $user->password = $password;
+                $user->position = $position;
                 $user->save();
 
                 $users = User::join('doctors','users.doc_id','=','doctors.id')
@@ -105,6 +109,7 @@ class DoctorsController extends Controller
                 $user = User::where('doc_id',$user_id)->first();
                 $user->username = $username;
                 $user->password = $password;
+                $user->position = $position;
                 $user->save();
 
                 $users = User::join('doctors','users.doc_id','=','doctors.id')
@@ -189,13 +194,41 @@ class DoctorsController extends Controller
             $datefrom = $request->input('datefrom');
             $dateto = $request->input('dateto');
             if ($id == 1) {
-                $Patientxray = Patientxray::where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                // $Patientxray = Patientxray::where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                // $Urinalyses = Urinalyses::where('date','>=',$datefrom)->where('date','<=',$dateto)->with('phy','patient')->get();
+
+                $wawee = DB::select("select query.patient_id as patient_id, patients.f_name as P_f_name, patients.m_name as P_m_name,
+                        patients.l_name as P_l_name,query.date as date, doctors.f_name as D_f_name, doctors.m_name as D_m_name,
+                        doctors.l_name as D_l_name, doctors.credential as D_credential
+
+                        from ((select patient_id, physician_id, xray_date as date from patientxrays 
+                        where xray_date >= '$datefrom' and xray_date <= '$dateto') 
+                        union all 
+                        (select patient_id, physician_id, date from urinalyses
+                        where date >= '$datefrom' and date <= '$dateto')) 
+                        as query
+
+                        left join patients on query.patient_id = patients.id
+                        left join doctors on query.physician_id = doctors.id");
             }
             else {
-                $Patientxray = Patientxray::where('physician_id',$id)->where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                //$Patientxray = Patientxray::where('physician_id',$id)->where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                $wawee = DB::select("select query.patient_id as patient_id, patients.f_name as P_f_name, patients.m_name as P_m_name,
+                        patients.l_name as P_l_name,query.date as date, doctors.f_name as D_f_name, doctors.m_name as D_m_name,
+                        doctors.l_name as D_l_name, doctors.credential as D_credential
+
+                        from ((select patient_id, physician_id, xray_date as date from patientxrays 
+                        where xray_date >= '$datefrom' and xray_date <= '$dateto' and physician_id = '$id') 
+                        union all 
+                        (select patient_id, physician_id, date from urinalyses
+                        where date >= '$datefrom' and date <= '$dateto' and physician_id = '$id')) 
+                        as query
+
+                        left join patients on query.patient_id = patients.id
+                        left join doctors on query.physician_id = doctors.id");
             }
 
-            return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
+            return Response::json($wawee, 200, array(), JSON_PRETTY_PRINT);
         }
         else {
             return redirect()->action('Auth@checklogin');
