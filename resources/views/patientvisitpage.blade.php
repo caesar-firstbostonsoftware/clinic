@@ -41,7 +41,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
+        <li class="header">Negros Family Health Services, Inc.</li>
         @if(Session::get('position') == "Doctor")
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
@@ -145,6 +145,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Personal Info -->
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
                             <div class="col-md-5">
+                            <div class="flash-message top-message topmessage">
+                                @foreach (['danger', 'warning', 'success', 'info'] as $message)
+                                    @if(Session::has('alert-' . $message))
+                                        <p class="alert alert-{{ $message }}" style="padding:.5px;height:22px; width:100%; margin-left: -5%; margin-top: 5%">{{ Session::get('alert-' . $message) }}</p>
+                                    @endif
+                                @endforeach
+                            </div>
                                 <h3>Personal Info</h3>
                                 <form id="frm_personal_info" class="form-horizontal" method="post" action="">
                                     {!! csrf_field() !!}
@@ -199,6 +206,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Reason for Consulation -->
                         <div role="tabpanel" class="tab-pane fade" id="reasonforconsulation">
                             <div class="col-md-12">
+                            <div class="flash-message top-message topmessage2"></div>
                                 <h3>Reason for Consultation</h3>
                                     <form id="frm_consult_reason" class="form-horizontal frm_consult_reason">
                                     {!! csrf_field() !!}
@@ -232,11 +240,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <label for="inputEmail3" class="col-sm-2 control-label"></label>
                                             @if(!$reasonforconsulation)
                                             <div class="col-sm-3 subsubRFC">
-                                                <button class="btn btn-lg btn-primary btn-block submit_RFC" id="btn-submit-consult_reason" type="button" data-loading-text="Submitting..." autocomplete="off">Submit</button>
+                                                <button class="btn btn-lg btn-primary btn-block submit_RFC" id="btn-submit-consult_reason" type="button">Submit</button>
                                             </div>
                                             @else
                                             <div class="col-sm-3">
-                                                <button class="btn btn-lg btn-primary btn-block edit_RFC" id="btn-submit-consult_reason" type="button" data-loading-text="Submitting..." autocomplete="off">Save Changes</button>
+                                                <button class="btn btn-lg btn-primary btn-block edit_RFC" id="btn-submit-consult_reason" type="button">Save Changes</button>
                                             </div>
                                             @endif
                                         </div>
@@ -248,6 +256,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Past Medical History -->
                         <div role="tabpanel" class="tab-pane fade" id="PMH">
                             <div class="col-md-12">
+                            <div class="flash-message top-message topmessage3"></div>
                                 <h3>Past Medical History</h3>
                                     <form id="frm_consult_reason" class="form-horizontal">
                                     {!! csrf_field() !!}
@@ -903,6 +912,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Social History -->
                         <div role="tabpanel" class="tab-pane fade" id="SH">
                             <div class="col-md-12">
+                            <div class="flash-message top-message topmessage4"></div>
                             <h3>Social History</h3>
                                     <form class="form-horizontal">
                                     {!! csrf_field() !!}
@@ -1037,6 +1047,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Physical Exam -->
                         <div role="tabpanel" class="tab-pane fade" id="PE">
                             <div class="col-md-12">
+                            <div class="flash-message top-message topmessage5"></div>
                             <h3>Physical Exam</h3>
                                     <form class="form-horizontal" id="frm_physical_exam">
                                     {!! csrf_field() !!}
@@ -1234,6 +1245,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Diagnosis -->
                         <div role="tabpanel" class="tab-pane fade" id="diagnosis">
                             <div class="col-md-12">
+                            <div class="flash-message top-message topmessage6"></div>
                                 <h3>Diagnosis</h3>
                                     <form class="form-horizontal" id="frm_diagnosis">
                                     {!! csrf_field() !!}
@@ -1277,6 +1289,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Plan -->
                         <div role="tabpanel" class="tab-pane fade" id="plan">
                             <div class="col-md-12">
+                            <div class="flash-message top-message topmessage7"></div>
                                 <h3>Plan</h3>
                                     <form class="form-horizontal" id="frm_plan">
                                     {!! csrf_field() !!}
@@ -1320,6 +1333,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Medications -->
                         <div role="tabpanel" class="tab-pane fade" id="medications">
                             <div class="col-md-12">
+                            <div class="flash-message top-message topmessage8"></div>
                                 <h3>Medications 
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
                                     <!-- <a href="#" target="_blank" class="btn btn-warning">Generate Rx</a> -->
@@ -1834,7 +1848,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="color" required="" class="form-control color" placeholder="Color" value="">
+                                                                <input type="text" name="color" required="" class="form-control color" placeholder="Color" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -1842,7 +1856,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transparency </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="transparency" required="" class="form-control transparency" placeholder="Transparency" value="">
+                                                                <input type="text" name="transparency" required="" class="form-control transparency" placeholder="Transparency" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -1850,7 +1864,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specific Gravity </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="SG" required="" class="form-control SG" placeholder="Specific Gravity" value="">
+                                                                <input type="text" name="SG" required="" class="form-control SG" placeholder="Specific Gravity" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1862,7 +1876,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WBC  </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="wbc" required="" class="form-control wbc" placeholder="WBC" value="">
+                                                                <input type="text" name="wbc" required="" class="form-control wbc" placeholder="WBC" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">HPF</label>
@@ -1873,7 +1887,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RBC </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="rbc" required="" class="form-control rbc" placeholder="RBC" value="">
+                                                                <input type="text" name="rbc" required="" class="form-control rbc" placeholder="RBC" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">HPF</label>
@@ -1884,7 +1898,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Epith. Cells </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="EC" required="" class="form-control EC" placeholder="Epith. Cells" value="">
+                                                                <input type="text" name="EC" required="" class="form-control EC" placeholder="Epith. Cells" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">HPF</label>
@@ -1895,7 +1909,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bacteria </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="bacteria" required="" class="form-control bacteria" placeholder="Bacteria" value="">
+                                                                <input type="text" name="bacteria" required="" class="form-control bacteria" placeholder="Bacteria" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">HPF</label>
@@ -1906,7 +1920,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cast(s) </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="cast" required="" class="form-control cast" placeholder="Cast" value="">
+                                                                <input type="text" name="cast" required="" class="form-control cast" placeholder="Cast" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">LPF</label>
@@ -1917,7 +1931,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label"></label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="cast2" required="" class="form-control cast2" placeholder="Cast" value="">
+                                                                <input type="text" name="cast2" required="" class="form-control cast2" placeholder="Cast" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">LPF</label>
@@ -1928,7 +1942,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crystal(s) </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="crystal" required="" class="form-control crystal" placeholder="Crystal" value="">
+                                                                <input type="text" name="crystal" required="" class="form-control crystal" placeholder="Crystal" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">LPF</label>
@@ -1939,7 +1953,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label"></label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="crystal2" required="" class="form-control crystal2" placeholder="Crystal" value="">
+                                                                <input type="text" name="crystal2" required="" class="form-control crystal2" placeholder="Crystal" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">LPF</label>
@@ -1950,7 +1964,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">Amorphous Materials </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="AM" required="" class="form-control AM" placeholder="Amorphous Materials" value="">
+                                                                <input type="text" name="AM" required="" class="form-control AM" placeholder="Amorphous Materials" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">HPF</label>
@@ -1961,7 +1975,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mucus Thread </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="MT" required="" class="form-control MT" placeholder="Mucus Thread" value="">
+                                                                <input type="text" name="MT" required="" class="form-control MT" placeholder="Mucus Thread" value="" autocomplete="off">
                                                             </div>
                                                             <div>
                                                                 <label class="control-label">HPF</label>
@@ -1972,7 +1986,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Others </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="others" required="" class="form-control others" placeholder="Others" value="">
+                                                                <input type="text" name="others" required="" class="form-control others" placeholder="Others" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -1980,7 +1994,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label"></label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="others2" required="" class="form-control others2" placeholder="Others" value="">
+                                                                <input type="text" name="others2" required="" class="form-control others2" placeholder="Others" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -1988,7 +2002,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label"></label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="others3" required="" class="form-control others3" placeholder="Others" value="">
+                                                                <input type="text" name="others3" required="" class="form-control others3" placeholder="Others" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2001,7 +2015,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Glucose </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="glucose" required="" class="form-control glucose" placeholder="Glucose" value="">
+                                                                <input type="text" name="glucose" required="" class="form-control glucose" placeholder="Glucose" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2009,7 +2023,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bilirubin </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="bilirubin" required="" class="form-control bilirubin" placeholder="Bilirubin" value="">
+                                                                <input type="text" name="bilirubin" required="" class="form-control bilirubin" placeholder="Bilirubin" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2017,7 +2031,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ketone </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="ketone" required="" class="form-control ketone" placeholder="Ketone" value="">
+                                                                <input type="text" name="ketone" required="" class="form-control ketone" placeholder="Ketone" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2025,7 +2039,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blood </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="blood" required="" class="form-control blood" placeholder="Blood" value="">
+                                                                <input type="text" name="blood" required="" class="form-control blood" placeholder="Blood" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2033,7 +2047,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pH </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="ph" required="" class="form-control ph" placeholder="pH" value="">
+                                                                <input type="text" name="ph" required="" class="form-control ph" placeholder="pH" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2041,7 +2055,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Protein </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="protein" required="" class="form-control protein" placeholder="Protein" value="">
+                                                                <input type="text" name="protein" required="" class="form-control protein" placeholder="Protein" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2049,7 +2063,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urobilingen </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="urobilingen" required="" class="form-control urobilingen" placeholder="Urobilingen" value="">
+                                                                <input type="text" name="urobilingen" required="" class="form-control urobilingen" placeholder="Urobilingen" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2057,7 +2071,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrites </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="nitrites" required="" class="form-control nitrites" placeholder="Nitrites" value="">
+                                                                <input type="text" name="nitrites" required="" class="form-control nitrites" placeholder="Nitrites" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -2065,7 +2079,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leucocytes </label>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="leucocytes" required="" class="form-control leucocytes" placeholder="Leucocytes" value="">
+                                                                <input type="text" name="leucocytes" required="" class="form-control leucocytes" placeholder="Leucocytes" value="" autocomplete="off">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2255,6 +2269,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.scripts')
 
     <script type="text/javascript">
+    $(document).ready(function() {
+        setTimeout(function(){ 
+            $('.topmessage').hide();
+        }, 2000);
+    })
+
     $(".xraydate").datepicker({
         dateFormat: "yy-mm-dd",
         yearRange: "1950:2050",
@@ -2616,7 +2636,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $.get('../../api/addreasonforconsulation?patient_id=' + RFCpatient_id + '&visit_id=' + RFCvisit_id + '&chief_complaint=' + chief_complaint + '&history_illness=' + history_illness, function(data){
             $('.RFC_id').val(data.id);
             $('.subsubRFC').empty();
-            $('.subsubRFC').append('<button class="btn btn-lg btn-primary btn-block edit_RFC" id="btn-submit-consult_reason" type="button" data-loading-text="Submitting..." autocomplete="off">Save Changes</button>');
+            $('.subsubRFC').append('<button class="btn btn-lg btn-primary btn-block edit_RFC" id="btn-submit-consult_reason" type="button">Save Changes</button>');
+
+            $('.topmessage2').empty();
+            $('.topmessage2').show();
+            $('.topmessage2').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Created.</p>');
+            setTimeout(function(){ 
+                $('.topmessage2').hide();
+            }, 2000);
+
             });
         }
     });
@@ -2626,6 +2654,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         var chief_complaint = $('.chief_complaint').val();
         var history_illness = $('.history_illness').val();
         $.get('../../api/editreasonforconsulation?RFC_id=' + RFC_id + '&chief_complaint=' + chief_complaint + '&history_illness=' + history_illness, function(data){
+
+            $('.topmessage2').empty();
+            $('.topmessage2').show();
+            $('.topmessage2').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Edited.</p>');
+            setTimeout(function(){ 
+                $('.topmessage2').hide();
+            }, 2000);
 
         });
      });
@@ -2736,6 +2771,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 });
             }
 
+            $('.topmessage3').empty();
+            $('.topmessage3').show();
+            $('.topmessage3').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Created.</p>');
+            setTimeout(function(){ 
+                $('.topmessage3').hide();
+            }, 2000);
+
         });
 
      });
@@ -2845,6 +2887,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 });
             }
 
+            $('.topmessage3').empty();
+            $('.topmessage3').show();
+            $('.topmessage3').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Edited.</p>');
+            setTimeout(function(){ 
+                $('.topmessage3').hide();
+            }, 2000);
+
         });
 
      });
@@ -2863,6 +2912,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $.get('../../api/addsocialhistory?SH_id=' + SH_id + '&SH_patient_id=' + SH_patient_id + '&SH_visit_id=' + SH_visit_id + '&allergies=' + allergies + '&allergies_list=' + allergies_list + '&drink_alcohol=' + drink_alcohol + '&how_much_drink=' + how_much_drink + '&smoke=' + smoke + '&packs=' + packs, function(data){
             $('.addsocial_history').html('Save Changes');
             $('.SH_id').attr('value',data.id);
+            
+            if (!SH_id) {
+                $('.topmessage4').empty();
+                $('.topmessage4').show();
+                $('.topmessage4').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Created.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage4').hide();
+                }, 2000);
+            }
+            else {
+                $('.topmessage4').empty();
+                $('.topmessage4').show();
+                $('.topmessage4').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Edited.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage4').hide();
+                }, 2000);
+            }
+
         });
     })
 
@@ -2887,6 +2954,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $.get('../../api/addphysicalexam?PE_id=' + PE_id + '&PE_patient_id=' + PE_patient_id + '&PE_visit_id=' + PE_visit_id + '&gen_survey=' + gen_survey + '&bp=' + bp + '&hr=' + hr + '&rr=' + rr + '&temp=' + temp + '&head=' + head + '&neck=' + neck + '&chest_lungs=' + chest_lungs + '&heart=' + heart + '&abdomen=' + abdomen + '&back=' + back + '&extremities=' + extremities + '&neuro_exam=' + neuro_exam, function(data){
             $('.addphysical_exam').html('Save Changes');
             $('.PE_id').attr('value',data.id);
+
+            if (!PE_id) {
+                $('.topmessage5').empty();
+                $('.topmessage5').show();
+                $('.topmessage5').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Created.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage5').hide();
+                }, 2000);
+            }
+            else {
+                $('.topmessage5').empty();
+                $('.topmessage5').show();
+                $('.topmessage5').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Edited.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage5').hide();
+                }, 2000);
+            }
+
         });
     })
 
@@ -2899,6 +2984,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $.get('../../api/adddiagnosis?diag_id=' + diag_id + '&diag_patient_id=' + diag_patient_id + '&diag_visit_id=' + diag_visit_id + '&diagnosis=' + diagnosis, function(data){
             $('.adddiagnosis').html('Save Changes');
             $('.diag_id').attr('value',data.id);
+
+            if (!diag_id) {
+                $('.topmessage6').empty();
+                $('.topmessage6').show();
+                $('.topmessage6').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Created.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage6').hide();
+                }, 2000);
+            }
+            else {
+                $('.topmessage6').empty();
+                $('.topmessage6').show();
+                $('.topmessage6').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Edited.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage6').hide();
+                }, 2000);
+            }
+
         });
     })
 
@@ -2911,6 +3014,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $.get('../../api/addplan?plan_id=' + plan_id + '&plan_patient_id=' + plan_patient_id + '&plan_visit_id=' + plan_visit_id + '&plan=' + plan, function(data){
             $('.addplan').html('Save Changes');
             $('.plan_id').attr('value',data.id);
+
+            if (!plan_id) {
+                $('.topmessage7').empty();
+                $('.topmessage7').show();
+                $('.topmessage7').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Created.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage7').hide();
+                }, 2000);
+            }
+            else {
+                $('.topmessage7').empty();
+                $('.topmessage7').show();
+                $('.topmessage7').append('<p class="alert alert-success" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">Successfully Edited.</p>');
+                setTimeout(function(){ 
+                    $('.topmessage7').hide();
+                }, 2000);
+            }
+
         });
     })
 

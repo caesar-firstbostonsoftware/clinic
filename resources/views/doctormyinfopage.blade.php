@@ -22,7 +22,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
+        <li class="header">Negros Family Health Services, Inc.</li>
 
         <li class="active"><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
@@ -58,50 +58,57 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="box-body">
                 <div class="nav-tabs-custom">
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
-                            <div class="col-md-7"><br>
+                            <div class="col-md-7">
+                                    <div class="flash-message top-message topmessage">
+                                        @foreach (['danger', 'warning', 'success', 'info'] as $message)
+                                            @if(Session::has('alert-' . $message))
+                                                <p class="alert alert-{{ $message }}" style="padding:.5px;height:22px; width:73%;">{{ Session::get('alert-' . $message) }}</p>
+                                            @endif
+                                        @endforeach
+                                    </div><br>
                                 <form id="frm_personal_info" class="form-horizontal" method="post" action="/myinfo">
                                 <input class="edit_doc_id" name="doc_id" type="text" style="display: none;" value="{{$info->id}}">
                                     {!! csrf_field() !!}
                                     <div class="form-group ">
                                         <label class="col-sm-2 control-label">Name</label>
                                         <div class="col-sm-4">
-                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" value="{{$info->f_name}}">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" value="{{$info->f_name}}" autocomplete="off">
                                         </div>
                                         <div class="col-sm-2 nameleft">
-                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" value="{{$info->m_name}}">
+                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" value="{{$info->m_name}}" autocomplete="off">
                                         </div>
                                         <div class="col-sm-4 nameleft">
-                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" value="{{$info->l_name}}">
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" value="{{$info->l_name}}" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo">
                                         <label class="col-sm-2 control-label">Credential</label>
                                         <div class="col-sm-4">
-                                            <input class="form-control" id="credential" name="credential" placeholder="Credential" required="" type="text" value="{{$info->credential}}">
+                                            <input class="form-control" id="credential" name="credential" placeholder="Credential" required="" type="text" value="{{$info->credential}}" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo">
                                         <label class="col-sm-2 control-label">Specialization</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="specialization" name="specialization" placeholder="Specialization" required="" type="text" value="{{$info->specialization}}">
+                                            <input class="form-control" id="specialization" name="specialization" placeholder="Specialization" required="" type="text" value="{{$info->specialization}}" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo">
                                         <label class="col-sm-2 control-label">Address</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" required="" value="{{$info->address}}">
+                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" required="" value="{{$info->address}}" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo">
                                         <label class="col-sm-2 control-label">Email</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="email" name="email" placeholder="Email" type="email" required="" value="{{$info->email}}">
+                                            <input class="form-control" id="email" name="email" placeholder="Email" type="email" required="" value="{{$info->email}}" autocomplete="off">
                                         </div>
                                     </div><br>
                                     <div class="form-group divxrayinfo">
                                         <label class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="username" name="username" placeholder="Username" type="text" required="" value="{{$user->username}}">
+                                            <input class="form-control" id="username" name="username" placeholder="Username" type="text" required="" value="{{$user->username}}" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group divxrayinfo">
@@ -139,6 +146,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
+    <script type="text/javascript">
+        $(document).ready(function() {
+        setTimeout(function(){ 
+            $('.topmessage').hide();
+        }, 2000);
+    })
+    </script>
 @show
 
 </body>

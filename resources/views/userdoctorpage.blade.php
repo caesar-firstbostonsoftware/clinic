@@ -25,7 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
+        <li class="header">Negros Family Health Services, Inc.</li>
         @if(Session::get('user') != 0)
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
@@ -77,6 +77,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
                                 <div class="row">
                                     <div class="col-sm-12">
+                                    <div class="flash-message top-message topmessage">
+                                        @foreach (['danger', 'warning', 'success', 'info'] as $message)
+                                            @if(Session::has('alert-' . $message))
+                                                <p class="alert alert-{{ $message }}" style="padding:.5px;height:22px; width:40.5%;">{{ Session::get('alert-' . $message) }}</p>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr role="row">
@@ -214,6 +221,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
     <script type="text/javascript">
+
+    $(document).ready(function() {
+        setTimeout(function(){ 
+            $('.topmessage').hide();
+        }, 2000);
+    })
+
         $('.addnew').on('click',function() {
                 $('.user_id').removeAttr('value');
                 $('.fname').removeAttr('value');

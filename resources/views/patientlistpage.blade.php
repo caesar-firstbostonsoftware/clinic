@@ -25,7 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
+        <li class="header">Negros Family Health Services, Inc.</li>
         @if(Session::get('position') == "Doctor")
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
@@ -77,14 +77,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr role="row">
-                                                @if(Session::get('user') == 1)
-                                                    <th style="width: 1%;">ID</th>
-                                                    <th style="width: 20%;">Dr. in charge</th>
-                                                    <th style="width: 20%;">Name</th>
-                                                    <th style="width: 5%;">Gender</th>
-                                                    <th style="width: 5%;">Status</th>
-                                                    <th>Action</th>
-                                                @else
                                                     <th style="width: 5%;">ID</th>
                                                     <th style="width: 25%;">Name</th>
                                                     <th style="width: 5%;">Gender</th>
@@ -92,7 +84,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <th style="width: 5%;">Age</th>
                                                     <th style="width: 5%;">Status</th>
                                                     <th style="width: 45%;">Action</th>
-                                                @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -103,15 +94,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             ?>
                                                 <tr>
                                                     <td>{{$zero_id}}</td>
-                                                @if(Session::get('user') == 1)
-                                                    <td>{{$patient->doctor_fname}} {{$patient->doctor_mname}} {{$patient->doctor_lname}}, {{$patient->doctor_credential}}</td>
-                                                @endif
                                                     <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
                                                     <td>{{$patient->gender}}</td>
-                                                @if(Session::get('user') != 1)
                                                     <td>{{$patient->dob}}</td>
                                                     <td>{{$patient->age}}</td>
-                                                @endif
                                                     <td>
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
@@ -189,19 +175,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control edit_fname" id="fname" name="fname" placeholder="First Name" required="" type="text">
+                                        <input class="form-control edit_fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
                                     </div>
                                     <div class="col-sm-2 nameleft">
-                                        <input class="form-control edit_mname" id="mname" name="mname" placeholder="M" type="text">
+                                        <input class="form-control edit_mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
                                     </div>
                                     <div class="col-sm-4 nameleft">
-                                        <input class="form-control edit_lname" id="lname" name="lname" placeholder="Last Name" required="" type="text">
+                                        <input class="form-control edit_lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Address</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control edit_address" id="address" name="address" placeholder="Address" required="" type="text">
+                                        <input class="form-control edit_address" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">

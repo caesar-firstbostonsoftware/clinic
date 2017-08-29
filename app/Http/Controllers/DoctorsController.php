@@ -93,6 +93,8 @@ class DoctorsController extends Controller
                 $users = User::join('doctors','users.doc_id','=','doctors.id')
                 ->select('doctors.*')
                 ->get();
+
+                Session::flash('alert-success', 'User Created.');
                 return view('userdoctorpage',compact('users'));
             }
             else {
@@ -115,6 +117,8 @@ class DoctorsController extends Controller
                 $users = User::join('doctors','users.doc_id','=','doctors.id')
                 ->select('doctors.*')
                 ->get();
+
+                Session::flash('alert-success', 'User Edited.');
                 return view('userdoctorpage',compact('users'));
             }
 
@@ -157,6 +161,7 @@ class DoctorsController extends Controller
             }
             $user->save();
 
+            Session::flash('alert-success', 'My Info Edited.');
             return redirect()->action('DoctorsController@myinfo');
         }
         else {
@@ -203,10 +208,11 @@ class DoctorsController extends Controller
 
                         from ((select patient_id, physician_id, xray_date as date from patientxrays 
                         where xray_date >= '$datefrom' and xray_date <= '$dateto') 
-                        union all 
+                        union 
                         (select patient_id, physician_id, date from urinalyses
                         where date >= '$datefrom' and date <= '$dateto')) 
                         as query
+
 
                         left join patients on query.patient_id = patients.id
                         left join doctors on query.physician_id = doctors.id");
@@ -219,7 +225,7 @@ class DoctorsController extends Controller
 
                         from ((select patient_id, physician_id, xray_date as date from patientxrays 
                         where xray_date >= '$datefrom' and xray_date <= '$dateto' and physician_id = '$id') 
-                        union all 
+                        union 
                         (select patient_id, physician_id, date from urinalyses
                         where date >= '$datefrom' and date <= '$dateto' and physician_id = '$id')) 
                         as query

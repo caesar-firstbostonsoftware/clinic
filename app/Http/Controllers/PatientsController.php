@@ -57,6 +57,7 @@ class PatientsController extends Controller
     	$patientvisit->visitid = 1;
     	$patientvisit->save();
 
+        Session::flash('alert-success', 'Personal Info Created.');
     	return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
     }
 
@@ -67,16 +68,19 @@ class PatientsController extends Controller
             $doctor_pos = Session::get('position');
             if ($doctor_id != 1 && $doctor_pos == "Doctor") {
                 $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
+                ->leftJoin('urinalyses','doctors.id','=','urinalyses.physician_id')
                 ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
                 ->where('doctors.id',$doctor_id)
                 ->select('patients.*')
                 ->get();
             }
             elseif($doctor_id == 1 ) {
-                $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
-                ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
-                ->select('patients.*','doctors.f_name as doctor_fname','doctors.m_name as doctor_mname','doctors.l_name as doctor_lname','doctors.credential as doctor_credential')
-                ->get();
+                // $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
+                // ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
+                // ->select('patients.*','doctors.f_name as doctor_fname','doctors.m_name as doctor_mname','doctors.l_name as doctor_lname','doctors.credential as doctor_credential')
+                // ->get();
+
+                $patientlist = Patient::all();
             }
             else {
                 $patientlist = Patient::all();

@@ -35,7 +35,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
+        <li class="header">Negros Family Health Services, Inc.</li>
         @if(Session::get('position') == "Doctor")
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
@@ -98,19 +98,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text">
+                                        <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
                                     </div>
                                     <div class="col-sm-2 nameleft">
-                                        <input class="form-control" id="mname" name="mname" placeholder="M" type="text">
+                                        <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
                                     </div>
                                     <div class="col-sm-4 nameleft">
-                                        <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text">
+                                        <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">
                                     <label class="col-sm-2 control-label">Address</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text">
+                                        <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="form-group divxrayinfo">

@@ -19,7 +19,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <form role="form" method="POST" action="/">
     {!! csrf_field() !!}
       <div class="form-group has-feedback ">
-        <input id="username" class="form-control" name="username" value="" autofocus="" placeholder="Username" type="teext">
+        <input id="username" class="form-control" name="username" value="" autofocus="" placeholder="Username" type="text" autocomplete="off">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
                </div>
       <div class="form-group has-feedback ">
