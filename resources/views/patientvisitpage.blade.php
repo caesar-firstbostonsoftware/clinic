@@ -41,7 +41,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">Negros Family Health Services, Inc.</li>
+        <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
         @if(Session::get('position') == "Doctor")
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
@@ -53,8 +53,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <!-- <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        <li><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -199,6 +200,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text" value="{{$patient->age}}">
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                    <label class="col-sm-2 control-label">Purpose of Visit</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required="" disabled="">{{$patient->purpose_visit}}</textarea>
+                                    </div>
+                                </div>
                                 </form>
                             </div>
                         </div>

@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @show
 <style type="text/css">
     .divxrayinfo{
-        margin-top: -2%;
+        margin-top: -1.6%;
     }
     .nameleft{
         margin-left: -4.1%;
@@ -25,7 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">Negros Family Health Services, Inc.</li>
+        <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
         @if(Session::get('position') == "Doctor")
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
@@ -37,8 +37,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <!-- <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        <li><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -143,6 +144,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <tr>
                                         <th>Order</th>
                                         <th>Date &amp; Time</th>
+                                        <th>Purpose of Visit</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -160,18 +162,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
 
         <div class="modal fade" id="modal_edit_patient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
-                        <h4 class="modal-title" id="myModalLabel">Edit Personal Info</h4>
+                        <!-- <h4 class="modal-title" id="myModalLabel">Edit Personal Info</h4> -->
                     </div>
                     <div class="modal-body">
                             <form class="form-horizontal posteditpatient" id="posteditpatient" method="post" action="/NFHSI">
                             {!! csrf_field() !!}
                             <input class="edit_p_id" name="p_id" type="text" style="display: none;">
+                            <h3>Edit Personal Info</h3>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
@@ -212,12 +215,62 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control age edit_age" id="age" name="age" placeholder="" readonly="" required="" type="text">
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Purpose of Visit</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="patient_visit_id" class="patient_visit_id" style="display: none;">
+                                        <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
+                                    </div>
+                                </div>
+
+                                <h3>Services</h3>
+                                @foreach($adminpanelcat as $cat)
+                                <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
+                                    @foreach($adminpanel as $panel)
+                                        @if($cat->id == $panel->admin_panel_cat_id)
+                                            <div class="form-group divxrayinfo">
+                                                <label class="col-sm-1 control-label"></label>
+                                                <div class="col-sm-6">
+                                                    <label>
+                                                        <input type="checkbox" class="{{$panel->id}} cate" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b>
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-2" style="text-align: right;">
+                                                    @if($panel->price == 0)
+                                                    <label><b></b></label>
+                                                    @else
+                                                    <?php $price = number_format($panel->price,2); ?>
+                                                    <label><b> {{$price}}</b></label>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            @foreach($sub as $panelsub)
+                                                @if($panel->id == $panelsub->admin_panel_id)
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <label>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}}" name="services[]" value="{{$panelsub->admin_panel_id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b>
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-sm-2" style="text-align: right;">
+                                                            <?php $price = number_format($panelsub->price,2); ?>
+                                                            <label><b> {{$price}}</b></label>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                @endforeach
+
                             </form>
                     </div>
                     <div class="modal-footer">
                         <input id="pid" name="pid" value="" type="hidden">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                        <button class="btn btn-primary" form="posteditpatient" id="btn-submit-personal_info" type="submit" data-loading-text="Saving..." autocomplete="off">Save Changes</button>
+                        <button class="btn btn-primary" form="posteditpatient" id="btn-submit-personal_info" type="submit">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -264,8 +317,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.visitlist_modal').append('<tr>\
                     <td>'+visit.visitid+'</td>\
                     <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
                     <td>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-info">View</a>\
+                        <a href="#" target="_blank" class="btn btn-sm btn-success">Print</a>\
                     </td>\
                 </tr>');
             })
@@ -282,13 +337,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $('.edit_gender').empty();
         $('.edit_dob').empty();
         $('.edit_age').empty();
+        $('.purpose_visit').empty();
         $.get('api/modalaeditpatient?p_id=' + p_id, function(data){
-            $('.edit_p_id').val(data.id);
-            $('.edit_fname').val(data.f_name);
-            $('.edit_mname').val(data.m_name);
-            $('.edit_lname').val(data.l_name);
-            $('.edit_address').val(data.address);
-            if (data.gender == "Male") {
+            $('.edit_p_id').val(data.patient.id);
+            $('.edit_fname').val(data.patient.f_name);
+            $('.edit_mname').val(data.patient.m_name);
+            $('.edit_lname').val(data.patient.l_name);
+            $('.edit_address').val(data.patient.address);
+            if (data.patient.gender == "Male") {
                 $('.edit_gender').append('<option value="">- Select -</option>\
                                             <option value="Male" selected>Male</option>\
                                             <option value="Female">Female</option>');
@@ -298,9 +354,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <option value="Male">Male</option>\
                                             <option value="Female" selected>Female</option>');
             }
-            $('.edit_dob').val(data.dob);
-            $('.edit_age').val(data.age);
+            $('.edit_dob').val(data.patient.dob);
+            $('.edit_age').val(data.patient.age);
+            if (data.patient.visitid == 1) {
+                $('.patient_visit_id').val(data.patient.patient_visit_id)
+                $('.purpose_visit').val(data.patient.purpose_visit)
+            }
+
+            $.each(data.adminpanel, function(index, panel){
+                $('.'+panel.admin_panel_id+'').attr('checked','checked')
+                $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').removeAttr('disabled','disabled')
+                $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').attr('checked','checked')
+            })
+
         })
+    });
+
+    $('.cate').click(function() {
+        if ($(this).is(':checked')) {
+            var adid = $(this).val();
+            var split = adid.split('-');
+            $('.sub'+split[0]+'').removeAttr('disabled','disabled');
+        }
+        else {
+            var adid = $(this).val();
+            var split = adid.split('-');
+            $('.sub'+split[0]+'').prop('checked',false);
+            $('.sub'+split[0]+'').attr('disabled','disabled');
+        }
     });
 </script>
 @show

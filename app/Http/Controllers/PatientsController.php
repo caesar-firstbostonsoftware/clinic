@@ -21,13 +21,21 @@ use App\Diagnoses;
 use App\Plan;
 use App\PatientXrayLog;
 use App\Urinalyses;
+use App\AdminPanelCategory;
+use App\AdminPanel;
+use App\PatientService;
+use App\AdminPanelSub;
 
 class PatientsController extends Controller
 {
 
 	public function newvisit()
     {
-    	return view('patientnewvisitpage');
+        $adminpanelcat = AdminPanelCategory::all();
+        $adminpanel = AdminPanel::all();
+        $sub = AdminPanelSub::all();
+        //return Response::json($adminpanel, 200, array(), JSON_PRETTY_PRINT);
+    	return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub'));
     }
 
     public function addnewvisit(Request $request)
@@ -39,6 +47,10 @@ class PatientsController extends Controller
     	$gender = $request->input('gender');
     	$dob = $request->input('dob');
     	$age = $request->input('age');
+        $purpose_visit = $request->input('purpose_visit');
+
+        $services = $request->input('services');
+
     	//return $fname.' *** '.$mname.' *** '.$lname.' *** '.$address.' *** '.$gender.' *** '.$dob.' *** '.$age;
     	$patient = new Patient;
     	$patient->f_name = $fname;
@@ -55,7 +67,20 @@ class PatientsController extends Controller
     	$datenow = date("Y-m-d");
     	$patientvisit->visit_date = $datenow;
     	$patientvisit->visitid = 1;
+        $patientvisit->purpose_visit = $purpose_visit;
     	$patientvisit->save();
+
+        foreach ($services as $key) {
+            $explode = explode('-', $key);
+            $fisrt = $explode[0];
+            $second = $explode[1];
+
+            $service = new PatientService;
+            $service->patient_id = $patient->id;
+            $service->admin_panel_id = $fisrt;
+            $service->admin_panel_sub_id = $second;
+            $service->save();
+        }
 
         Session::flash('alert-success', 'Personal Info Created.');
     	return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
@@ -66,6 +91,11 @@ class PatientsController extends Controller
         if(Session::has('user')){
             $doctor_id = Session::get('user');
             $doctor_pos = Session::get('position');
+
+            $adminpanelcat = AdminPanelCategory::all();
+            $adminpanel = AdminPanel::all();
+            $sub = AdminPanelSub::all();
+
             if ($doctor_id != 1 && $doctor_pos == "Doctor") {
                 $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
                 ->leftJoin('urinalyses','doctors.id','=','urinalyses.physician_id')
@@ -86,7 +116,7 @@ class PatientsController extends Controller
                 $patientlist = Patient::all();
             }
             //return Response::json($patientlist, 200, array(), JSON_PRETTY_PRINT);
-            return view('patientlistpage',compact('patientlist'));
+            return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub'));
             
         }
         else {
@@ -152,9 +182,13 @@ class PatientsController extends Controller
         $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
 
         //return Response::json($PMH_hos, 200, array(), JSON_PRETTY_PRINT);
-    	$patient = Patient::where('id',$id)->first();
+        $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+            ->where('patients.id',$id)
+            ->select('patients.*','patient_visits.purpose_visit')
+            ->first();
     	$doctor = Doctor::with('user')->get();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount'));
+        $adminpanel = AdminPanelCategory::with('adminpanel')->get();
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -209,8 +243,12 @@ class PatientsController extends Controller
     {   
         if(Session::has('user')){
             $p_id = $request->input('p_id');
-            $patient = Patient::where('id',$p_id)->first();
-            return Response::json($patient, 200, array(), JSON_PRETTY_PRINT);
+            $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+            ->where('patients.id',$p_id)
+            ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id')
+            ->first();
+            $adminpanel = PatientService::where('patient_id',$p_id)->get();
+            return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -228,6 +266,11 @@ class PatientsController extends Controller
             $gender = $request->input('gender');
             $dob = $request->input('dob');
             $age = $request->input('age');
+
+            $patient_visit_id = $request->input('patient_visit_id');
+            $purpose_visit = $request->input('purpose_visit');
+
+            $services = $request->input('services');
             //return $fname.' *** '.$mname.' *** '.$lname.' *** '.$address.' *** '.$gender.' *** '.$dob.' *** '.$age;
             $patient = Patient::where('id',$p_id)->first();
             $patient->f_name = $fname;
@@ -238,6 +281,28 @@ class PatientsController extends Controller
             $patient->age = $age;
             $patient->address = $address;
             $patient->save();
+
+            $delete = PatientService::where('patient_id',$p_id)->get();
+                foreach ($delete as $del) {
+                   $deldel = PatientService::where('id',$del->id)->first();
+                   $deldel->delete();
+                }
+
+            foreach ($services as $key) {
+                $explode = explode('-', $key);
+                $fisrt = $explode[0];
+                $second = $explode[1];
+
+                $service = new PatientService;
+                $service->patient_id = $patient->id;
+                $service->admin_panel_id = $fisrt;
+                $service->admin_panel_sub_id = $second;
+                $service->save();
+            }
+
+            $patientvisit = PatientVisit::where('id',$patient_visit_id)->first();
+            $patientvisit->purpose_visit = $purpose_visit;
+            $patientvisit->save(); 
 
             return redirect()->action('PatientsController@patientlist');
         }

@@ -22,7 +22,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">Negros Family Health Services, Inc.</li>
+        <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
 
         <li class="active"><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
@@ -33,8 +33,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <!-- <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        <li><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
         @elseif(Session::get('user') > 1)
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif

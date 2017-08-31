@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @show
 <style type="text/css">
     .divxrayinfo{
-        margin-top: -2%;
+        margin-top: -1.2%;
     }
 </style>
 
@@ -22,7 +22,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
-        <li class="header">Negros Family Health Services, Inc.</li>
+        <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
 
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
@@ -33,8 +33,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <!-- <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
         <li class="active"><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        <li><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
         @elseif(Session::get('user') > 1)
         <li class="active"><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -51,7 +52,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li><a href="#">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
-            <li><a href="/NFHSI/users">Users</a></li>
+            <!-- <li><a href="/NFHSI/users">Users</a></li> -->
             <li class="active"><a href="/reports/{{Session::get('user')}}"><b>Reports</b></a></li>
         </ol>
     </section>
@@ -59,36 +60,51 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <section class="content">
         <div class="box">
             <div class="box-body">
-            <div class="col-md-7"><br>
-                <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
-                    {!! csrf_field() !!}
-                    <input type="text" class="user_id" value="{{$id}}" style="display: none;">
-                    <div class="form-group ">
-                        <label class="col-sm-2 control-label">Date From :</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="datepicker" class="form-control datefrom"  placeholder="YYYY-MM-DD" readonly="">
+            <div class="nav-tabs-custom">
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#xrareports" role="tab" data-toggle="tab" style="font-size: 8pt;">X-Ray Reports</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#labreports" role="tab" data-toggle="tab" style="font-size: 8pt;">Lab Reports</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <!-- X-Ray Reports -->
+                        <div role="tabpanel" class="tab-pane active" id="xrareports">
+                            <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
+                                {!! csrf_field() !!}
+                                <input type="text" class="user_id" value="{{$id}}" style="display: none;">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Date From :</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="datepicker" class="form-control datefrom"  placeholder="YYYY-MM-DD" readonly="">
+                                    </div>
+                                </div>
+                                <div class="form-group divxrayinfo">
+                                    <label class="col-sm-2 control-label">Date To :</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="datepicker1" class="form-control dateto"  placeholder="YYYY-MM-DD" readonly="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-sm btn-primary generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button>
+                                        <button class="btn btn-sm btn-success printrep" id="btn-submit-personal_info" type="button" disabled="">Print</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-6 Pcount"></div>
+                                    <div class="col-sm-6 Income"></div>
+                                    <br>
+                                    <div class="col-md-12 appendreports"></div>
+                                </div>
+                            </form>
                         </div>
-                    </div>
-                    <div class="form-group divxrayinfo">
-                        <label class="col-sm-2 control-label">Date To :</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="datepicker1" class="form-control dateto"  placeholder="YYYY-MM-DD" readonly="">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"></label>
-                            <div class="col-sm-2">
-                                <button class="btn btn-sm btn-primary btn-block generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button>
-                            </div>
-                    </div>
-                </form>
-            </div><br>
-            
-            <div class="col-sm-6 Pcount"></div>
-            <div class="col-sm-6 Income"></div>
-            <br><br><br><br><br><br><br><br>
-            <div class="col-md-12 appendreports">
-                
+                </div>
             </div>
             </div>
         </div>
@@ -120,12 +136,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         $('.Income').empty();
                         $('.appendreports').empty();
                         var datefrom = $(this).val();
-                        var dateto = $(".dateto").val();
+                        var dateto = $('.dateto').val();
                         if (datefrom <= dateto) {
                             $('.generate').removeAttr('disabled');
+                            $('.printrep').removeAttr('disabled');
                         }
                         else {
                             $('.generate').attr('disabled','disabled');
+                            $('.printrep').attr('disabled','disabled');
                         }
                     }
     });
@@ -138,13 +156,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         $('.Pcount').empty();
                         $('.Income').empty();
                         $('.appendreports').empty();
-                        var datefrom = $(this).val();
-                        var dateto = $(".dateto").val();
+                        var dateto = $(this).val();
+                        var datefrom = $('.datefrom').val();
                         if (datefrom <= dateto) {
                             $('.generate').removeAttr('disabled');
+                            $('.printrep').removeAttr('disabled');
                         }
                         else {
                             $('.generate').attr('disabled','disabled');
+                            $('.printrep').attr('disabled','disabled');
                         }
                     }
     });
