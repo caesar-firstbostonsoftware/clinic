@@ -8,14 +8,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('htmlheader')
     @include('adminlte::layouts.partials.htmlheader')
 @show
-<style type="text/css">
-    .divxrayinfo{
-        margin-top: -1.6%;
-    }
-    .nameleft{
-        margin-left: -4.1%;
-    }
-</style>
 
 <body class="skin-blue sidebar-mini">
 <div id="app" v-cloak>
@@ -37,9 +29,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <!-- <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
+        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        <li><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
+        <li><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -180,20 +172,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-sm-4">
                                         <input class="form-control edit_fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-2 nameleft">
+                                    <div class="col-sm-2">
                                         <input class="form-control edit_mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-4 nameleft">
+                                    <div class="col-sm-4">
                                         <input class="form-control edit_lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group">
                                     <label class="col-sm-2 control-label">Address</label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <input class="form-control edit_address" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group">
                                     <label class="col-sm-2 control-label">Gender</label>
                                     <div class="col-sm-4">
                                         <select id="gender" name="gender" class="form-control edit_gender" required=""> 
@@ -203,22 +195,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group">
                                     <label class="col-sm-2 control-label">Birthdate</label>
                                     <div class="col-sm-4">
                                         <input type="text" id="datepicker" name="dob" class="form-control dob edit_dob" required="" placeholder="YYYY-MM-DD" readonly="">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group">
                                     <label class="col-sm-2 control-label">Age</label>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-1">
                                         <input class="form-control age edit_age" id="age" name="age" placeholder="" readonly="" required="" type="text">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Purpose of Visit</label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <input type="text" name="patient_visit_id" class="patient_visit_id" style="display: none;">
                                         <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
                                     </div>
@@ -229,7 +221,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
                                     @foreach($adminpanel as $panel)
                                         @if($cat->id == $panel->admin_panel_cat_id)
-                                            <div class="form-group divxrayinfo">
+                                            <div class="form-group">
                                                 <label class="col-sm-1 control-label"></label>
                                                 <div class="col-sm-6">
                                                     <label>
@@ -247,7 +239,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             </div>
                                             @foreach($sub as $panelsub)
                                                 @if($panel->id == $panelsub->admin_panel_id)
-                                                    <div class="form-group divxrayinfo">
+                                                    <div class="form-group">
                                                         <label class="col-sm-1 control-label"></label>
                                                         <div class="col-sm-6">
                                                             <label>
@@ -284,10 +276,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.controlsidebar')
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-            All rights reserved.
+        <div style="text-align: right;">
+            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+        </div> 
     </footer>
 
 </div><!-- ./wrapper -->

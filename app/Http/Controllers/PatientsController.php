@@ -120,8 +120,11 @@ class PatientsController extends Controller
             
         }
         else {
+            $adminpanelcat = AdminPanelCategory::all();
+            $adminpanel = AdminPanel::all();
+            $sub = AdminPanelSub::all();
             $patientlist = Patient::all();
-            return view('patientlistpage',compact('patientlist'));
+            return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub'));
         }
     }
 
@@ -188,7 +191,8 @@ class PatientsController extends Controller
             ->first();
     	$doctor = Doctor::with('user')->get();
         $adminpanel = AdminPanelCategory::with('adminpanel')->get();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel'));
+        $PatientService = PatientService::where('patient_id',$id)->get();
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -318,7 +322,7 @@ class PatientsController extends Controller
             //$patientxray = Patientxray::where('id',$xray_id)->first();
             $patientxray = Patientxray::join('doctors','patientxrays.physician_id','=','doctors.id')
             ->where('patientxrays.id',$xray_id)
-            ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info')
+            ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info','patientxrays.or_no as or_no')
             ->first();
             return Response::json($patientxray, 200, array(), JSON_PRETTY_PRINT);
         }
@@ -827,7 +831,7 @@ class PatientsController extends Controller
     {      
         if(Session::has('user')){
             $dataid = $request->input('dataid');
-            $PatientXrayLog = PatientXrayLog::where('xray_id',$dataid)->get();
+            $PatientXrayLog = PatientXrayLog::where('xray_id',$dataid)->with('doctor')->get();
             return Response::json($PatientXrayLog, 200, array(), JSON_PRETTY_PRINT);
         }
         else {

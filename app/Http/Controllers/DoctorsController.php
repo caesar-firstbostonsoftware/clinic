@@ -11,9 +11,92 @@ use Session;
 use App\User;
 use App\Urinalyses;
 use DB;
+use App\AdminPanelCategory;
+use App\AdminPanel;
+use App\AdminPanelSub;
+use PDF;
+use Dompdf\Dompdf;
+use TCPDF;
+
+class MYPDF extends TCPDF {
+                public function Header() {
+
+                    // $image_file = K_PATH_IMAGES.'logo_example.jpg';
+                    // $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+                    $this->SetFont('Courier', 'B', 20);
+                    $this->Cell(0, 15, 'NEGROS FAMILY HEALTH SERVICES, INC.', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                    
+                    $this->SetXY(20, 18);
+                    $this->SetFont('Courier', '', 14);
+                    $this->Cell(0, 15, 'NORTH ROAD, DARO (IN FRONT OF NOPH)', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+
+                    $this->SetXY(20, 23);
+                    $this->SetFont('Courier', '', 14);
+                    $this->Cell(0, 15, 'DUMAGUETE CITY, NEGROS ORIENTAL', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+
+                    $this->SetXY(20, 28);
+                    $this->SetFont('Courier', '', 12);
+                    $this->Cell(0, 15, 'TEL No. (035)225-3544', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                }
+
+                public function Footer() {
+
+                    $this->SetY(-15);
+
+                    $this->SetFont('Courier', 'I', 8);
+
+                    $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+                }
+            }
 
 class DoctorsController extends Controller
 {
+    
+    public function printreport()
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 40, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('times', 'BI', 12);
+
+            $pdf->AddPage();
+
+            $pdf->writeHTML(view('printreport')->render());
+            ob_end_clean();
+            $pdf->Output('Barcode.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
+    }
+
     public function myinfo()
     {   
         if(Session::has('user')){
@@ -27,6 +110,8 @@ class DoctorsController extends Controller
         }
         
     }
+
+    
 
     // public function doctorspatientlist()
     // {	
@@ -199,7 +284,15 @@ class DoctorsController extends Controller
             $datefrom = $request->input('datefrom');
             $dateto = $request->input('dateto');
             if ($id == 1) {
-                $Patientxray = Patientxray::where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                //$Patientxray = Patientxray::where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                $Patientxray = DB::select("SELECT 
+                    doctors.id,doctors.f_name,doctors.m_name,doctors.l_name,credential,patients.id as p_id,patients.f_name AS p_fname,patients.m_name AS p_mname,patients.l_name AS p_lname,COUNT(doctors.id) as counter
+                    FROM doctors
+                    INNER JOIN patientxrays ON doctors.id = patientxrays.physician_id
+                    INNER JOIN patients ON patientxrays.patient_id = patients.id
+                    WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
+                    GROUP BY id,f_name,m_name,l_name,credential,patients.id,patients.f_name,patients.m_name,patients.l_name");
+
                 // $Urinalyses = Urinalyses::where('date','>=',$datefrom)->where('date','<=',$dateto)->with('phy','patient')->get();
 
                 // $wawee = DB::select("select query.patient_id as patient_id, patients.f_name as P_f_name, patients.m_name as P_m_name,

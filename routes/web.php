@@ -48,9 +48,12 @@ Route::get('/reports/{id}', 'DoctorsController@reports');
 
 Route::post('/visit/{id}/{vid}/urinalysis', 'PatientsController@newurinalysis');
 
-Route::get('/adminpanel', 'AdminPanelContoller@adminpanel');
+// Route::get('/adminpanel', 'AdminPanelContoller@adminpanel');
 
 Route::get('/NFHSI/services', 'AdminPanelContoller@services');
+
+// --- PDF ---
+Route::get('/pdf/view', 'DoctorsController@printreport');
 
 
 //----API---

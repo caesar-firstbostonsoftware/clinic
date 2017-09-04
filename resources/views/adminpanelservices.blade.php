@@ -45,9 +45,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
         @endif
         @if(Session::get('user') == 1)
-        <!-- <li class="active"><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
+        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        <li class="active"><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
+        <li class="active"><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1)
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -64,6 +64,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li><a href="#">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
+            <li><a href="/NFHSI/users">Users</a></li>
+            <li><a href="/reports/{{Session::get('user')}}">Reports</a></li>
             <li class="active"><a href="/NFHSI/services"><b>Services</b></a></li>
         </ol>
     </section>
@@ -144,10 +146,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.controlsidebar')
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-            All rights reserved.
+        <div style="text-align: right;">
+            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+        </div> 
     </footer>
 
 </div><!-- ./wrapper -->

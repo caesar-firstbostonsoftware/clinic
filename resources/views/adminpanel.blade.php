@@ -110,10 +110,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.controlsidebar')
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-            All rights reserved.
+        <div style="text-align: right;">
+            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+        </div> 
     </footer>
 
 </div><!-- ./wrapper -->

@@ -9,24 +9,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.htmlheader')
 @show
 
-<style type="text/css">
-    .neg { 
-        margin-top: -.4%;
-    }
-    .nor{
-        margin-top: -1%;
-    }
-    .divxrayinfo{
-        margin-top: -1.4%;
-    }
-    .modalwidth{
-        width: 75%;
-    }
-    .nameleft{
-        margin-left: -4.1%;
-    }
-</style>
-
 <body class="skin-blue sidebar-mini">
 <div id="app" v-cloak>
     <div class="wrapper">
@@ -47,9 +29,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <!-- <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
+        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        <li><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
+        <li><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -101,22 +83,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-sm-2">
                                         <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-1 nameleft">
+                                    <div class="col-sm-1">
                                         <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-2 nameleft">
+                                    <div class="col-sm-2">
                                         <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-1 control-label">Address</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-5">
                                         <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-1 control-label">Gender</label>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <select id="gender" name="gender" class="form-control" required=""> 
                                             <option value="">- Select -</option>
                                             <option value="Male">Male</option>
@@ -124,13 +106,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-1 control-label">Birthdate</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <input type="text" id="datepicker" name="dob" class="form-control dob" required="" placeholder="YYYY-MM-DD">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-1 control-label">Age</label>
                                     <div class="col-sm-1">
                                         <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text">
@@ -141,14 +123,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-sm-5">
                                         <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
                                     </div>
-                                </div>
+                                </div><br>
 
                                 <h3>Services</h3>
                                 @foreach($adminpanelcat as $cat)
                                 <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
                                     @foreach($adminpanel as $panel)
                                         @if($cat->id == $panel->admin_panel_cat_id)
-                                            <div class="form-group divxrayinfo">
+                                            <div class="form-group ">
                                                 <label class="col-sm-1 control-label"></label>
                                                 <div class="col-sm-6">
                                                     <label><input type="checkbox" class="{{$panel->id}} cate" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b></label>
@@ -164,7 +146,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             </div>
                                             @foreach($sub as $panelsub)
                                                 @if($panel->id == $panelsub->admin_panel_id)
-                                                    <div class="form-group divxrayinfo">
+                                                    <div class="form-group ">
                                                         <label class="col-sm-1 control-label"></label>
                                                         <div class="col-sm-6">
                                                             <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}}" name="services[]" value="{{$panel->id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b></label>
@@ -202,10 +184,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.controlsidebar')
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-            All rights reserved.
+        <div style="text-align: right;">
+            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+        </div> 
     </footer>
 
 </div><!-- ./wrapper -->

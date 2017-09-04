@@ -8,11 +8,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('htmlheader')
     @include('adminlte::layouts.partials.htmlheader')
 @show
-<style type="text/css">
-    .divxrayinfo{
-        margin-top: -1.2%;
-    }
-</style>
 
 <body class="skin-blue sidebar-mini">
 <div id="app" v-cloak>
@@ -33,9 +28,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <!-- <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
+        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
         <li class="active"><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        <li><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
+        <li><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1)
         <li class="active"><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -52,7 +47,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li><a href="#">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
-            <!-- <li><a href="/NFHSI/users">Users</a></li> -->
+            <li><a href="/NFHSI/users">Users</a></li>
             <li class="active"><a href="/reports/{{Session::get('user')}}"><b>Reports</b></a></li>
         </ol>
     </section>
@@ -82,7 +77,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input type="text" id="datepicker" class="form-control datefrom"  placeholder="YYYY-MM-DD" readonly="">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group">
                                     <label class="col-sm-2 control-label">Date To :</label>
                                     <div class="col-sm-3">
                                         <input type="text" id="datepicker1" class="form-control dateto"  placeholder="YYYY-MM-DD" readonly="">
@@ -115,10 +110,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.controlsidebar')
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-            All rights reserved.
+        <div style="text-align: right;">
+            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+        </div> 
     </footer>
 
 </div><!-- ./wrapper -->
@@ -174,14 +168,49 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var datefrom = $(".datefrom").val();
             var dateto = $('.dateto').val();
 
+            if (id == 1) {
+
             $.get('../../api/reportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
                 var count = 0;
                 $('.appendreports').append('<table class="table table-striped">\
                     <thead>\
                         <tr>\
-                            <th>ID</th>\
-                            <th>Dr. Incharge</th>\
-                            <th>Name</th>\
+                            <th>Physician ID</th>\
+                            <th>Physician</th>\
+                            <th>Patient Count</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody class="tbodyreports">\
+                    </tbody>\
+                </table>');
+
+                $.each(data, function(index, report){
+                    count++;
+                    if (!report.m_name) {
+                        var m_name = "";
+                    }
+                    else {
+                        var m_name = report.m_name;
+                    }
+                    $('.tbodyreports').append('<tr>\
+                            <td>'+report.id+'</td>\
+                            <td>'+report.f_name+' '+m_name+' '+report.l_name+', '+report.credential+'</td>\
+                            <td>'+report.counter+'</td>\
+                        </tr>');
+                })
+                $('.Income').append('<b>Income : Php. 100.00</b>');
+            });
+
+            }
+            else {
+
+            $.get('../../api/reportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
+                var count = 0;
+                $('.appendreports').append('<table class="table table-striped">\
+                    <thead>\
+                        <tr>\
+                            <th>Patient ID</th>\
+                            <th>Patient Name</th>\
                             <th>Date</th>\
                         </tr>\
                     </thead>\
@@ -191,17 +220,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 $.each(data, function(index, report){
                     count++;
-                    if (!report.P_m_name) {
+                    if (!report.patient.m_name) {
                         var m_name = "";
                     }
                     else {
-                        var m_name = report.P_m_name;
+                        var m_name = report.patient.m_name;
                     }
                     $('.tbodyreports').append('<tr>\
-                            <td>'+report.patient_id+'</td>\
-                            <td>'+report.D_f_name+' '+report.D_m_name+' '+report.D_l_name+', '+report.D_credential+'</td>\
-                            <td>'+report.P_f_name+' '+m_name+' '+report.P_l_name+'</td>\
-                            <td>'+report.date+'</td>\
+                            <td>'+report.patient.id+'</td>\
+                            <td>'+report.patient.f_name+' '+m_name+' '+report.patient.l_name+'</td>\
+                            <td>'+report.xray_date+'</td>\
                         </tr>');
                 })
 
@@ -209,7 +237,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.Income').append('<b>Income : Php. 100.00</b>');
             });
 
-            
+            }     
             
         })
     </script>

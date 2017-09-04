@@ -8,14 +8,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('htmlheader')
     @include('adminlte::layouts.partials.htmlheader')
 @show
-<style type="text/css">
-    .divxrayinfo{
-        margin-top: -2%;
-    }
-    .nameleft{
-        margin-left: -4.1%;
-    }
-</style>
 
 <body class="skin-blue sidebar-mini">
 <div id="app" v-cloak>
@@ -45,9 +37,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
         @endif
         @if(Session::get('user') == 1)
-        <!-- <li class="active"><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li> -->
+        <li class="active"><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        <li class="active"><a href="/adminpanel"><i class="fa fa-desktop"></i> <span>Admin Panel</span></a></li>
+        <li><a href="/NFHSI/services"><i class="fa fa-desktop"></i> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1)
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
@@ -149,53 +141,53 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
                                         <input class="form-control user_id" id="user_id" name="user_id" type="text" style="display: none;">
-                                        <input class="form-control fname" id="fname" name="fname" placeholder="First Name" required="" type="text">
+                                        <input class="form-control fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-2 nameleft">
-                                        <input class="form-control mname" id="mname" name="mname" placeholder="M" type="text">
+                                    <div class="col-sm-2">
+                                        <input class="form-control mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-4 nameleft">
-                                        <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text">
+                                    <div class="col-sm-4">
+                                        <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo divcredential">
+                                <div class="form-group  divcredential">
                                     <label class="col-sm-2 control-label">Credential</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control credential" id="credential" name="credential" placeholder="Credential" type="text">
+                                        <input class="form-control credential" id="credential" name="credential" placeholder="Credential" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo divspecialization">
+                                <div class="form-group  divspecialization">
                                     <label class="col-sm-2 control-label">Specialization</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" type="text">
+                                        <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-2 control-label">Address</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control address" id="address" name="address" placeholder="Address" type="text" required="">
+                                        <input class="form-control address" id="address" name="address" placeholder="Address" type="text" required="" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-2 control-label">Email</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control email" id="email" name="email" placeholder="Email" type="email" required="">
+                                        <input class="form-control email" id="email" name="email" placeholder="Email" type="email" required="" autocomplete="off">
                                     </div>
                                 </div><br>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-2 control-label">Username</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control username" id="username" name="username" placeholder="Username" type="text" required="">
+                                        <input class="form-control username" id="username" name="username" placeholder="Username" type="text" required="" autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-group divxrayinfo">
+                                <div class="form-group ">
                                     <label class="col-sm-2 control-label">Password</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="">
+                                        <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="" autocomplete="off">
                                     </div>
                                 </div>
                             </form>
@@ -211,10 +203,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.controlsidebar')
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0
-        </div>
-            All rights reserved.
+        <div style="text-align: right;">
+            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+        </div> 
     </footer>
 
 </div><!-- ./wrapper -->
