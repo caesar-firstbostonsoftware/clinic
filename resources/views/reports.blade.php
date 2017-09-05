@@ -87,7 +87,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-2 control-label"></label>
                                     <div class="col-sm-2">
                                         <button class="btn btn-sm btn-primary generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button>
-                                        <button class="btn btn-sm btn-success printrep" id="btn-submit-personal_info" type="button" disabled="">Print</button>
+                                        <a href="/pdf/view" class="btn btn-sm btn-success printrep" id="btn-submit-personal_info" type="button" disabled="" target="_blank">Print</a>
                                     </div>
                                 </div>
 
@@ -239,6 +239,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             }     
             
+        })
+
+        $('.printrep').on('click',function() {
+            var id = $('.user_id').val();
+            var datefrom = $(".datefrom").val();
+            var dateto = $('.dateto').val();
+            $(this).removeAttr('href','href');
+            $(this).attr('href','/pdf/view/'+id+'/'+datefrom+'/'+dateto+'');
         })
     </script>
 @show

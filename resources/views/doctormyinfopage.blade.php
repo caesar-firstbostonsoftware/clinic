@@ -42,7 +42,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div style="min-height: 245px;" class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-stethoscope"></i> My Info <a href="/pdf/view">print</a></h1>
+        <h1><i class="fa fa-stethoscope"></i> My Info</h1>
         <ol class="breadcrumb">
             <li><a href="#">Dashboard</a></li>
             <li class="active"><a href="/myinfo"><b>My Info</b></a></li>

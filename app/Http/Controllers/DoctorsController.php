@@ -24,19 +24,19 @@ class MYPDF extends TCPDF {
                     // $image_file = K_PATH_IMAGES.'logo_example.jpg';
                     // $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
-                    $this->SetFont('Courier', 'B', 20);
+                    $this->SetFont('Courier', 'B', 14);
                     $this->Cell(0, 15, 'NEGROS FAMILY HEALTH SERVICES, INC.', 0, false, 'C', 0, '', 0, false, 'M', 'M');
                     
-                    $this->SetXY(20, 18);
-                    $this->SetFont('Courier', '', 14);
+                    $this->SetXY(0, 18);
+                    $this->SetFont('Courier', '', 12);
                     $this->Cell(0, 15, 'NORTH ROAD, DARO (IN FRONT OF NOPH)', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 
-                    $this->SetXY(20, 23);
-                    $this->SetFont('Courier', '', 14);
+                    $this->SetXY(0, 23);
+                    $this->SetFont('Courier', '', 12);
                     $this->Cell(0, 15, 'DUMAGUETE CITY, NEGROS ORIENTAL', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 
-                    $this->SetXY(20, 28);
-                    $this->SetFont('Courier', '', 12);
+                    $this->SetXY(0, 28);
+                    $this->SetFont('Courier', '', 10);
                     $this->Cell(0, 15, 'TEL No. (035)225-3544', 0, false, 'C', 0, '', 0, false, 'M', 'M');
                 }
 
@@ -53,14 +53,14 @@ class MYPDF extends TCPDF {
 class DoctorsController extends Controller
 {
     
-    public function printreport()
+    public function printreport(Request $request,$id,$datefrom,$dateto)
     {   
         if(Session::has('user')){
 
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
-            $pdf->SetTitle('NFHSI');
+            $pdf->SetTitle('NFHSI X-Ray');
 
             $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
@@ -69,7 +69,7 @@ class DoctorsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 40, 10, true);
+            $pdf->SetMargins(10, 36, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -82,13 +82,30 @@ class DoctorsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('times', 'BI', 12);
+            $pdf->SetFont('Courier', '', 10);
 
             $pdf->AddPage();
 
-            $pdf->writeHTML(view('printreport')->render());
+                if ($id == 1) {
+                    $Patientxray = DB::select("SELECT 
+                    doctors.id,doctors.f_name,doctors.m_name,doctors.l_name,credential,patients.id as p_id,patients.f_name AS p_fname,patients.m_name AS p_mname,patients.l_name AS p_lname,COUNT(doctors.id) as counter
+                    FROM doctors
+                    INNER JOIN patientxrays ON doctors.id = patientxrays.physician_id
+                    INNER JOIN patients ON patientxrays.patient_id = patients.id
+                    WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
+                    GROUP BY id,f_name,m_name,l_name,credential,patients.id,patients.f_name,patients.m_name,patients.l_name");
+                    $counter = 0;
+                }
+                else {
+                    $Patientxray = Patientxray::where('physician_id',$id)->where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                    $counter = count($Patientxray);
+                }
+
+                // return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
+
+            $pdf->writeHTML(view('printreport',compact('Patientxray','id','counter'))->render());
             ob_end_clean();
-            $pdf->Output('Barcode.pdf','I');
+            $pdf->Output('DocReport.pdf','I');
 
         }
         else {

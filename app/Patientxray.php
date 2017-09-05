@@ -15,4 +15,9 @@ class Patientxray extends Model
     {
     	 return $this->belongsTo('App\Patient','patient_id');
     }
+
+    public function xraydate()
+    {
+    	 return $this->hasMany('App\PatientXrayLog','xray_id')->latest()->take(1);
+    }
 }

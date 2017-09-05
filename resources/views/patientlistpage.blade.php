@@ -311,7 +311,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-info">View</a>\
-                        <a href="#" target="_blank" class="btn btn-sm btn-success">Print</a>\
+                        <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-success">Print</a>\
                     </td>\
                 </tr>');
             })

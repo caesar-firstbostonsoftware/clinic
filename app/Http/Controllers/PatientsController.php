@@ -25,6 +25,41 @@ use App\AdminPanelCategory;
 use App\AdminPanel;
 use App\PatientService;
 use App\AdminPanelSub;
+use PDF;
+use Dompdf\Dompdf;
+use TCPDF;
+
+class MYPDF extends TCPDF {
+                public function Header() {
+
+                    // $image_file = K_PATH_IMAGES.'logo_example.jpg';
+                    // $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+                    $this->SetFont('Courier', 'B', 14);
+                    $this->Cell(0, 15, 'NEGROS FAMILY HEALTH SERVICES, INC.', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                    
+                    $this->SetXY(0, 18);
+                    $this->SetFont('Courier', '', 12);
+                    $this->Cell(0, 15, 'NORTH ROAD, DARO (IN FRONT OF NOPH)', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+
+                    $this->SetXY(0, 23);
+                    $this->SetFont('Courier', '', 12);
+                    $this->Cell(0, 15, 'DUMAGUETE CITY, NEGROS ORIENTAL', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+
+                    $this->SetXY(0, 28);
+                    $this->SetFont('Courier', '', 10);
+                    $this->Cell(0, 15, 'TEL No. (035)225-3544', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                }
+
+                public function Footer() {
+
+                    $this->SetY(-15);
+
+                    $this->SetFont('Courier', 'I', 8);
+
+                    $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+                }
+            }
 
 class PatientsController extends Controller
 {
@@ -990,6 +1025,61 @@ class PatientsController extends Controller
         else {
             return redirect()->action('Auth@checklogin');
         }
+    }
+
+    public function patientprintreport(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Patient PDF');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage();
+
+            $patient = Patient::where('id',$id)->first();
+            $reason = ReasonForConsulation::where('patient_id',$id)->where('visit_id',$vid)->first();
+            $past = PastMedicalHistory::where('patient_id',$id)->where('visit_id',$vid)->with('surgery1001','hospitalization','disease','vaccination1001')->first();
+            $social = SocialHistory::where('patient_id',$id)->where('visit_id',$vid)->first();
+            $PE = PhysicalExam::where('patient_id',$id)->where('visit_id',$vid)->first();
+            $diagnosis = Diagnoses::where('patient_id',$id)->where('visit_id',$vid)->first();
+            $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
+            $p_xray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->with('doctor','patient','xraydate')->first();
+            $uriuri = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('phy')->first();
+
+            //return Response::json($p_xray, 200, array(), JSON_PRETTY_PRINT);
+
+            $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientReport.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
     }
 
     
