@@ -45,7 +45,11 @@
                     			@if(!$reason)
                     			<td>N / A</td>
                     			@else
-                        		<td>{{$reason->chief_complaint}}</td>
+                                    @if(!$reason->chief_complaint)
+                                        <td>N / A</td>
+                                    @else
+                        		      <td>{{$reason->chief_complaint}}</td>
+                                    @endif
                         		@endif
                     		</tr>
                     		<tr>
@@ -53,7 +57,11 @@
                         		@if(!$reason)
                         		<td>N / A</td>
                     			@else
-                        		<td>{{$reason->history_of_present_illness}}</td>
+                                    @if(!$reason->chief_complaint)
+                                        <td>N / A</td>
+                                    @else
+                        		        <td>{{$reason->history_of_present_illness}}</td>
+                                    @endif
                         		@endif
                     		</tr>
                 		</tbody>
@@ -72,7 +80,11 @@
                         			@if(!$past)
                         				N / A
                         			@else
-                        				{{$past->surgery}}
+                                        @if(!$past->surgery)
+                                            N / A
+                                        @else
+                                            {{$past->surgery}}
+                                        @endif
                         			@endif
                         			<br>
                         		<hr>
@@ -105,7 +117,11 @@
                         			@if(!$past)
                         				N / A
                         			@else
-                        				{{$past->hypertension}}
+                                        @if(!$past->hypertension)
+                                            N / A
+                                        @else
+                                            {{$past->hypertension}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -115,7 +131,11 @@
                         			@if(!$past)
                         				N / A
                         			@else
-                        				{{$past->diabetes_mellitus}}
+                                        @if(!$past->diabetes_mellitus)
+                                            N / A
+                                        @else
+                                            {{$past->diabetes_mellitus}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -125,7 +145,11 @@
                         			@if(!$past)
                         				N / A
                         			@else
-                        				{{$past->previous_hospitalization}}
+                                        @if(!$past->previous_hospitalization)
+                                            N / A
+                                        @else
+                                            {{$past->previous_hospitalization}}
+                                        @endif
                         			@endif
                         		<br>
                         		<hr>
@@ -158,7 +182,11 @@
                         			@if(!$past)
                         				N / A
                         			@else
-                        				{{$past->diseases_diagnosed}}
+                                        @if(!$past->diseases_diagnosed)
+                                            N / A
+                                        @else
+                                            {{$past->diseases_diagnosed}}
+                                        @endif
                         			@endif
                         		<br>
                         		<hr>
@@ -191,7 +219,11 @@
                         			@if(!$past)
                         				N / A
                         			@else
-                        				{{$past->vaccination1001}}
+                                        @if(!$past->vaccination)
+                                            N / A
+                                        @else
+                                            {{$past->vaccination}}
+                                        @endif
                         			@endif
                         		<br>
                         		<hr>
@@ -234,12 +266,19 @@
                         			@if(!$social)
                         				N / A
                         			@else
-                        				{{$social->allergy}}
+                                        @if(!$social->allergy)
+                                            N / A
+                                        @else
+                                            {{$social->allergy}}
+                                        @endif
                         			@endif
                         		<br>
                         			@if(!$social)
                         			@else
-                        				{{$social->allergy_desc}}
+                                        @if(!$social->allergy_desc)
+                                        @else
+                                            {{$social->allergy_desc}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -249,12 +288,19 @@
                         			@if(!$social)
                         				N / A
                         			@else
-                        				{{$social->alcohol}}
+                                        @if(!$social->alcohol)
+                                            N / A
+                                        @else
+                                            {{$social->alcohol}}
+                                        @endif
                         			@endif
                         		<br>
                         			@if(!$social)
                         			@else
-                        				{{$social->alcohol_desc}}
+                                        @if(!$social->alcohol_desc)
+                                        @else
+                                            {{$social->alcohol_desc}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -264,12 +310,19 @@
                         			@if(!$social)
                         				N / A
                         			@else
-                        				{{$social->smoke}}
+                                        @if(!$social->smoke)
+                                            N / A
+                                        @else
+                                            {{$social->smoke}}
+                                        @endif
                         			@endif
                         		<br>
                         			@if(!$social)
                         			@else
-                        				{{$social->smoke_desc}}
+                                        @if(!$social->smoke_desc)
+                                        @else
+                                            {{$social->smoke_desc}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -289,7 +342,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->gen_survey}}
+                                        @if(!$PE->gen_survey)
+                                            N / A
+                                        @else
+                                            {{$PE->gen_survey}}
+                                        @endif
                         			@endif	
                         		</td>
                     		</tr>
@@ -304,7 +361,11 @@
                                 					@if(!$PE)
                         								N / A
                         							@else
-                        								{{$PE->bp}}
+                                                        @if(!$PE->bp)
+                                                            N / A
+                                                        @else
+                                                            {{$PE->bp}}
+                                                        @endif
                         							@endif
                                 				</td> 
                                 			</tr> 
@@ -314,7 +375,11 @@
                                 					@if(!$PE)
                         								N / A
                         							@else
-                        								{{$PE->hr}}
+                                                        @if(!$PE->hr)
+                                                            N / A
+                                                        @else
+                                                            {{$PE->hr}}
+                                                        @endif
                         							@endif
                                 				</td> 
                                 			</tr> 
@@ -324,7 +389,11 @@
                                 					@if(!$PE)
                         								N / A
                         							@else
-                        								{{$PE->rr}}
+                                                        @if(!$PE->rr)
+                                                            N / A
+                                                        @else
+                                                            {{$PE->rr}}
+                                                        @endif
                         							@endif
                                 				</td> 
                                 			</tr> 
@@ -334,7 +403,11 @@
                                 					@if(!$PE)
                         								N / A
                         							@else
-                        								{{$PE->temp}}
+                                                        @if(!$PE->temp)
+                                                            N / A
+                                                        @else
+                                                            {{$PE->temp}}
+                                                        @endif
                         							@endif
                                 				</td> 
                                 			</tr> 
@@ -349,7 +422,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->head}}
+                                        @if(!$PE->head)
+                                            N / A
+                                        @else
+                                            {{$PE->head}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -359,7 +436,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->neck}}
+                                        @if(!$PE->neck)
+                                            N / A
+                                        @else
+                                            {{$PE->neck}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -369,7 +450,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->chest_lung}}
+                                        @if(!$PE->chest_lung)
+                                            N / A
+                                        @else
+                                            {{$PE->chest_lung}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -379,7 +464,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->heart}}
+                                        @if(!$PE->heart)
+                                            N / A
+                                        @else
+                                            {{$PE->heart}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -389,7 +478,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->abdomen}}
+                                        @if(!$PE->abdomen)
+                                            N / A
+                                        @else
+                                            {{$PE->abdomen}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -399,7 +492,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->back}}
+                                        @if(!$PE->back)
+                                            N / A
+                                        @else
+                                            {{$PE->back}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -409,7 +506,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->extermity}}
+                                        @if(!$PE->extermity)
+                                            N / A
+                                        @else
+                                            {{$PE->extermity}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -419,7 +520,11 @@
                         			@if(!$PE)
                         				N / A
                         			@else
-                        				{{$PE->neuro_exam}}
+                                        @if(!$PE->neuro_exam)
+                                            N / A
+                                        @else
+                                            {{$PE->neuro_exam}}
+                                        @endif
                         			@endif
                         		</td>
                     		</tr>
@@ -435,422 +540,547 @@
             			@if(!$diagnosis)
             				N / A
             			@else
-            				{{$diagnosis->diagnosis}}
+                            @if(!$diagnosis->diagnosis)
+                                N / A
+                            @else
+                                {{$diagnosis->diagnosis}}
+                            @endif
             			@endif
             		</p>
             	</td>
             </tr>
 
             <tr>
-            	<td>
-            	<h3><i>PLAN</i></h3>
-            		<p>
-            			@if(!$plan)
-            				N / A
-            			@else
-            				{{$plan->plan}}
-            			@endif
-            		</p>
-            	</td>
+                <td>
+                <h3><i>PLAN</i></h3>
+                    <p>
+                        @if(!$plan)
+                            N / A
+                        @else
+                            @if(!$plan->plan)
+                                N / A
+                            @else
+                                {{$plan->plan}}
+                            @endif
+                        @endif
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <h3><i>MEDICATIONS</i></h3>
+                    <table border="1" cellpadding="3" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <th style="text-align: center">Drug</th>
+                                <th style="text-align: center">Frequency</th>
+                                <th style="text-align: center">Quantity</th>
+                                <th style="text-align: center">Status</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h3><i>X-Ray</i></h3>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 20%;"><b>X-Ray Date:</b></td>
+                                <td style="width: 80%;">
+                                    @if(!$p_xray)
+                                        N / A
+                                    @else
+                                        @foreach($p_xray->xraydate as $datdat)
+                                            @if(!$datdat->id)
+                                                {{$p_xray->xray_date}}
+                                            @else
+                                                {{$datdat->date}}
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Physician Name:</b></td>
+                                <td>
+                                    @if(!$p_xray)
+                                        N / A
+                                    @else
+                                        {{$p_xray->doctor->f_name}} {{$p_xray->doctor->f_name}} {{$p_xray->doctor->f_name}}, {{$p_xray->doctor->credential}}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Result / Finding:</b></td>
+                                <td>
+                                    @if(!$p_xray)
+                                        N / A
+                                    @else
+                                        <b>{{$p_xray->finding}}</b>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="text-align: justify;">
+                                    @if(!$p_xray)
+                                        N / A
+                                    @else
+                                        @if(!$p_xray->finding_info)
+                                            N / A
+                                        @else
+                                            {{$p_xray->finding_info}}
+                                        @endif
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <h3><i>Lab Test</i></h3>
+                    <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urinalysis</h4>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 35%; text-align: right;"><b>Physician Name:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    @if(!$uriuri)
+                                        N / A
+                                    @else
+                                        {{$uriuri->phy->f_name}} {{$uriuri->phy->f_name}} {{$uriuri->phy->f_name}}, {{$uriuri->phy->credential}}
+                                    @endif
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 35%; text-align: right;"><b>PHYSICAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    @if(!$uriuri)
+                                        N / A
+                                    @else
+                                        {{$uriuri->physical}}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%; text-align: right;"></td>
+                                <td>
+                                    <table border="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 60%;"><b>Color:</b></td>
+                                                <td style="width: 40%;">
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->color)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->color}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><b>Transparency:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->transparency)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->transparency}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><b>Suriuricific Gravity:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->specific_gravity)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->specific_gravity}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr> 
+                                        </tbody>
+                                    </table>
+                                    <hr>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 35%; text-align: right;"><b>CHEMICAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    @if(!$uriuri)
+                                        N / A
+                                    @else
+                                        {{$uriuri->chemical}}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%; text-align: right;"></td>
+                                <td>
+                                    <table border="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 60%;"><b>Glucose:</b></td>
+                                                <td style="width: 40%;">
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->glucose)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->glucose}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><b>Bilirubin:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->bilirubin)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->bilirubin}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><b>Ketone:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->ketone)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->ketone}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Blood:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->blood)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->blood}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>pH:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->ph)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->ph}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Protein:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->protein)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->protein}}
+                                                        @endif
+                                                        
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Urobilinogen:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->urobilinogen)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->urobilinogen}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Nitrities:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->nitrites)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->nitrites}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Leucocytes:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->leucocytes)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->leucocytes}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <hr>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 35%; text-align: right;"><b>MICROSCOPIC:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    @if(!$uriuri)
+                                        N / A
+                                    @else
+                                        {{$uriuri->microscopic}}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%; text-align: right;"></td>
+                                <td>
+                                    <table border="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 60%;"><b>WBC:</b></td>
+                                                <td style="width: 40%;">
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->wbc)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->wbc}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><b>RBC:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->rbc)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->rbc}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr> 
+                                            <tr>
+                                                <td><b>Epith. Cells:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->epith_cell)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->epith_cell}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Bacteria:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->bacteria)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->bacteria}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Cast(s):</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->cast)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->cast}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->cast2)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->cast2}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Crystal(s):</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->crystal)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->crystal}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        
+                                                    @else
+                                                        @if(!$uriuri->crystal2)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->crystal2}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Amorphous Materials:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->amorphous_material)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->amorphous_material}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Mucus Thread:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->mucus_thread)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->mucus_thread}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td><b>Others:</b></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->other)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->other}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->other2)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->other2}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->other3)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->other3}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <hr>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
             </tr>
 
             <tr>
             	<td>
-            	<h3><i>MEDICATIONS</i></h3>
-             		<table border="1" cellpadding="3" cellspacing="0">
-                		<tbody>
-                			<tr>
-                    			<th style="text-align: center">Drug</th>
-                    			<th style="text-align: center">Frequency</th>
-                    			<th style="text-align: center">Quantity</th>
-                    			<th style="text-align: center">Status</th>
-                			</tr>
-           				</tbody>
-           			</table>
-            	</td>
-            </tr>
-
-            <tr>
-            	<td>
-            		<h3><i>X-Ray</i></h3>
-                	<table>
-                    	<tbody>
-                    		<tr>
-                        		<td style="width: 20%;"><b>X-Ray Date:</b></td>
-                        		<td style="width: 80%;">
-                        			@if(!$p_xray)
-                        				N / A
-                        			@else
-                        				@foreach($p_xray->xraydate as $datdat)
-                        					@if(!$datdat->id)
-                        						{{$p_xray->xray_date}}
-                        					@else
-                        						{{$datdat->date}}
-                        					@endif
-                        				@endforeach
-                        			@endif
-                        		</td>
-                    		</tr>
-                    		<tr>
-                        		<td><b>Physician Name:</b></td>
-                        		<td>
-                        			@if(!$p_xray)
-                        				N / A
-                        			@else
-                        				{{$p_xray->doctor->f_name}} {{$p_xray->doctor->f_name}} {{$p_xray->doctor->f_name}}, {{$p_xray->doctor->credential}}
-                        			@endif
-                        		</td>
-                    		</tr>
-                    		<tr>
-                        		<td><b>Result / Finding:</b></td>
-                        		<td>
-                        			@if(!$p_xray)
-                        				N / A
-                        			@else
-                        				<b>{{$p_xray->finding}}</b>
-                        			@endif
-                        		</td>
-                    		</tr>
-                    		<tr>
-                        		<td></td>
-                        		<td style="text-align: justify;">
-                        			@if(!$p_xray)
-                        				N / A
-                        			@else
-                        				{{$p_xray->finding_info}}
-                        			@endif
-                        		</td>
-                    		</tr>
-                		</tbody>
-                	</table>
-            	</td>
-            </tr>
-
-            <tr>
-            	<td>
-            	<h3><i>Lab Test</i></h3>
-            		<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urinalysis</h4>
-                	<table>
-                    	<tbody>
-                    		<tr>
-                        		<td style="width: 35%; text-align: right;"><b>Physician Name:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        		<td>
-                        			@if(!$uriuri)
-                        				N / A
-                        			@else
-                        				{{$uriuri->doctor->f_name}} {{$uriuri->doctor->f_name}} {{$uriuri->doctor->f_name}}, {{$uriuri->doctor->credential}}
-                        			@endif
-                        		</td>
-                    		</tr>
-
-                    		<tr>
-                        		<td style="width: 35%; text-align: right;"><b>PHYSICAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        		<td>
-                        			Yes
-                        		</td>
-                    		</tr>
-                        	<tr>
-                        		<td style="width: 25%; text-align: right;"></td>
-                        		<td>
-                            		<table border="0" cellpadding="0">
-                                		<tbody>
-                                			<tr>
-                                				<td style="width: 50%;"><b>Color:</b></td>
-                                				<td style="width: 50%;">
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->bp}}
-                        							@endif
-                                				</td> 
-                                			</tr> 
-                                			<tr>
-                                				<td><b>Transparency:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->hr}}
-                        							@endif
-                                				</td> 
-                                			</tr> 
-                                			<tr>
-                                				<td><b>Specific Gravity:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr> 
-                            			</tbody>
-                            		</table>
-                            		<hr>
-                        		</td>
-                    		</tr>
-
-                    		<tr>
-                        		<td style="width: 35%; text-align: right;"><b>CHEMICAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        		<td>
-                        			Yes
-                        		</td>
-                    		</tr>
-                    		<tr>
-                        		<td style="width: 25%; text-align: right;"></td>
-                        		<td>
-                            		<table border="0" cellpadding="0">
-                                		<tbody>
-                                			<tr>
-                                				<td style="width: 50%;"><b>Glucose:</b></td>
-                                				<td style="width: 50%;">
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->bp}}
-                        							@endif
-                                				</td> 
-                                			</tr> 
-                                			<tr>
-                                				<td><b>Bilirubin:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->hr}}
-                        							@endif
-                                				</td> 
-                                			</tr> 
-                                			<tr>
-                                				<td><b>Ketone:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Blood:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>pH:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Protein:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Urobilinogen:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Nitrities:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Leucocytes:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                            			</tbody>
-                            		</table>
-                            		<hr>
-                        		</td>
-                    		</tr>
-
-                    		<tr>
-                        		<td style="width: 35%; text-align: right;"><b>MICROSCOPIC:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        		<td>
-                        			Yes
-                        		</td>
-                    		</tr>
-                    		<tr>
-                        		<td style="width: 25%; text-align: right;"></td>
-                        		<td>
-                            		<table border="0" cellpadding="0">
-                                		<tbody>
-                                			<tr>
-                                				<td style="width: 50%;"><b>WBC:</b></td>
-                                				<td style="width: 50%;">
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->bp}}
-                        							@endif
-                                				</td> 
-                                			</tr> 
-                                			<tr>
-                                				<td><b>RBC:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->hr}}
-                        							@endif
-                                				</td> 
-                                			</tr> 
-                                			<tr>
-                                				<td><b>Epith. Cells:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Bacteria:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Cast(s):</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Cast(s):</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Crystal(s):</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Crystal(s):</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Amorphous Materials:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Mucus Thread:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Others:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Others:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                                			<tr>
-                                				<td><b>Others:</b></td>
-                                				<td>
-                                					@if(!$PE)
-                        								N / A
-                        							@else
-                        								{{$PE->rr}}
-                        							@endif
-                                				</td> 
-                                			</tr>
-                            			</tbody>
-                            		</table>
-                            		<hr>
-                        		</td>
-                    		</tr>
-                		</tbody>
-                	</table>
-            	</td>
-            </tr>
-
-            <tr>
-            	<td>
-            	<h2>TOTAL : &nbsp;&nbsp;&nbsp;PHP. 100.00</h2>
+            	<h2>TOTAL : &nbsp;&nbsp;&nbsp;PHP. <?php echo number_format($income, 2, '.', '');?></h2>
             	</td>
             </tr>
 

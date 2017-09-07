@@ -19,12 +19,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
         @if(Session::get('user') != 0)
+        <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+                <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             </ul>
         </li>
         @else
@@ -53,7 +54,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <section class="content-header">
         <h1><i class="fa fa-user-md"></i> Users</h1>
         <ol class="breadcrumb">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
             <li class="active"><a href="/NFHSI/users"><b>Users</b></a></li>

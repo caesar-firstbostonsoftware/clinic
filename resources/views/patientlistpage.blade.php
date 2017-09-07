@@ -19,13 +19,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
         @if(Session::get('position') == "Doctor")
+        <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
         <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+                <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             </ul>
         </li>
         @if(Session::get('user') == 1)
@@ -45,8 +46,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <section class="content-header">
         <h1><i class="fa fa-users"></i> Patients</h1>
         <ol class="breadcrumb">
-            <li><a href="#">Dashboard</a></li>
+            
             @if(Session::get('position') == "Doctor")
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             @endif
             <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
@@ -73,8 +75,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <th style="width: 5%;">ID</th>
                                                     <th style="width: 25%;">Name</th>
                                                     <th style="width: 5%;">Gender</th>
-                                                    <th style="width: 9%;">DOB</th>
-                                                    <th style="width: 5%;">Age</th>
+                                                    <th style="width: 14%;">Last Visit Date</th>
                                                     <th style="width: 5%;">Status</th>
                                                     <th style="width: 45%;">Action</th>
                                                 </tr>
@@ -90,7 +91,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
                                                     <td>{{$patient->gender}}</td>
                                                     <td>{{$patient->dob}}</td>
-                                                    <td>{{$patient->age}}</td>
                                                     <td>
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
@@ -120,14 +120,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
 
 
-        <div class="modal fade" id="modal_visits" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="modal_visits" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
-                        <h4 class="modal-title" id="myModalLabel">Patient Visits</h4>
+                        <h4 class="modal-title" id="myModalLabel">Patient Visits <a href="#" class="btn btn-primary btn-sm addnewvisit">Add New Visit</a></h4>
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive">
@@ -135,7 +135,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <thead>
                                     <tr>
                                         <th>Order</th>
-                                        <th>Date &amp; Time</th>
+                                        <th>Date</th>
                                         <th>Purpose of Visit</th>
                                         <th>Action</th>
                                     </tr>
@@ -146,27 +146,92 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </table>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="modal_edit_patient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="modal_editvisit" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
-                        <!-- <h4 class="modal-title" id="myModalLabel">Edit Personal Info</h4> -->
+                        <h4 class="modal-title" id="myModalLabel">Services</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal posteditvisit" id="posteditvisit" method="post" action="/NFHSI/editvisit">
+                        {!! csrf_field() !!}
+                        <input type="text" name="editvisit_p_id" class="editvisit_p_id" style="display: none;">
+                        <input type="text" name="editvisit_v_id" class="editvisit_v_id" style="display: none;">
+                        @foreach($adminpanelcat as $cat)
+                            <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
+                                @foreach($adminpanel as $panel)
+                                    @if($cat->id == $panel->admin_panel_cat_id)
+                                        <div class="row">
+                                            <label class="col-sm-1 control-label"></label>
+                                            <div class="col-sm-6">
+                                                <label>
+                                                    <input type="checkbox" class="{{$panel->id}} cate cateservices" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b>
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-2" style="text-align: right;">
+                                                @if($panel->price == 0)
+                                                <label><b></b></label>
+                                                @else
+                                                <?php $price = number_format($panel->price,2); ?>
+                                                <label class="priceprice"><b> {{$price}}</b></label>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @foreach($sub as $panelsub)
+                                            @if($panel->id == $panelsub->admin_panel_id)
+                                                <div class="row">
+                                                    <label class="col-sm-1 control-label"></label>
+                                                    <div class="col-sm-6">
+                                                        <label>
+                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}} cateservices" name="services[]" value="{{$panelsub->admin_panel_id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-2" style="text-align: right;">
+                                                        <?php $price = number_format($panelsub->price,2); ?>
+                                                        <label class="priceprice"><b> {{$price}}</b></label>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endforeach
+                            <hr>
+                            <div class="row">
+                                <label class="col-sm-5 control-label total" style="text-align: left;">
+                                    <b>Total : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Php. <i class="totaltotal">0.00</i>
+                                    <input type="text" name="totalprice" class="totalprice" style="display: none;">
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" form="posteditvisit" id="btn-submit-personal_info" type="submit">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal_edit_patient" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Edit Personal Info</h4>
                     </div>
                     <div class="modal-body">
                             <form class="form-horizontal posteditpatient" id="posteditpatient" method="post" action="/NFHSI">
                             {!! csrf_field() !!}
                             <input class="edit_p_id" name="p_id" type="text" style="display: none;">
-                            <h3>Edit Personal Info</h3>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
@@ -216,7 +281,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </div>
                                 </div>
 
-                                <h3>Services</h3>
+                                <!-- <h3>Services</h3>
                                 @foreach($adminpanelcat as $cat)
                                 <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
                                     @foreach($adminpanel as $panel)
@@ -225,7 +290,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <label class="col-sm-1 control-label"></label>
                                                 <div class="col-sm-6">
                                                     <label>
-                                                        <input type="checkbox" class="{{$panel->id}} cate" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b>
+                                                        <input type="checkbox" class="{{$panel->id}} cate cateservices" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b>
                                                     </label>
                                                 </div>
                                                 <div class="col-sm-2" style="text-align: right;">
@@ -233,7 +298,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <label><b></b></label>
                                                     @else
                                                     <?php $price = number_format($panel->price,2); ?>
-                                                    <label><b> {{$price}}</b></label>
+                                                    <label class="priceprice"><b> {{$price}}</b></label>
                                                     @endif
                                                 </div>
                                             </div>
@@ -243,12 +308,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <label class="col-sm-1 control-label"></label>
                                                         <div class="col-sm-6">
                                                             <label>
-                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}}" name="services[]" value="{{$panelsub->admin_panel_id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}} cateservices" name="services[]" value="{{$panelsub->admin_panel_id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b>
                                                             </label>
                                                         </div>
                                                         <div class="col-sm-2" style="text-align: right;">
                                                             <?php $price = number_format($panelsub->price,2); ?>
-                                                            <label><b> {{$price}}</b></label>
+                                                            <label class="priceprice"><b> {{$price}}</b></label>
                                                         </div>
                                                     </div>
                                                 @endif
@@ -256,6 +321,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @endif
                                     @endforeach
                                 @endforeach
+                                <hr>
+                                <div class="form-group ">
+                                    <label class="col-sm-5 control-label total" style="text-align: left;">
+                                        <b>Total : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Php. <i class="totaltotal">0.00</i>
+                                        <input type="text" name="totalprice" class="totalprice" style="display: none;">
+                                    </label>
+                                </div> -->
 
                             </form>
                     </div>
@@ -303,6 +375,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     $('.viewvisit').on( 'click', function(e){
         var p_id = $(this).data('id');
         $('.visitlist_modal').empty();
+        $('.addnewvisit').removeAttr('href','href');
+        $('.addnewvisit').attr('href','/newvisit/'+p_id+'');
         $.get('api/modalavisit?p_id=' + p_id, function(data){
             $.each(data, function(index, visit){
                 $('.visitlist_modal').append('<tr>\
@@ -310,16 +384,76 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.visit_date+'</td>\
                     <td>'+visit.purpose_visit+'</td>\
                     <td>\
+                        <button class="btn btn-sm btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-info">View</a>\
                         <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-success">Print</a>\
                     </td>\
                 </tr>');
             })
+
+            $('.cateservices').click(function() {
+                if ($(this).is(':checked')) {
+                    var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
+                    var totaltotal = parseFloat($('.totaltotal').html());
+                        if (!priceprice) {
+                            var price2price = 0.00;
+                        }
+                        else {
+                            var price2price = priceprice;
+                        }
+                    var totals = price2price + totaltotal;
+                    var finaltotal = totals.toFixed(2);
+                    $('.totaltotal').empty();
+                    $('.totaltotal').append(''+finaltotal+'');
+                    $('.totalprice').empty();
+                    $('.totalprice').val(finaltotal);
+            
+                }
+                else {
+                    var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
+                    var totaltotal = parseFloat($('.totaltotal').html());
+                        if (!priceprice) {
+                            var price2price = 0.00;
+                        }
+                        else {
+                            var price2price = priceprice;
+                        }
+                    var totals = totaltotal - price2price;
+                    var finaltotal = totals.toFixed(2);
+                    $('.totaltotal').empty();
+                    $('.totaltotal').append(''+finaltotal+'');
+                    $('.totalprice').empty();
+                    $('.totalprice').val(finaltotal);
+                }
+            });
+
+            $('.editvisit').on( 'click', function(e){
+                var p_id = $(this).data('p_id');
+                var v_id = $(this).data('v_id');
+                $('.editvisit_p_id').removeAttr('value','value');
+                $('.editvisit_p_id').attr('value',p_id);
+                $('.editvisit_v_id').removeAttr('value','value');
+                $('.editvisit_v_id').attr('value',v_id);
+
+                $('.totaltotal').empty();
+                $('.totalprice').empty();
+                $.get('api/modalaeditpatient?p_id=' + p_id + '&v_id=' + v_id, function(data){
+                    $('.totaltotal').append(''+data.patient.totalbill+'');
+                    $('.totalprice').val(data.patient.totalbill);
+                $.each(data.adminpanel, function(index, panel){
+                    $('.'+panel.admin_panel_id+'').attr('checked','checked')
+                    $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').removeAttr('disabled','disabled')
+                    $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').attr('checked','checked')
+                })
+            })
+            });
+
         })
     });
 
     $('.editpatient').on( 'click', function(e){
         var p_id = $(this).data('id');
+        var v_id = 0;
         $('.edit_p_id').empty();
         $('.edit_fname').empty();
         $('.edit_mname').empty();
@@ -329,7 +463,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $('.edit_dob').empty();
         $('.edit_age').empty();
         $('.purpose_visit').empty();
-        $.get('api/modalaeditpatient?p_id=' + p_id, function(data){
+        //$('.totaltotal').empty();
+        //$('.totalprice').empty();
+        $.get('api/modalaeditpatient?p_id=' + p_id + '&v_id=' + v_id, function(data){
             $('.edit_p_id').val(data.patient.id);
             $('.edit_fname').val(data.patient.f_name);
             $('.edit_mname').val(data.patient.m_name);
@@ -351,12 +487,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.patient_visit_id').val(data.patient.patient_visit_id)
                 $('.purpose_visit').val(data.patient.purpose_visit)
             }
+            //$('.totaltotal').append(''+data.patient.totalbill+'');
+            //$('.totalprice').val(data.patient.totalbill);
 
-            $.each(data.adminpanel, function(index, panel){
-                $('.'+panel.admin_panel_id+'').attr('checked','checked')
-                $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').removeAttr('disabled','disabled')
-                $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').attr('checked','checked')
-            })
+            // $.each(data.adminpanel, function(index, panel){
+            //     $('.'+panel.admin_panel_id+'').attr('checked','checked')
+            //     $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').removeAttr('disabled','disabled')
+            //     $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').attr('checked','checked')
+            // })
 
         })
     });

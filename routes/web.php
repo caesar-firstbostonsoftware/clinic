@@ -52,6 +52,12 @@ Route::post('/visit/{id}/{vid}/urinalysis', 'PatientsController@newurinalysis');
 
 Route::get('/NFHSI/services', 'AdminPanelContoller@services');
 
+Route::get('/dashboard', 'AdminPanelContoller@dashboard');
+
+Route::post('/NFHSI/editvisit', 'PatientsController@editvisit');
+Route::get('/newvisit/{id}', 'PatientsController@newvisit1002');
+Route::get('/generate/medcert', 'DoctorsController@medcert');
+
 // --- PDF ---
 Route::get('/pdf/view/{id}/{datefrom}/{dateto}', 'DoctorsController@printreport');
 Route::get('/patient/pdf/view/{id}/{vid}', 'PatientsController@patientprintreport');

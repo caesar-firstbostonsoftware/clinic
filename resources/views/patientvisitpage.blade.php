@@ -28,13 +28,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
         @if(Session::get('position') == "Doctor")
+        <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
         <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+                <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             </ul>
         </li>
         @if(Session::get('user') == 1)
@@ -54,8 +55,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <section class="content-header">
         <h1><i class="fa fa-users"></i> Patients</h1>
         <ol class="breadcrumb">
-            <li><a href="#">Dashboard</a></li>
+            
             @if(Session::get('position') == "Doctor")
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             @endif
             <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
@@ -142,7 +144,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="flash-message top-message topmessage">
                                 @foreach (['danger', 'warning', 'success', 'info'] as $message)
                                     @if(Session::has('alert-' . $message))
-                                        <p class="alert alert-{{ $message }}" style="padding:.5px;height:22px; width:100%; margin-left: -5%; margin-top: 5%">{{ Session::get('alert-' . $message) }}</p>
+                                        <p class="alert alert-{{ $message }}" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">{{ Session::get('alert-' . $message) }}</p>
                                     @endif
                                 @endforeach
                             </div>
@@ -240,11 +242,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <label for="inputEmail3" class="col-sm-2 control-label"></label>
                                             @if(!$reasonforconsulation)
                                             <div class="col-sm-3 subsubRFC">
-                                                <button class="btn btn-primary submit_RFC" id="btn-submit-consult_reason" type="button">Submit</button>
+                                                <button class="btn btn-primary btn-sm submit_RFC" id="btn-submit-consult_reason" type="button">Submit</button>
                                             </div>
                                             @else
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary edit_RFC" id="btn-submit-consult_reason" type="button">Save Changes</button>
+                                                <button class="btn btn-primary btn-sm edit_RFC" id="btn-submit-consult_reason" type="button">Save Changes</button>
                                             </div>
                                             @endif
                                         </div>
@@ -897,10 +899,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <label for="inputEmail3" class=" control-label"></label>
                                             <div class="col-sm-3 med_his_butt">
                                             @if(!$PMH)
-                                            <button class="btn btn-primary medical_history" id="btn-submit-medical_history" type="button">Submit</button>
-                                            <button class="btn btn-primary edit_medical_history" id="btn-submit-medical_history" type="button" style="display: none;">Save Changes</button>
+                                            <button class="btn btn-primary btn-sm medical_history" id="btn-submit-medical_history" type="button">Submit</button>
+                                            <button class="btn btn-primary btn-sm edit_medical_history" id="btn-submit-medical_history" type="button" style="display: none;">Save Changes</button>
                                             @else
-                                            <button class="btn btn-primary edit_medical_history" id="btn-submit-medical_history" type="button">Save Changes</button>
+                                            <button class="btn btn-primary btn-sm edit_medical_history" id="btn-submit-medical_history" type="button">Save Changes</button>
                                             @endif  
                                             </div>
                                         </div>
@@ -964,7 +966,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label"></label>
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary addsocial_history" id="btn-submit-social_history" type="button">Submit</button>
+                                                <button class="btn btn-primary btn-sm addsocial_history" id="btn-submit-social_history" type="button">Submit</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1006,7 +1008,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             </div>
                                             <div class="col-sm-2">
                                                 @if($SH->alcohol == "Yes")
-                                                <input class="form-control how_much_drink" name="how_much_drink" id="how_much_drink" placeholder="How much?" value="{{$SH->allergy_desc}}" type="text">
+                                                <input class="form-control how_much_drink" name="how_much_drink" id="how_much_drink" placeholder="How much?" value="{{$SH->alcohol_desc}}" type="text">
                                                 @endif
                                             </div>
                                         </div>
@@ -1026,7 +1028,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             </div>
                                             <div class="col-sm-2">
                                                 @if($SH->smoke == "Yes")
-                                                <input class="form-control packs" name="packs" id="packs" placeholder="Packs - Years " value="{{$SH->allergy_desc}}" type="text">
+                                                <input class="form-control packs" name="packs" id="packs" placeholder="Packs - Years " value="{{$SH->smoke_desc}}" type="text">
                                                 @endif
                                             </div>
                                         </div>
@@ -1035,7 +1037,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label"></label>
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary addsocial_history" id="btn-submit-social_history" type="button">Save Changes</button>
+                                                <button class="btn btn-primary btn-sm addsocial_history" id="btn-submit-social_history" type="button">Save Changes</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1066,25 +1068,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">BP</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control bp" id="bp" name="bp" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">HR</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control hr" id="hr" name="hr" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">RR</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control rr" id="rr" name="rr" value="" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">Temp.</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control temp" id="temp" name="temp" value="" type="text">
                                             </div>
                                         </div>
@@ -1141,7 +1143,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label"></label>
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary addphysical_exam" id="btn-submit-physical_exam" type="button">Submit</button>
+                                                <button class="btn btn-primary btn-sm addphysical_exam" id="btn-submit-physical_exam" type="button">Submit</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1158,25 +1160,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">BP</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control bp" id="bp" name="bp" value="{{$PE->bp}}" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">HR</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control hr" id="hr" name="hr" value="{{$PE->hr}}" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">RR</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control rr" id="rr" name="rr" value="{{$PE->rr}}" type="text">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-3 control-label">Temp.</label>
-                                            <div class="col-sm-1">
+                                            <div class="col-sm-2">
                                                 <input class="form-control temp" id="temp" name="temp" value="{{$PE->temp}}" type="text">
                                             </div>
                                         </div>
@@ -1233,7 +1235,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label"></label>
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary addphysical_exam" id="btn-submit-physical_exam" type="button">Save Changes</button>
+                                                <button class="btn btn-primary btn-sm addphysical_exam" id="btn-submit-physical_exam" type="button">Save Changes</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1262,7 +1264,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @else
                                         <div class="form-group">
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary adddiagnosis" id="btn-submit-diagnosis" type="button">Submit</button>
+                                                <button class="btn btn-primary btn-sm adddiagnosis" id="btn-submit-diagnosis" type="button">Submit</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1277,7 +1279,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @else
                                         <div class="form-group">
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary adddiagnosis" id="btn-submit-diagnosis" type="button">Save Changes</button>
+                                                <button class="btn btn-primary btn-sm adddiagnosis" id="btn-submit-diagnosis" type="button">Save Changes</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1306,7 +1308,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @else
                                         <div class="form-group">
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary addplan" id="btn-submit-plan" type="button">Submit</button>
+                                                <button class="btn btn-primary btn-sm addplan" id="btn-submit-plan" type="button">Submit</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1321,7 +1323,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @else
                                         <div class="form-group">
                                             <div class="col-sm-3">
-                                                <button class="btn btn-primary addplan" id="btn-submit-plan" type="button">Save Changes</button>
+                                                <button class="btn btn-primary btn-sm addplan" id="btn-submit-plan" type="button">Save Changes</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1335,7 +1337,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="col-md-12">
                             <div class="flash-message top-message topmessage8"></div>
                                 <h3>Medications 
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
                                     <!-- <a href="#" target="_blank" class="btn btn-warning">Generate Rx</a> -->
                                 </h3>
                                 <div class="table-responsive">
@@ -1401,7 +1403,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary" id="btn-add-medication" data-loading-text="Saving..." autocomplete="off">Submit</button>
+                                                <button type="button" class="btn btn-primary btn-sm" id="btn-add-medication" data-loading-text="Saving..." autocomplete="off">Submit</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1416,7 +1418,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 @else
                                     @if($xraycount == 1)
                                     @else
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
                                     @endif
                                 @endif
                                 </h3>
@@ -1449,7 +1451,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <td class="text-center">
                                                 @if(!Session::get('user'))
                                                 @else
-                                                    <button type="button" class="btn btn-sm btn-primary editpatientxray" data-toggle="modal" data-target="#modal_xraynew_edit" data-backdrop="static" data-id="{{$xray->id}}">Edit</button>
+                                                    <button type="button" class="btn btn-sm btn-primary btn-sm editpatientxray" data-toggle="modal" data-target="#modal_xraynew_edit" data-backdrop="static" data-id="{{$xray->id}}">Edit</button>
                                                     <button class="btn btn-sm btn-success">Print</button>
                                                     <button type="button" class="btn btn-sm btn-warning patientxraylog" data-toggle="modal" data-target="#modal_patientxraylog" data-backdrop="static" data-id="{{$xray->id}}">Logs</button>
                                                 @endif
@@ -1546,7 +1548,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="form-group">
                                                             <label for="inputEmail3" class="control-label"></label>
                                                             <div class="col-sm-3">
-                                                                <button class="btn btn-primary" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                                <button class="btn btn-primary btn-sm" id="btn-submit-social_history" type="submit">Save Changes</button>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -1656,7 +1658,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="control-label"></label>
                                                 <div class="col-sm-3">
-                                                    <button class="btn btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                    <button class="btn btn-primary btn-sm" id="btn-submit-social_history" type="submit">Submit</button>
                                                 </div>
                                             </div>
 
@@ -1728,7 +1730,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 @else
                                 @if($uricount >= 1)
                                 @else
-                                    <button type="button" class="btn btn-primary newurinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
+                                    <button type="button" class="btn btn-primary btn-sm newurinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
                                 @endif
                                 @endif
                                 </h3>
@@ -2083,6 +2085,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div><br>
+                                                <div class="row">
+                                                    <div class="col-sm-12" >
+                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                        <div class="row">
+                                                            <div class="col-sm-2">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                            </div>
+                                                            <div class="col-sm-10">
+                                                                <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div><br>
 
@@ -2090,16 +2105,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <label class="col-sm-6 control-label patho" style="text-align: center;"></label>
                                                 <label class="col-sm-6 control-label uri_rmt" style="text-align: center;"></label>
                                             </div>
-                                            <div class="form-group divxrayinfo docs2">
+                                            <!-- <div class="form-group divxrayinfo docs2">
                                                 <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">Pathologist</label>
                                                 <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">RMT</label>
-                                            </div>
+                                            </div> -->
                                             <br>
 
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="control-label"></label>
                                                 <div class="col-sm-3">
-                                                    <button class="btn btn-lg btn-primary btn-block" id="btn-submit-social_history" type="submit">Submit</button>
+                                                    <button class="btn btn-sm btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
                                                 </div>
                                             </div>
 
@@ -2116,7 +2131,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div role="tabpanel" class="tab-pane fade" id="fecalysis">
                             <div class="col-md-12">
                                 <h3>Fecalysis
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -2148,7 +2163,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div role="tabpanel" class="tab-pane fade" id="OGTT">
                             <div class="col-md-12">
                                 <h3>Oral Glucose Tolerance Test
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -2180,7 +2195,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div role="tabpanel" class="tab-pane fade" id="hematology">
                             <div class="col-md-12">
                                 <h3>Hematology
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -2212,7 +2227,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div role="tabpanel" class="tab-pane fade" id="chemistry">
                             <div class="col-md-12">
                                 <h3>Chemistry II
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -2637,7 +2652,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $.get('../../api/addreasonforconsulation?patient_id=' + RFCpatient_id + '&visit_id=' + RFCvisit_id + '&chief_complaint=' + chief_complaint + '&history_illness=' + history_illness, function(data){
             $('.RFC_id').val(data.id);
             $('.subsubRFC').empty();
-            $('.subsubRFC').append('<button class="btn btn-lg btn-primary btn-block edit_RFC" id="btn-submit-consult_reason" type="button">Save Changes</button>');
+            $('.subsubRFC').append('<button class="btn btn-sm btn-primary edit_RFC" id="btn-submit-consult_reason" type="button">Save Changes</button>');
 
             $('.topmessage2').empty();
             $('.topmessage2').show();
@@ -3121,6 +3136,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.leucocytes').attr('readonly','readonly');
         }
     });
+    $('.preg_test').click(function() {
+        if ($(this).is(':checked')) {
+            $('.preg_remarks').removeAttr('disabled','disabled');
+        }
+        else {
+            $('.preg_remarks').attr('disabled','disabled');
+        }
+    });
 
     $('.editpatienturinalysis').on('click',function() {
         var uri_id = $(this).data('id');
@@ -3234,6 +3257,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.urobilingen').attr('readonly','readonly');
                 $('.nitrites').attr('readonly','readonly');
                 $('.leucocytes').attr('readonly','readonly');
+            }
+
+            if (data.pregnancy_test == "Yes") {
+                $('.preg_test').attr('checked','checked');
+                $('.preg_remarks').empty();
+
+                $('.preg_remarks').text(data.preg_remark);
+            }
+            else {
+                $('.preg_test').removeAttr('checked','checked');
+                $('.preg_remarks').attr('disabled','disabled');
             }
 
             $('.patho').append('<b style="text-decoration:underline;">'+data.phy.f_name+' '+data.phy.m_name+' '+data.phy.l_name+', '+data.phy.credential+'</b>');

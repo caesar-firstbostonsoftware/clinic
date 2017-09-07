@@ -17,6 +17,7 @@ use App\AdminPanelSub;
 use PDF;
 use Dompdf\Dompdf;
 use TCPDF;
+use App\PatientVisit;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -87,23 +88,39 @@ class DoctorsController extends Controller
             $pdf->AddPage();
 
                 if ($id == 1) {
-                    $Patientxray = DB::select("SELECT 
-                    doctors.id,doctors.f_name,doctors.m_name,doctors.l_name,credential,patients.id as p_id,patients.f_name AS p_fname,patients.m_name AS p_mname,patients.l_name AS p_lname,COUNT(doctors.id) as counter
-                    FROM doctors
-                    INNER JOIN patientxrays ON doctors.id = patientxrays.physician_id
-                    INNER JOIN patients ON patientxrays.patient_id = patients.id
-                    WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
-                    GROUP BY id,f_name,m_name,l_name,credential,patients.id,patients.f_name,patients.m_name,patients.l_name");
+                    // $Patientxray = DB::select("SELECT 
+                    // doctors.id,doctors.f_name,doctors.m_name,doctors.l_name,credential,patients.id as p_id,patients.f_name AS p_fname,patients.m_name AS p_mname,patients.l_name AS p_lname,COUNT(doctors.id) as counter
+                    // FROM doctors
+                    // INNER JOIN patientxrays ON doctors.id = patientxrays.physician_id
+                    // INNER JOIN patients ON patientxrays.patient_id = patients.id
+                    // WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
+                    // GROUP BY id,f_name,m_name,l_name,credential,patients.id,patients.f_name,patients.m_name,patients.l_name");
+                    $Doctor = Doctor::all();
+                    $Patientxray = DB::select("SELECT patientxrays.physician_id AS physician_id,COUNT(patientxrays.id) as counter
+                    FROM patientxrays
+                    WHERE xray_date >= 'datefrom' AND xray_date <= '$dateto'
+                    GROUP BY patientxrays.physician_id");
                     $counter = 0;
+                    $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->sum('totalbill');
                 }
                 else {
                     $Patientxray = Patientxray::where('physician_id',$id)->where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
                     $counter = count($Patientxray);
+                    $income = 0;
+                    foreach ($Patientxray as $key) {
+                        $visit = PatientVisit::where('patient_id',$key->patient_id)->first();
+                        if (!$visit) {
+                            $income = 0;
+                        }
+                        else {
+                            $income += $visit->totalbill;
+                        }
+                    }
                 }
 
-                // return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
+                //return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
 
-            $pdf->writeHTML(view('printreport',compact('Patientxray','id','counter'))->render());
+            $pdf->writeHTML(view('printreport',compact('Doctor','Patientxray','id','counter','income','datefrom','dateto'))->render());
             ob_end_clean();
             $pdf->Output('DocReport.pdf','I');
 
@@ -302,13 +319,20 @@ class DoctorsController extends Controller
             $dateto = $request->input('dateto');
             if ($id == 1) {
                 //$Patientxray = Patientxray::where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
-                $Patientxray = DB::select("SELECT 
-                    doctors.id,doctors.f_name,doctors.m_name,doctors.l_name,credential,patients.id as p_id,patients.f_name AS p_fname,patients.m_name AS p_mname,patients.l_name AS p_lname,COUNT(doctors.id) as counter
-                    FROM doctors
-                    INNER JOIN patientxrays ON doctors.id = patientxrays.physician_id
-                    INNER JOIN patients ON patientxrays.patient_id = patients.id
-                    WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
-                    GROUP BY id,f_name,m_name,l_name,credential,patients.id,patients.f_name,patients.m_name,patients.l_name");
+                // $Patientxray = DB::select("SELECT 
+                //     doctors.id,doctors.f_name,doctors.m_name,doctors.l_name,credential,patients.id as p_id,patients.f_name AS p_fname,patients.m_name AS p_mname,patients.l_name AS p_lname,COUNT(doctors.id) as counter
+                //     FROM doctors
+                //     INNER JOIN patientxrays ON doctors.id = patientxrays.physician_id
+                //     INNER JOIN patients ON patientxrays.patient_id = patients.id
+                //     WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
+                //     GROUP BY id,f_name,m_name,l_name,credential,patients.id,patients.f_name,patients.m_name,patients.l_name");
+                    $Doctor = Doctor::all();
+                    $Patientxray = DB::select("SELECT patientxrays.physician_id AS physician_id,COUNT(patientxrays.id) as counter
+                    FROM patientxrays
+                    WHERE xray_date >= 'datefrom' AND xray_date <= '$dateto'
+                    GROUP BY patientxrays.physician_id");
+                    $counter = 0;
+                    $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->sum('totalbill');
 
                 // $Urinalyses = Urinalyses::where('date','>=',$datefrom)->where('date','<=',$dateto)->with('phy','patient')->get();
 
@@ -329,6 +353,17 @@ class DoctorsController extends Controller
             }
             else {
                 $Patientxray = Patientxray::where('physician_id',$id)->where('xray_date','>=',$datefrom)->where('xray_date','<=',$dateto)->with('doctor','patient')->get();
+                $counter = count($Patientxray);
+                $income = 0;
+                foreach ($Patientxray as $key) {
+                        $visit = PatientVisit::where('patient_id',$key->patient_id)->first();
+                        if (!$visit) {
+                            $income = 0;
+                        }
+                        else {
+                            $income += $visit->totalbill;
+                        }
+                    }
                 // $wawee = DB::select("select query.patient_id as patient_id, patients.f_name as P_f_name, patients.m_name as P_m_name,
                 //         patients.l_name as P_l_name,query.date as date, doctors.f_name as D_f_name, doctors.m_name as D_m_name,
                 //         doctors.l_name as D_l_name, doctors.credential as D_credential
@@ -344,7 +379,17 @@ class DoctorsController extends Controller
                 //         left join doctors on query.physician_id = doctors.id");
             }
 
-            return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
+            return Response::json(['doctor'=>$Doctor,'patientxray'=>$Patientxray,'id'=>$id,'counter'=>$counter,'income'=>$income], 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function medcert()
+    {
+        if(Session::has('user')){
+            return view('medicalcertificate');
         }
         else {
             return redirect()->action('Auth@checklogin');

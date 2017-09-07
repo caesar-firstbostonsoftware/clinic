@@ -4,9 +4,9 @@
     <!-- Logo -->
     <a href="#" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><i class="fa fa-hospital-o fa-2x" aria-hidden="true" style="padding-top: 15%;"></i></span>
+        <span class="logo-mini"><i class="fa fa-hospital-o fa-2x" aria-hidden="true"></i></span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><i class="fa fa-hospital-o fa-2x" aria-hidden="true" style="padding-top: 2%;"></i>&nbsp;&nbsp;&nbsp;<b>NFHSI</b></span>
+        <span class="logo-lg"><i class="fa fa-hospital-o fa-2x" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;<b>NFHSI</b></span>
     </a>
 
     <!-- Header Navbar -->

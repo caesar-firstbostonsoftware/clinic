@@ -19,13 +19,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
         @if(Session::get('position') == "Doctor")
+        <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
         <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+                <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             </ul>
         </li>
         @if(Session::get('user') == 1)
@@ -45,8 +46,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <section class="content-header">
         <h1><i class="fa fa-users"></i> Patients</h1>
         <ol class="breadcrumb">
-            <li><a href="#">Dashboard</a></li>
+            
             @if(Session::get('position') == "Doctor")
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             @endif
             <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
@@ -81,41 +83,74 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">Name</label>
                                     <div class="col-sm-2">
-                                        <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
+                                        @if(!$patient)
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
+                                            <input type="text" name="patient_id" value="0" style="display: none;">
+                                        @else
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" type="text" readonly="" value="{{$patient->f_name}}">
+                                            <input type="text" name="patient_id" value="{{$patient->id}}" style="display: none;">
+                                        @endif
                                     </div>
                                     <div class="col-sm-1">
-                                        <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
+                                        @if(!$patient)
+                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
+                                        @else
+                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" readonly="" value="{{$patient->m_name}}">
+                                        @endif
+                                        
                                     </div>
                                     <div class="col-sm-2">
-                                        <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
+                                        @if(!$patient)
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
+                                        @else
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" type="text" readonly="" value="{{$patient->l_name}}">
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-1 control-label">Address</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off">
+                                        @if(!$patient)
+                                            <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off">
+                                        @else
+                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" readonly="" value="{{$patient->address}}">
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-1 control-label">Gender</label>
                                     <div class="col-sm-3">
-                                        <select id="gender" name="gender" class="form-control" required=""> 
-                                            <option value="">- Select -</option>
-                                            <option value="Male">Male</option>
-                                            <option value="Female">Female</option>
-                                        </select>
+                                        @if(!$patient)
+                                            <select id="gender" name="gender" class="form-control" required=""> 
+                                                <option value="">- Select -</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        @else
+                                            <select id="gender" name="gender" class="form-control" disabled=""> 
+                                                <option value="{{$patient->gender}}">{{$patient->gender}}</option>
+                                            </select>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-1 control-label">Birthdate</label>
                                     <div class="col-sm-3">
-                                        <input type="text" id="datepicker" name="dob" class="form-control dob" required="" placeholder="YYYY-MM-DD">
+                                        @if(!$patient)
+                                            <input type="text" id="datepicker" name="dob" class="form-control dob" required="" placeholder="YYYY-MM-DD">
+                                        @else
+                                            <input type="text" id="datepicker" name="dob" class="form-control dob" placeholder="YYYY-MM-DD" disabled="" value="{{$patient->dob}}">
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-1 control-label">Age</label>
                                     <div class="col-sm-1">
-                                        <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text">
+                                        @if(!$patient)
+                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text">
+                                        @else
+                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" type="text" value="{{$patient->age}}">
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -133,14 +168,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="form-group ">
                                                 <label class="col-sm-1 control-label"></label>
                                                 <div class="col-sm-6">
-                                                    <label><input type="checkbox" class="{{$panel->id}} cate" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b></label>
+                                                    <label><input type="checkbox" class="{{$panel->id}} cate cateservices" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b></label>
                                                 </div>
                                                 <div class="col-sm-2" style="text-align: right;">
                                                     @if($panel->price == 0)
                                                     <label><b></b></label>
                                                     @else
                                                     <?php $price = number_format($panel->price,2); ?>
-                                                    <label><b> {{$price}}</b></label>
+                                                    <label class="priceprice"><b> {{$price}}</b></label>
                                                     @endif
                                                 </div>
                                             </div>
@@ -149,11 +184,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <div class="form-group ">
                                                         <label class="col-sm-1 control-label"></label>
                                                         <div class="col-sm-6">
-                                                            <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}}" name="services[]" value="{{$panel->id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b></label>
+                                                            <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}} cateservices" name="services[]" value="{{$panel->id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b></label>
                                                         </div>
                                                         <div class="col-sm-2" style="text-align: right;">
                                                             <?php $price = number_format($panelsub->price,2); ?>
-                                                            <label><b> {{$price}}</b></label>
+                                                            <label class="priceprice"><b> {{$price}}</b></label>
                                                         </div>
                                                     </div>
                                                 @endif
@@ -161,9 +196,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @endif
                                     @endforeach
                                 @endforeach
+                                <hr>
+                                <div class="form-group ">
+                                    <label class="col-sm-5 control-label total" style="text-align: left;">
+                                        <b>Total : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Php. <i class="totaltotal">0.00</i>
+                                        <input type="text" name="totalprice" class="totalprice" style="display: none;">
+                                    </label>
+                                </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-1 control-label"></label>
                                     <div class="col-sm-1">
                                         <button class="btn btn-primary" id="btn-submit-personal_info" type="submit">Submit</button>
                                     </div>
@@ -219,6 +260,42 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var split = adid.split('-');
             $('.sub'+split[0]+'').prop('checked',false);
             $('.sub'+split[0]+'').attr('disabled','disabled');
+        }
+    });
+
+    $('.cateservices').click(function() {
+        if ($(this).is(':checked')) {
+            var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
+            var totaltotal = parseFloat($('.totaltotal').html());
+            if (!priceprice) {
+                var price2price = 0.00;
+            }
+            else {
+                var price2price = priceprice;
+            }
+            var totals = price2price + totaltotal;
+            var finaltotal = totals.toFixed(2);
+            $('.totaltotal').empty();
+            $('.totaltotal').append(''+finaltotal+'');
+            $('.totalprice').empty();
+            $('.totalprice').val(finaltotal);
+            
+        }
+        else {
+            var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
+            var totaltotal = parseFloat($('.totaltotal').html());
+            if (!priceprice) {
+                var price2price = 0.00;
+            }
+            else {
+                var price2price = priceprice;
+            }
+            var totals = totaltotal - price2price;
+            var finaltotal = totals.toFixed(2);
+            $('.totaltotal').empty();
+            $('.totaltotal').append(''+finaltotal+'');
+            $('.totalprice').empty();
+            $('.totalprice').val(finaltotal);
         }
     });
 </script>

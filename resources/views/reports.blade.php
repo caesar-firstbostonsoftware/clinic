@@ -19,12 +19,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
 
+        <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+                <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             </ul>
         </li>
         @if(Session::get('user') == 1)
@@ -44,7 +45,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <section class="content-header">
         <h1><i class="fa fa-bar-chart"></i> Reports</h1>
         <ol class="breadcrumb">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
             <li><a href="/NFHSI/users">Users</a></li>
@@ -93,7 +94,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                                 <div class="form-group">
                                     <div class="col-sm-6 Pcount"></div>
-                                    <div class="col-sm-6 Income"></div>
+                                    <div class="col-sm-6 Income" style="text-align: right;"></div>
                                     <br>
                                     <div class="col-md-12 appendreports"></div>
                                 </div>
@@ -120,6 +121,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
     <script type="text/javascript">
+        function ReplaceNumberWithCommas(yourNumber) {
+            var n= yourNumber.toString().split(".");
+            n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return n.join(".");
+        }
+
         $(".datefrom").datepicker({
         dateFormat: "yy-mm-dd",
         yearRange: "1950:2050",
@@ -183,22 +190,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <tbody class="tbodyreports">\
                     </tbody>\
                 </table>');
-
-                $.each(data, function(index, report){
-                    count++;
-                    if (!report.m_name) {
+                $.each(data.doctor, function(index, reportmain){
+                $.each(data.patientxray, function(index, report){
+                    if (!reportmain.m_name) {
                         var m_name = "";
                     }
                     else {
-                        var m_name = report.m_name;
+                        var m_name = reportmain.m_name;
                     }
-                    $('.tbodyreports').append('<tr>\
-                            <td>'+report.id+'</td>\
-                            <td>'+report.f_name+' '+m_name+' '+report.l_name+', '+report.credential+'</td>\
+                    if (reportmain.id == report.physician_id) {
+                        $('.tbodyreports').append('<tr>\
+                            <td>'+reportmain.id+'</td>\
+                            <td>'+reportmain.f_name+' '+m_name+' '+reportmain.l_name+', '+reportmain.credential+'</td>\
                             <td>'+report.counter+'</td>\
                         </tr>');
+                    } 
                 })
-                $('.Income').append('<b>Income : Php. 100.00</b>');
+                })
+
+                var finalincome = ReplaceNumberWithCommas(data.income);
+                $('.Income').append('<b>Income : Php. '+finalincome+'</b>');
             });
 
             }

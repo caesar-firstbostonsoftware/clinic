@@ -28,6 +28,7 @@ use App\AdminPanelSub;
 use PDF;
 use Dompdf\Dompdf;
 use TCPDF;
+use DB;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -69,56 +70,145 @@ class PatientsController extends Controller
         $adminpanelcat = AdminPanelCategory::all();
         $adminpanel = AdminPanel::all();
         $sub = AdminPanelSub::all();
+        $patient = 0;
         //return Response::json($adminpanel, 200, array(), JSON_PRETTY_PRINT);
-    	return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub'));
+    	return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
     }
 
     public function addnewvisit(Request $request)
-    {
-    	$fname = $request->input('fname');
-    	$mname = $request->input('mname');
-    	$lname = $request->input('lname');
-    	$address = $request->input('address');
-    	$gender = $request->input('gender');
-    	$dob = $request->input('dob');
-    	$age = $request->input('age');
-        $purpose_visit = $request->input('purpose_visit');
+    {   
+        $patient_id = $request->input('patient_id');
+        if ($patient_id == 0) {
+            $fname = $request->input('fname');
+            $mname = $request->input('mname');
+            $lname = $request->input('lname');
+            $address = $request->input('address');
+            $gender = $request->input('gender');
+            $dob = $request->input('dob');
+            $age = $request->input('age');
+            $purpose_visit = $request->input('purpose_visit');
+            $totalprice = $request->input('totalprice');
 
-        $services = $request->input('services');
+            $services = $request->input('services');
 
-    	//return $fname.' *** '.$mname.' *** '.$lname.' *** '.$address.' *** '.$gender.' *** '.$dob.' *** '.$age;
-    	$patient = new Patient;
-    	$patient->f_name = $fname;
-    	$patient->m_name = $mname;
-    	$patient->l_name = $lname;
-    	$patient->gender = $gender;
-    	$patient->dob = $dob;
-    	$patient->age = $age;
-    	$patient->address = $address;
-    	$patient->save();
+            $patient = new Patient;
+            $patient->f_name = $fname;
+            $patient->m_name = $mname;
+            $patient->l_name = $lname;
+            $patient->gender = $gender;
+            $patient->dob = $dob;
+            $patient->age = $age;
+            $patient->address = $address;
+            $patient->save();
 
-    	$patientvisit = new PatientVisit;
-    	$patientvisit->patient_id = $patient->id;
-    	$datenow = date("Y-m-d");
-    	$patientvisit->visit_date = $datenow;
-    	$patientvisit->visitid = 1;
-        $patientvisit->purpose_visit = $purpose_visit;
-    	$patientvisit->save();
+            $check_p_v = PatientVisit::where('patient_id',$patient->id)->orderBy('id', 'desc')->first();
+            if (!$check_p_v) {
+                $patientvisit = new PatientVisit;
+                $patientvisit->patient_id = $patient->id;
+                $datenow = date("Y-m-d");
+                $patientvisit->visit_date = $datenow;
+                $patientvisit->visitid = 1;
+                $patientvisit->purpose_visit = $purpose_visit;
+                $patientvisit->totalbill = $totalprice;
+                $patientvisit->save();
 
-        foreach ($services as $key) {
-            $explode = explode('-', $key);
-            $fisrt = $explode[0];
-            $second = $explode[1];
+                foreach ($services as $key) {
+                    $explode = explode('-', $key);
+                    $fisrt = $explode[0];
+                    $second = $explode[1];
 
-            $service = new PatientService;
-            $service->patient_id = $patient->id;
-            $service->admin_panel_id = $fisrt;
-            $service->admin_panel_sub_id = $second;
-            $service->save();
+                    $service = new PatientService;
+                    $service->patient_id = $patient->id;
+                    $service->admin_panel_id = $fisrt;
+                    $service->admin_panel_sub_id = $second;
+                    $service->visit_id = 1;
+                    $service->save();
+                }
+
+            }
+            else {
+                $patientvisit = new PatientVisit;
+                $patientvisit->patient_id = $patient->id;
+                $datenow = date("Y-m-d");
+                $patientvisit->visit_date = $datenow;
+                $patientvisit->visitid = $check_p_v->visitid + 1;
+                $patientvisit->purpose_visit = $purpose_visit;
+                $patientvisit->totalbill = $totalprice;
+                $patientvisit->save();
+
+                foreach ($services as $key) {
+                    $explode = explode('-', $key);
+                    $fisrt = $explode[0];
+                    $second = $explode[1];
+
+                    $service = new PatientService;
+                    $service->patient_id = $patient->id;
+                    $service->admin_panel_id = $fisrt;
+                    $service->admin_panel_sub_id = $second;
+                    $service->visit_id = $check_p_v->visitid + 1;
+                    $service->save();
+                }
+            }
+            Session::flash('alert-success', 'Personal Info Created.');
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
         }
+        else {
+            $purpose_visit = $request->input('purpose_visit');
+            $totalprice = $request->input('totalprice');
 
-        Session::flash('alert-success', 'Personal Info Created.');
-    	return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
+            $services = $request->input('services');
+
+            $check_p_v = PatientVisit::where('patient_id',$patient_id)->orderBy('id', 'desc')->first();
+            if (!$check_p_v) {
+                $patientvisit = new PatientVisit;
+                $patientvisit->patient_id = $patient_id;
+                $datenow = date("Y-m-d");
+                $patientvisit->visit_date = $datenow;
+                $patientvisit->visitid = 1;
+                $patientvisit->purpose_visit = $purpose_visit;
+                $patientvisit->totalbill = $totalprice;
+                $patientvisit->save();
+
+                foreach ($services as $key) {
+                    $explode = explode('-', $key);
+                    $fisrt = $explode[0];
+                    $second = $explode[1];
+
+                    $service = new PatientService;
+                    $service->patient_id = $patient_id;
+                    $service->admin_panel_id = $fisrt;
+                    $service->admin_panel_sub_id = $second;
+                    $service->visit_id = 1;
+                    $service->save();
+                }
+
+            }
+            else {
+                $patientvisit = new PatientVisit;
+                $patientvisit->patient_id = $patient_id;
+                $datenow = date("Y-m-d");
+                $patientvisit->visit_date = $datenow;
+                $patientvisit->visitid = $check_p_v->visitid + 1;
+                $patientvisit->purpose_visit = $purpose_visit;
+                $patientvisit->totalbill = $totalprice;
+                $patientvisit->save();
+
+                foreach ($services as $key) {
+                    $explode = explode('-', $key);
+                    $fisrt = $explode[0];
+                    $second = $explode[1];
+
+                    $service = new PatientService;
+                    $service->patient_id = $patient_id;
+                    $service->admin_panel_id = $fisrt;
+                    $service->admin_panel_sub_id = $second;
+                    $service->visit_id = $check_p_v->visitid + 1;
+                    $service->save();
+                }
+            }
+            Session::flash('alert-success', 'Personal Info Created.');
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $patient_id, 'vid' => $patientvisit->visitid]);
+        }
     }
 
 	public function patientlist()
@@ -221,12 +311,13 @@ class PatientsController extends Controller
 
         //return Response::json($PMH_hos, 200, array(), JSON_PRETTY_PRINT);
         $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
-            ->where('patients.id',$id)
+            ->where('patient_visits.patient_id',$id)
+            ->where('patient_visits.visitid',$vid)
             ->select('patients.*','patient_visits.purpose_visit')
             ->first();
     	$doctor = Doctor::with('user')->get();
         $adminpanel = AdminPanelCategory::with('adminpanel')->get();
-        $PatientService = PatientService::where('patient_id',$id)->get();
+        $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
     	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService'));
     }
 
@@ -274,7 +365,7 @@ class PatientsController extends Controller
     public function modalavisit(Request $request)
     {	
     	$p_id = $request->input('p_id');
-    	$patientvisit = PatientVisit::where('patient_id',$p_id)->get();
+    	$patientvisit = PatientVisit::where('patient_id',$p_id)->orderBy('visitid','desc')->get();
     	return Response::json($patientvisit, 200, array(), JSON_PRETTY_PRINT);
     }
 
@@ -282,11 +373,22 @@ class PatientsController extends Controller
     {   
         if(Session::has('user')){
             $p_id = $request->input('p_id');
-            $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
-            ->where('patients.id',$p_id)
-            ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id')
-            ->first();
-            $adminpanel = PatientService::where('patient_id',$p_id)->get();
+            $v_id = $request->input('v_id');
+            if ($v_id == 0) {
+                 $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+                ->where('patients.id',$p_id)
+                ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
+                ->first();
+                $adminpanel = PatientService::where('patient_id',$p_id)->get();
+            }
+            else {
+                $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+                ->where('patients.id',$p_id)
+                ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
+                ->first();
+                $adminpanel = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
+            }
+           
             return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
         }
         else {
@@ -308,6 +410,7 @@ class PatientsController extends Controller
 
             $patient_visit_id = $request->input('patient_visit_id');
             $purpose_visit = $request->input('purpose_visit');
+            $totalprice = $request->input('totalprice');
 
             $services = $request->input('services');
             //return $fname.' *** '.$mname.' *** '.$lname.' *** '.$address.' *** '.$gender.' *** '.$dob.' *** '.$age;
@@ -321,26 +424,27 @@ class PatientsController extends Controller
             $patient->address = $address;
             $patient->save();
 
-            $delete = PatientService::where('patient_id',$p_id)->get();
-                foreach ($delete as $del) {
-                   $deldel = PatientService::where('id',$del->id)->first();
-                   $deldel->delete();
-                }
+            // $delete = PatientService::where('patient_id',$p_id)->get();
+            //     foreach ($delete as $del) {
+            //        $deldel = PatientService::where('id',$del->id)->first();
+            //        $deldel->delete();
+            //     }
 
-            foreach ($services as $key) {
-                $explode = explode('-', $key);
-                $fisrt = $explode[0];
-                $second = $explode[1];
+            // foreach ($services as $key) {
+            //     $explode = explode('-', $key);
+            //     $fisrt = $explode[0];
+            //     $second = $explode[1];
 
-                $service = new PatientService;
-                $service->patient_id = $patient->id;
-                $service->admin_panel_id = $fisrt;
-                $service->admin_panel_sub_id = $second;
-                $service->save();
-            }
+            //     $service = new PatientService;
+            //     $service->patient_id = $patient->id;
+            //     $service->admin_panel_id = $fisrt;
+            //     $service->admin_panel_sub_id = $second;
+            //     $service->save();
+            // }
 
             $patientvisit = PatientVisit::where('id',$patient_visit_id)->first();
             $patientvisit->purpose_visit = $purpose_visit;
+            //$patientvisit->totalbill = $totalprice;
             $patientvisit->save(); 
 
             return redirect()->action('PatientsController@patientlist');
@@ -930,6 +1034,15 @@ class PatientsController extends Controller
             $urobilingen = $request->input('urobilingen');
             $nitrites = $request->input('nitrites');
             $leucocytes = $request->input('leucocytes');
+
+            $preg_test = $request->input('preg_test');
+            if ($preg_test == "Yes") {
+                $preg = $preg_test;
+            }
+            else {
+                $preg = "No";
+            }
+            $preg_remarks = $request->input('preg_remarks');
             
             if(!$uri_id) {
                 $Urinalysis = new Urinalyses;
@@ -970,6 +1083,9 @@ class PatientsController extends Controller
                 $Urinalysis->urobilinogen = $urobilingen;
                 $Urinalysis->nitrites = $nitrites;
                 $Urinalysis->leucocytes = $leucocytes;
+
+                $Urinalysis->pregnancy_test = $preg;
+                $Urinalysis->preg_remark = $preg_remarks;
                 $Urinalysis->save();
             }
             else {
@@ -1005,6 +1121,9 @@ class PatientsController extends Controller
                 $Urinalysis->urobilinogen = $urobilingen;
                 $Urinalysis->nitrites = $nitrites;
                 $Urinalysis->leucocytes = $leucocytes;
+
+                $Urinalysis->pregnancy_test = $preg;
+                $Urinalysis->preg_remark = $preg_remarks;
                 $Urinalysis->save();
             }
     
@@ -1068,10 +1187,11 @@ class PatientsController extends Controller
             $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
             $p_xray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->with('doctor','patient','xraydate')->first();
             $uriuri = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('phy')->first();
+            $income = DB::table('patient_visits')->where('patient_id',$id)->where('visitid',$vid)->sum('totalbill');
 
             //return Response::json($p_xray, 200, array(), JSON_PRETTY_PRINT);
 
-            $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri'))->render());
+            $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri','income'))->render());
             ob_end_clean();
             $pdf->Output('PatientReport.pdf','I');
 
@@ -1080,6 +1200,55 @@ class PatientsController extends Controller
             return redirect()->action('Auth@checklogin');
         }
         
+    }
+
+    public function editvisit(Request $request)
+    {   
+        if(Session::has('user')){
+            $p_id = $request->input('editvisit_p_id');
+            $v_id = $request->input('editvisit_v_id');
+            $totalprice = $request->input('totalprice');
+
+            $services = $request->input('services');
+
+            $delete = PatientService::where('patient_id',$p_id)->where('visitid',$v_id)->get();
+                foreach ($delete as $del) {
+                   $deldel = PatientService::where('id',$del->id)->first();
+                   $deldel->delete();
+                }
+
+            foreach ($services as $key) {
+                $explode = explode('-', $key);
+                $fisrt = $explode[0];
+                $second = $explode[1];
+
+                $service = new PatientService;
+                $service->patient_id = $p_id;
+                $service->admin_panel_id = $fisrt;
+                $service->admin_panel_sub_id = $second;
+                $service->visit_id = $v_id;
+                $service->save();
+            }
+
+            $patientvisit = PatientVisit::where('patient_id',$p_id)->where('visitid',$v_id)->first();
+            $patientvisit->totalbill = $totalprice;
+            $patientvisit->save(); 
+
+            return redirect()->action('PatientsController@patientlist');
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newvisit1002($id)
+    {
+        $adminpanelcat = AdminPanelCategory::all();
+        $adminpanel = AdminPanel::all();
+        $sub = AdminPanelSub::all();
+        $patient = Patient::where('id',$id)->first();
+        //return Response::json($adminpanel, 200, array(), JSON_PRETTY_PRINT);
+        return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
     }
 
     

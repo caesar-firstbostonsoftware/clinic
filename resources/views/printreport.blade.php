@@ -4,7 +4,8 @@
 
 <div>
   	@if($id == 1)
-  		<p style="text-align: right;"><b>Income : Php. 100.00</b></p>
+        <p style="text-align: center;"><b>X-Ray Count</b><br><b>From: {{$datefrom}} </b><b> To: {{$dateto}}</b></p>
+  		<p style="text-align: right;"><b>Income : Php. <?php echo number_format($income, 2);?></b></p>
   		<table class="table table-striped">
             <thead>
                 <tr>
@@ -14,17 +15,21 @@
                 </tr>
             </thead>
             <tbody class="tbodyreports">
+            @foreach($Doctor as $docdoc)
             	@foreach($Patientxray as $xray)
-                    <tr>
-                    	<td>{{$xray->id}}</td>
-                        <td style="text-align: center;">{{$xray->f_name}} {{$xray->m_name}} {{$xray->l_name}}, {{$xray->credential}}</td>
-                        <td style="text-align: center;">{{$xray->counter}}</td>
-                    </tr>
+                    @if($docdoc->id == $xray->physician_id)
+                        <tr>
+                    	   <td>{{$docdoc->id}}</td>
+                            <td style="text-align: center;">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
+                            <td style="text-align: center;">{{$xray->counter}}</td>
+                        </tr>
+                    @endif
             	@endforeach
+            @endforeach
             </tbody>
         </table>
   	@else
-  		<p><b>Patient Count : {{$counter}}</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Income : Php. 100.00</b></p>
+  		<p style="text-align: right;"><b>Patient Count : {{$counter}}</b><br><b>Income : Php. <?php echo number_format($income, 2);?></b></p>
   		<table class="table table-striped">
             <thead>
                 <tr>
