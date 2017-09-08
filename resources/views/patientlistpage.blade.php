@@ -387,6 +387,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <button class="btn btn-sm btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-info">View</a>\
                         <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-success">Print</a>\
+                        <a href="/patientreceipt/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-success">Print Receipt</a>\
                     </td>\
                 </tr>');
             })

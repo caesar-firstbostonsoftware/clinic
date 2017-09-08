@@ -29,6 +29,7 @@ use PDF;
 use Dompdf\Dompdf;
 use TCPDF;
 use DB;
+use App\Medication;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -318,7 +319,8 @@ class PatientsController extends Controller
     	$doctor = Doctor::with('user')->get();
         $adminpanel = AdminPanelCategory::with('adminpanel')->get();
         $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService'));
+        $Medication = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -1188,10 +1190,11 @@ class PatientsController extends Controller
             $p_xray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->with('doctor','patient','xraydate')->first();
             $uriuri = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('phy')->first();
             $income = DB::table('patient_visits')->where('patient_id',$id)->where('visitid',$vid)->sum('totalbill');
+            $med = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
 
             //return Response::json($p_xray, 200, array(), JSON_PRETTY_PRINT);
 
-            $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri','income'))->render());
+            $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri','income','med'))->render());
             ob_end_clean();
             $pdf->Output('PatientReport.pdf','I');
 
@@ -1211,7 +1214,7 @@ class PatientsController extends Controller
 
             $services = $request->input('services');
 
-            $delete = PatientService::where('patient_id',$p_id)->where('visitid',$v_id)->get();
+            $delete = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
                 foreach ($delete as $del) {
                    $deldel = PatientService::where('id',$del->id)->first();
                    $deldel->delete();
@@ -1249,6 +1252,107 @@ class PatientsController extends Controller
         $patient = Patient::where('id',$id)->first();
         //return Response::json($adminpanel, 200, array(), JSON_PRETTY_PRINT);
         return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
+    }
+
+    public function modalmedication(Request $request)
+    {      
+        if(Session::has('user')){
+            $med_id = $request->input('med_id');
+            $patient_id = $request->input('patient_id');
+            $visit_id = $request->input('visit_id');
+            $date_start = $request->input('date_start');
+            $med_drug = $request->input('med_drug');
+            $med_frequency = $request->input('med_frequency');
+            $med_quantity = $request->input('med_quantity');
+
+            if (!$med_id) {
+                $Medication = new Medication;
+                $Medication->patient_id = $patient_id;
+                $Medication->visit_id = $visit_id;
+                $Medication->date_start = $date_start;
+                $Medication->drug = $med_drug;
+                $Medication->frequency = $med_frequency;
+                $Medication->quantity = $med_quantity;
+                $Medication->status = "Active";
+                $Medication->save();
+            }
+            else {
+                $Medication = Medication::where('id',$med_id)->first();
+                $Medication->date_start = $date_start;
+                $Medication->drug = $med_drug;
+                $Medication->frequency = $med_frequency;
+                $Medication->quantity = $med_quantity;
+                $Medication->status = "Active";
+                $Medication->save();
+            }
+            
+            return Response::json($Medication, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function editmedication(Request $request)
+    {      
+        if(Session::has('user')){
+            $med_id = $request->input('med_id');
+
+            $Medication = Medication::where('id',$med_id)->first();
+            return Response::json($Medication, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function patientreceipt(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Patient PDF');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 10, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage();
+
+
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->with('adminP','adminsubP')->get();
+            $totalbill = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
+            $pdf->writeHTML(view('patientreceipt',compact('PatientService','totalbill'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientReceiptReport.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
     }
 
     

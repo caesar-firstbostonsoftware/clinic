@@ -74,7 +74,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </span><br><br><br>
                                 <h1 style="text-transform: uppercase;">Medical Certificate</h1>
                                 <br><br><br>
-                            <form id="frm_personal_info" class="form-horizontal medcert" method="post" action="#">
+                            <form id="frm_personal_info" class="form-horizontal medcert" method="post" action="/generate/medcert">
                                 {!! csrf_field() !!}
 
                                 <div class="container">
@@ -85,7 +85,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
                                         <div class="col-6 col-md-7">
-                                            <input type="text" id="name" name="name" class="form-control" placeholder="Full Name" value="">
+                                            <input type="text" id="name" name="name" class="form-control" placeholder="Full Name" required="" value="" autocomplete="off">
                                         </div>
                                     </div>
 
@@ -96,7 +96,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
                                         <div class="col-6 col-md-7">
-                                            <input type="text" id="datepicker" name="datedate" class="form-control datedate" required="" placeholder="YYYY-MM-DD">
+                                            <input type="text" id="datepicker" name="datedate" class="form-control datedate" required="" placeholder="YYYY-MM-DD" autocomplete="off">
                                         </div>
                                     </div>
 
@@ -107,7 +107,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
                                         <div class="col-6 col-md-7">
-                                            <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
+                                            <textarea class="form-control diagnosis" name="diagnosis" rows="2" id="diagnosis" required="" autocomplete="off"></textarea>
                                         </div>
                                     </div>
 
@@ -118,26 +118,36 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
                                         <div class="col-6 col-md-7">
-                                            <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
+                                            <textarea class="form-control recommendation" name="recommendation" rows="2" id="recommendation" required="" autocomplete="off"></textarea>
                                         </div>
                                     </div>
                                     <br><br><br>
 
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
-                                        <div class="col-6 col-md-7" style="text-align: right;"><u><b>DOCTOR NAME</b></u></div>
+                                        <div class="col-6 col-md-2"></div>
+                                        <div class="col-6 col-md-5" style="text-align: right;">
+                                            <input type="text" id="docname" name="docname" class="form-control" placeholder="Full Doctor Name" required="" autocomplete="off">
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
-                                        <div class="col-6 col-md-7" style="text-align: right;">License No.: <b>235232</b></div>
+                                        <div class="col-6 col-md-2"></div>
+                                        <div class="col-6 col-md-5" style="text-align: right;">
+                                            <input type="text" id="licenseNo" name="licenseNo" class="form-control" placeholder="License No." autocomplete="off">
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
-                                        <div class="col-6 col-md-7" style="text-align: right;">PTR No.: <b>1234567</b></div>
-                                    </div>
+                                        <div class="col-6 col-md-2"></div>
+                                        <div class="col-6 col-md-5" style="text-align: right;">
+                                            <input type="text" id="ptrNo" name="ptrNo" class="form-control" placeholder="PTR No." autocomplete="off">
+                                        </div>
+                                    </div><br>
                                     <div class="row">
                                         <div class="col-6 col-md-2"></div>
-                                        <div class="col-6 col-md-7" style="text-align: right;">
+                                        <div class="col-6 col-md-2"></div>
+                                        <div class="col-6 col-md-2" style="text-align: right;">
                                             <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-download"></i> Generate Certificate</button>
                                         </div>
                                     </div>

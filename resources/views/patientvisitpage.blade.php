@@ -1337,23 +1337,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="col-md-12">
                             <div class="flash-message top-message topmessage8"></div>
                                 <h3>Medications 
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
+                                    <button type="button" class="btn btn-primary btn-sm addmedadd" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
                                     <!-- <a href="#" target="_blank" class="btn btn-warning">Generate Rx</a> -->
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
                                         <thead>
                                             <tr>
-                                                <th class="text-center">Date Started</th>
-                                                <th class="text-center">Date Ended</th>
-                                                <th class="text-center">Drug</th>
-                                                <th class="text-center">Frequency</th>
-                                                <th class="text-center">Quantity</th>
-                                                <th class="text-center">Status</th>
-                                                <th class="text-center">Action</th>
+                                                <th>Date Started</th>
+                                                <th>Drug</th>
+                                                <th>Frequency</th>
+                                                <th>Quantity</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="medication_list">
+                                        <tbody id="medication_list2" class="medication_list2">
+                                            @foreach($Medication as $medmed)
+                                                @if(!$medmed->id)
+                                                @else
+                                                <tr class="med_id_{{$medmed->id}}">
+                                                    <td>{{$medmed->date_start}}</td>
+                                                    <td>{{$medmed->drug}}</td>
+                                                    <td>{{$medmed->frequency}}</td>
+                                                    <td>{{$medmed->quantity}}</td>
+                                                    <td>{{$medmed->status}}</td>
+                                                    <td><button class="btn btn-sm btn-primary editmedication" data-toggle="modal" data-target="#modal_medication_add" data-med_id="{{$medmed->id}}">Edit</button></td>
+                                                </tr>
+                                                @endif
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -1365,45 +1377,45 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                <button type="button" class="close close_medication" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                                 <h4 class="modal-title" id="myModalLabel">Add New Medication</h4>
                                             </div>
                                             <div class="modal-body">
                                                 <form class="form-horizontal" id="frm_add_medication">
+                                                <input type="text" name="med_patient_id" class="med_patient_id" value="{{$id}}" style="display: none;">
+                                                <input type="text" name="med_visit_id" class="med_visit_id" value="{{$vid}}" style="display: none;">
+                                                <input type="text" name="med_id" class="med_id" value="" style="display: none;">
                                                 {!! csrf_field() !!}
                                                     <div class="form-group" id="dt_start_grp">
                                                         <label for="inputEmail3" class="col-sm-3 control-label">Date Start</label>
-                                                        <div class="col-sm-4">
+                                                        <div class="col-sm-4 divdate_start">
                                                             <?php $datenow2 = date("Y-m-d"); ?>
-                                                            <input type="text" id="date_start" name="date_start" class="form-control date_start" required="" value="{{$datenow2}}">
+                                                            <input type="text" id="date_start" name="date_start" class="form-control date_start" readonly="" required="" value="{{$datenow2}}">
                                                         </div>
                                                     </div>
                                                     <div class="form-group divxrayinfo" id="med_drug_grp">
                                                         <label for="inputEmail3" class="col-sm-3 control-label">Drug</label>
                                                         <div class="col-sm-8">
-                                                            <input class="form-control" id="med_drug" name="med_drug" type="text">
-                                                            <span class="help-block hidden" id="med_drug_err"></span>
+                                                            <input class="form-control med_drug" id="med_drug" name="med_drug" type="text" placeholder="Drug" autocomplete="off">
+                                                            <span class="help-block med_drug_err" id="med_drug_err" style="color: red; display: none;"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group divxrayinfo" id="med_frequency_grp">
                                                         <label for="inputEmail3" class="col-sm-3 control-label">Frequency</label>
                                                         <div class="col-sm-6">
-                                                            <input class="form-control" id="med_frequency" name="med_frequency" type="text">
-                                                            <span class="help-block hidden" id="med_frequency_err"></span>
+                                                            <input class="form-control med_frequency" id="med_frequency" name="med_frequency" type="text" placeholder="Frequency" autocomplete="off">
                                                         </div>
                                                     </div>
                                                     <div class="form-group divxrayinfo" id="med_quantity_grp">
                                                         <label for="inputEmail3" class="col-sm-3 control-label">Quantity</label>
                                                         <div class="col-sm-6">
-                                                            <input class="form-control" id="med_quantity" name="med_quantity" type="text">
-                                                            <span class="help-block hidden" id="med_quantity_err"></span>
+                                                            <input class="form-control med_quantity" id="med_quantity" name="med_quantity" type="number" min="0" placeholder="Quantity" autocomplete="off">
                                                         </div>
                                                     </div>
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary btn-sm" id="btn-add-medication" data-loading-text="Saving..." autocomplete="off">Submit</button>
+                                                <button type="button" class="btn btn-primary btn-sm addmedication" id="btn-add-medication">Submit</button>
                                             </div>
                                         </div>
                                     </div>
@@ -3274,6 +3286,107 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.uri_rmt').append('<b style="text-decoration:underline;">'+data.user.f_name+' '+data.user.m_name+' '+data.user.l_name+', '+data.user.credential+'</b>');
             
 
+        })
+    })
+
+    $('.addmedication').on('click',function() {
+        var med_id = $('.med_id').val();
+        var patient_id = $('.med_patient_id').val();
+        var visit_id = $('.med_visit_id').val();
+        var date_start = $('.date_start').val();
+        var med_drug = $('.med_drug').val();
+        var med_frequency = $('.med_frequency').val();
+        var med_quantity = $('.med_quantity').val();
+        if (!med_drug) {
+            $('.med_drug_err').show();
+            $('.med_drug_err').append('Drug Name is Required.');
+            setTimeout(function(){ 
+                    $('.med_drug_err').hide();
+                }, 2000);
+        }
+        else {
+            $.get('../../api/modalmedication?patient_id=' + patient_id + '&visit_id=' + visit_id + '&date_start=' + date_start + '&med_drug=' + med_drug + '&med_frequency=' + med_frequency + '&med_quantity=' + med_quantity + '&med_id=' + med_id, function(data){
+                if (!med_id) {
+                    $('.medication_list2').append('<tr class="med_id_'+med_id+'">\
+                        <td>'+data.date_start+'</td>\
+                        <td>'+data.drug+'</td>\
+                        <td>'+data.frequency+'</td>\
+                        <td>'+data.quantity+'</td>\
+                        <td>'+data.status+'</td>\
+                        <td><button class="btn btn-sm btn-primary editmedication" data-toggle="modal" data-target="#modal_medication_add" data-med_id="'+data.id+'">Edit</button></td>\
+                        </tr>');   
+                }
+                else {
+                    $('.med_id_'+med_id+'').empty();
+                    $('.med_id_'+med_id+'').append('<td>'+data.date_start+'</td>\
+                        <td>'+data.drug+'</td>\
+                        <td>'+data.frequency+'</td>\
+                        <td>'+data.quantity+'</td>\
+                        <td>'+data.status+'</td>\
+                        <td><button class="btn btn-sm btn-primary editmedication" data-toggle="modal" data-target="#modal_medication_add" data-med_id="'+med_id+'">Edit</button></td>');
+
+                    $('.editmedication').on('click',function() {
+                        var med_id = $(this).data('med_id');
+                        $.get('../../api/editmedication?med_id=' + med_id, function(data1){
+                            $('.med_id').val(med_id);
+                            $('.divdate_start').empty();
+                            $('.divdate_start').append('<input type="text" id="date_start" name="date_start" class="form-control date_start" readonly="" required="" value="'+data1.date_start+'">');
+                            $('.med_drug').val(data1.drug);
+                            $('.med_frequency').val(data1.frequency);
+                            $('.med_quantity').val(data1.quantity);
+                            $(".date_start").datepicker({
+                                dateFormat: "yy-mm-dd",
+                                yearRange: "1950:2050",
+                                changeYear: true,
+                                changeMonth: true,
+                            });
+                        })
+                    })
+
+                }
+            })
+        }
+            $('.divdate_start').empty();
+            var myDate = new Date();
+            var nowdate = myDate.getFullYear() + '-' + ( '0' + (myDate.getMonth()+1) ).slice( -2 ) + '-' + ( '0' + (myDate.getDate()) ).slice( -2 );
+            $('.divdate_start').append('<input type="text" id="date_start" name="date_start" class="form-control date_start" readonly="" required="" value="'+nowdate+'">');
+            $('.med_drug').val('');
+            $('.med_frequency').val('');
+            $('.med_quantity').val('');
+            $( ".close_medication" ).trigger( "click" );
+            $(".date_start").datepicker({
+                dateFormat: "yy-mm-dd",
+                yearRange: "1950:2050",
+                changeYear: true,
+                changeMonth: true,
+            });
+    })
+
+    $('.addmedadd').on('click',function() {
+        $('.divdate_start').empty();
+        var myDate = new Date();
+        var nowdate = myDate.getFullYear() + '-' + ( '0' + (myDate.getMonth()+1) ).slice( -2 ) + '-' + ( '0' + (myDate.getDate()) ).slice( -2 );
+        $('.divdate_start').append('<input type="text" id="date_start" name="date_start" class="form-control date_start" readonly="" required="" value="'+nowdate+'">');
+        $('.med_drug').val('');
+        $('.med_frequency').val('');
+        $('.med_quantity').val('');
+    })
+
+    $('.editmedication').on('click',function() {
+        var med_id = $(this).data('med_id');
+        $.get('../../api/editmedication?med_id=' + med_id, function(data){
+            $('.med_id').val(med_id);
+            $('.divdate_start').empty();
+            $('.divdate_start').append('<input type="text" id="date_start" name="date_start" class="form-control date_start" readonly="" required="" value="'+data.date_start+'">');
+            $('.med_drug').val(data.drug);
+            $('.med_frequency').val(data.frequency);
+            $('.med_quantity').val(data.quantity);
+            $(".date_start").datepicker({
+                dateFormat: "yy-mm-dd",
+                yearRange: "1950:2050",
+                changeYear: true,
+                changeMonth: true,
+            });
         })
     })
 

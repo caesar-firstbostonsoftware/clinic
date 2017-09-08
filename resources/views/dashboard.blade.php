@@ -71,105 +71,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <i class="fa fa-users fa-lg"></i>
                                     <?php $datenow = date("F");?>
                                     No. of Patient for the month of <b>{{$datenow}}</b>
+                                    <i style="margin-left: 50%;"><b>{{$count}} Results Found</b></i>
                                 </div>
                                 <hr class="mt-2">
                                 
-                                <table class="tableBodyScroll">
+                                <table class="tableBodyScroll table-striped">
                                     <thead class="dtl">
                                         <tr class="dtl">
-                                            <th>Head 1</th>
-                                            <th>Head 2</th>
-                                            <th>Head 3</th>
-                                            <th>Head 4</th>
-                                            <th>Head 5</th>
+                                            <th width="5%">ID</th>
+                                            <th width="30%">Name</th>
+                                            <th width="34%">Address</th>
+                                            <th>Gender</th>
+                                            <th>Age</th>
+                                            <th>Number of Visit</th>
+                                            <th width="1%"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="dtl">
+                                    @foreach($pv as $patient)
                                         <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
+                                            <td width="6%">{{$patient->patient_id}}</td>
+                                            <td width="31%">{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
+                                            <td width="34%">{{$patient->address}}</td>
+                                            <td>{{$patient->gender}}</td>
+                                            <td>{{$patient->age}}</td>
+                                            <td>{{$patient->counter}}</td>
                                         </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -185,105 +113,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="mb-0 mt-4">
                                     <i class="fa fa-money fa-lg"></i>
                                     Income for the month of <b>{{$datenow}}</b>
+                                    <?php $datenow2 = date("Y-m-d"); ?>
+                                    <i style="margin-left: 40%;"><b>Total as of {{$datenow2}} :</b> Php. <?php echo number_format($income, 2);?></i>
                                 </div>
                                 <hr class="mt-2">
                                 
-                                <table class="tableBodyScroll">
+                                <table class="tableBodyScroll table-striped">
                                     <thead class="dtl">
                                         <tr class="dtl">
-                                            <th>Head 1</th>
-                                            <th>Head 2</th>
-                                            <th>Head 3</th>
-                                            <th>Head 4</th>
-                                            <th>Head 5</th>
+                                            <th width="30%">Patient Name</th>
+                                            <th width="10%">Visit Date</th>
+                                            <th width="40%">Purpose of Visit</th>
+                                            <th width="20%">Total Bill</th>
+                                            <th width="1%"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="dtl">
+                                    @foreach($pv2 as $income)
                                         <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
+                                            <td width="30%">{{$income->patient->f_name}} {{$income->patient->m_name}} {{$income->patient->l_name}}</td>
+                                            <td width="10%">{{$income->visit_date}}</td>
+                                            <td width="40%">{{$income->purpose_visit}}</td>
+                                            <td width="20%" style="text-align: right;">{{$income->totalbill}}</td>
+                                            <td width="1%"></td>
                                         </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-                                        <tr class="dtl">
-                                            <td>Content 1</td>
-                                            <td>Content 2</td>
-                                            <td>Content 3</td>
-                                            <td>Content 4</td>
-                                            <td>Content 5</td>
-                                        </tr>
-
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>

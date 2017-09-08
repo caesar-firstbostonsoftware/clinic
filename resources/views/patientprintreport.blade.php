@@ -571,13 +571,23 @@
                 <td>
                 <h3><i>MEDICATIONS</i></h3>
                     <table border="1" cellpadding="3" cellspacing="0">
-                        <tbody>
+                        <thead>
                             <tr>
+                                <th style="text-align: center">Date Started</th>
                                 <th style="text-align: center">Drug</th>
                                 <th style="text-align: center">Frequency</th>
                                 <th style="text-align: center">Quantity</th>
-                                <th style="text-align: center">Status</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($med as $medmed)
+                            <tr>
+                                <td>{{$medmed->date_start}}</td>
+                                <td>{{$medmed->drug}}</td>
+                                <td>{{$medmed->frequency}}</td>
+                                <td>{{$medmed->quantity}}</td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </td>
@@ -1078,11 +1088,11 @@
                 </td>
             </tr>
 
-            <tr>
+            <!-- <tr>
             	<td>
             	<h2>TOTAL : &nbsp;&nbsp;&nbsp;PHP. <?php echo number_format($income, 2, '.', '');?></h2>
             	</td>
-            </tr>
+            </tr> -->
 
 		</tbody>
 	</table>
