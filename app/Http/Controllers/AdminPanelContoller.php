@@ -62,4 +62,45 @@ class AdminPanelContoller extends Controller
         }
         
     }
+
+    public function editservice(Request $request)
+    {   
+        $main_id = $request->input('main_id');
+        $sub_id = $request->input('sub_id');
+        if ($main_id != 0 && $sub_id == 0) {
+           $service = AdminPanel::where('id',$main_id)->first();
+        }
+        else {
+            $service = AdminPanelSub::where('admin_panel_id',$main_id)->where('id',$sub_id)->first();
+        }
+        return Response::json($service, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function editservicepost(Request $request)
+    {
+        if(Session::has('user')){
+            $id_service = $request->input('id_service');
+            $subid_service = $request->input('subid_service');
+            $price_service = $request->input('price_service');
+
+            if ($id_service != 0 && $subid_service == 0) {
+                $editadmin = AdminPanel::where('id',$id_service)->first();
+                $editadmin->price = $price_service;
+                $editadmin->save();
+            }
+            else {
+                $editadmin = AdminPanelSub::where('id',$id_service)->where('admin_panel_id',$subid_service)->first();
+                $editadmin->price = $price_service;
+                $editadmin->save();
+            }
+
+            $adminpanelcat = AdminPanelCategory::all();
+            $adminpanel = AdminPanel::all();
+            $sub = AdminPanelSub::all();
+            return redirect()->action('AdminPanelContoller@services');
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
 }

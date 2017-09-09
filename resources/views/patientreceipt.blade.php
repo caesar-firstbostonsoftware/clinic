@@ -23,6 +23,27 @@
             <thead>
                 <tr>
                     <th style="text-align: left;">
+                        <span style="font-size: 7pt;"><br>
+                            <b>Name :</b> &nbsp;&nbsp;{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}<br>
+                            <b>Gender :</b> {{$info->gender}}<br>
+                            <b>Age :</b> &nbsp;&nbsp;&nbsp;{{$info->age}}
+                        </span>
+                    </th>
+                    <th style="text-align: left;">
+                        <span style="font-size: 7pt;"><br>
+                            <b>Name :</b> &nbsp;&nbsp;{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}<br>
+                            <b>Gender :</b> {{$info->gender}}<br>
+                            <b>Age :</b> &nbsp;&nbsp;&nbsp;{{$info->age}}
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">
                         <b style="font-size:9pt;">SERVICES</b>
                         <span style="font-size: 7pt;"><br>
                             @foreach($PatientService as $ap)

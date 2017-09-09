@@ -101,10 +101,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <tr>
                                                     <td><b>{{$cat->cat_name}}</b></td>
                                                     <td></td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-sm"><i class="fa fa-plus fa-lg"></i></a>
-                                                        <a href="#" class="btn btn-sm"><i class="fa fa-pencil-square-o fa-lg"></i></a>
-                                                    </td>
+                                                    <td></td>
                                                 </tr>
                                                 @foreach($adminpanel as $panel)
                                                     @if($cat->id == $panel->admin_panel_cat_id)
@@ -114,18 +111,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             <td style="text-align: right;"></td>
                                                             @else
                                                             <td style="text-align: right;">{{$panel->price}}</td>
-                                                            @endif
                                                             <td>
-                                                                <a href="#" class="btn btn-sm"><i class="fa fa-plus fa-lg"></i></a>
-                                                                <a href="#" class="btn btn-sm"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+                                                               <a href="#" class="btn btn-sm editservice" data-id="{{$panel->id}}" data-subid="0" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
                                                             </td>
+                                                            @endif
                                                         </tr>
                                                         @foreach($sub as $panelsub)
                                                             @if($panel->id == $panelsub->admin_panel_id)
                                                                 <tr>
                                                                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{{$panelsub->name}}</i></td>
                                                                     <td style="text-align: right;">{{$panelsub->price}}</td>
-                                                                    <td></td>
+                                                                    <td>
+                                                                        <a href="#" class="btn btn-sm editservice" data-id="{{$panel->id}}" data-subid="{{$panelsub->id}}" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+                                                                    </td>
                                                                 </tr>
                                                             @endif
                                                         @endforeach
@@ -141,6 +139,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
             </div>
         </div>
+
+                                <!-- MODAL MEDICATIONS -->
+                                <div class="modal fade" id="modal_edit_services" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close close_medication" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form class="form-horizontal" id="formeditservices" method="POST" action="/NFHSI/services/edit/service">
+                                                {!! csrf_field() !!}
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-3 control-label">Name</label>
+                                                        <div class="col-sm-8">
+                                                            <input class="form-control id_service" id="id_service" name="id_service" type="text" value="" style="display: none;">
+                                                            <input class="form-control subid_service" id="subid_service" name="subid_service" type="text" value="" style="display: none;">
+                                                            <input class="form-control name_service" id="name_service" name="name_service" type="text" value="" readonly="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-3 control-label">Price</label>
+                                                        <div class="col-sm-4">
+                                                            <input class="form-control price_service" id="price_service" name="price_service" type="text" placeholder="Price" autocomplete="off" onkeypress="return isNumberKey(event)">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" form="formeditservices" class="btn btn-primary btn-sm" id="btn-add-medication">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END MODAL -->
+
     </section>
     </div>
 
@@ -156,6 +189,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </div>
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
+    <script type="text/javascript">
+    function isNumberKey(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31 
+                && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        }
+
+        $('.editservice').on('click',function() {
+            var main_id = $(this).data('id');
+            var sub_id = $(this).data('subid');
+            $.get('../../api/editservice?main_id=' + main_id +'&sub_id='+ sub_id, function(data){
+                $('.id_service').val(data.id);
+                if (!data.admin_panel_id) {
+                    $('.subid_service').val(0);
+                }
+                else {
+                    $('.subid_service').val(data.admin_panel_id);
+                }
+                $('.name_service').val(data.name);
+                $('.price_service').val(data.price);
+            })
+        })
+    </script>
 @show
 
 </body>

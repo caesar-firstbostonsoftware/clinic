@@ -123,8 +123,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <tr class="dtl">
                                             <th width="30%">Patient Name</th>
                                             <th width="10%">Visit Date</th>
-                                            <th width="40%">Purpose of Visit</th>
-                                            <th width="20%">Total Bill</th>
+                                            <th width="40%" style="text-align: center;">Purpose of Visit</th>
+                                            <th width="20%" style="text-align: right;">Total Bill</th>
                                             <th width="1%"></th>
                                         </tr>
                                     </thead>
@@ -133,7 +133,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <tr class="dtl">
                                             <td width="30%">{{$income->patient->f_name}} {{$income->patient->m_name}} {{$income->patient->l_name}}</td>
                                             <td width="10%">{{$income->visit_date}}</td>
-                                            <td width="40%">{{$income->purpose_visit}}</td>
+                                            <td width="40%" style="text-align: center;">{{$income->purpose_visit}}</td>
                                             <td width="20%" style="text-align: right;">{{$income->totalbill}}</td>
                                             <td width="1%"></td>
                                         </tr>

@@ -1344,9 +1344,60 @@ class PatientsController extends Controller
 
             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->with('adminP','adminsubP')->get();
             $totalbill = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
-            $pdf->writeHTML(view('patientreceipt',compact('PatientService','totalbill'))->render());
+            $info = Patient::where('id',$id)->first();
+            $pdf->writeHTML(view('patientreceipt',compact('PatientService','totalbill','info'))->render());
             ob_end_clean();
             $pdf->Output('PatientReceiptReport.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
+    }
+
+    public function printpatientrx(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Generate Rx');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 10, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('L');
+
+            $doctor_id = Session::get('user');
+            $info = Patient::where('id',$id)->first();
+            $med = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
+            $doc = Doctor::where('id',$doctor_id)->first();
+            $pdf->writeHTML(view('patientgeneraterx',compact('info','med','doc'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientGenerateRx.pdf','I');
 
         }
         else {

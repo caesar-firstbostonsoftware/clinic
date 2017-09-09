@@ -89,7 +89,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#personal_info" role="tab" data-toggle="tab" style="font-size: 8pt;">Personal Info</a>
                     </li>
                     <li role="presentation">
-                        <a href="#reasonforconsulation" role="tab" data-toggle="tab" style="font-size: 8pt;">Reason for Consulation</a>
+                        <a href="#reasonforconsulation" role="tab" data-toggle="tab" style="font-size: 8pt;">Reason for Consultation</a>
                     </li>
                     <li role="presentation">
                         <a href="#PMH" role="tab" data-toggle="tab" style="font-size: 8pt;">Past Medical History</a>
@@ -1338,7 +1338,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="flash-message top-message topmessage8"></div>
                                 <h3>Medications 
                                     <button type="button" class="btn btn-primary btn-sm addmedadd" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
-                                    <!-- <a href="#" target="_blank" class="btn btn-warning">Generate Rx</a> -->
+                                    <a href="/print/rx/{{$id}}/{{$vid}}" target="_blank" class="btn btn-sm btn-warning">Generate Rx</a>
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -1717,6 +1717,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Lab Test -->
                         <div role="tabpanel" class="tab-pane fade" id="labtest">
                             <ul class="nav nav-tabs" role="tablist" style="margin-left: 2%;">
+                            <!-- E on load tapos append -->
                                 <li role="presentation" class="active">
                                     <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
                                 </li>
