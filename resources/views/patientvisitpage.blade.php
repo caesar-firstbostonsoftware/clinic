@@ -27,7 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
-        @if(Session::get('position') == "Doctor")
+        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
         <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
         @endif
@@ -35,11 +35,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
+            @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+            @endif
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <li><a href="/NFHSI/users"><i class="fa fa-user-circle-o"></i> <span>Users</span></a></li>
+        <li><a href="/NFHSI/doctors"><i class="fa fa-user-md"></i> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
@@ -1464,7 +1467,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 @if(!Session::get('user'))
                                                 @else
                                                     <button type="button" class="btn btn-sm btn-primary btn-sm editpatientxray" data-toggle="modal" data-target="#modal_xraynew_edit" data-backdrop="static" data-id="{{$xray->id}}">Edit</button>
-                                                    <button class="btn btn-sm btn-success">Print</button>
+                                                    <a href="/xray/pdf/view/{{$xray->id}}" target="_blank" class="btn btn-sm btn-success">Print</a>
                                                     <button type="button" class="btn btn-sm btn-warning patientxraylog" data-toggle="modal" data-target="#modal_patientxraylog" data-backdrop="static" data-id="{{$xray->id}}">Logs</button>
                                                 @endif
                                                 </td>
@@ -1514,7 +1517,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             <div class="col-sm-6">
                                                                 <input type="text" name="address_edit" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
                                                             </div>
-                                                            <label class="col-sm-2 control-label">Age/Sex:</label>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
                                                             <div class="col-sm-3">
                                                                 <select id="agesex" name="agesex_edit" class="form-control" required="" disabled=""> 
                                                                     <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
@@ -1609,7 +1612,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <div class="col-sm-6">
                                                     <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
                                                 </div>
-                                                <label class="col-sm-2 control-label">Age/Sex:</label>
+                                                <label class="col-sm-2 control-label">Sex:</label>
                                                 <div class="col-sm-3">
                                                     <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
                                                         <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
@@ -1620,18 +1623,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <label class="col-sm-1 control-label">Physician:</label>
                                                 <div class="col-sm-6">
                                                     <select id="physician" name="physician" class="form-control physician" required="">
-                                                        <option value="">-- Select One --</option>
-                                                        @foreach($doctor as $doc)
                                                         @if(Session::get('position') == "Doctor")
-                                                            @if(Session::get('user') == $doc->id)
-                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                            @endif
+                                                            @foreach($doctor as $doc)
+                                                                @if(Session::get('user') == $doc->id)
+                                                                    <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                @endif
+                                                            @endforeach
                                                         @else
-                                                            @if($doc->user->position == "Doctor")
-                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                            @endif
+                                                            <option value="">-- Select One --</option>
+                                                            @foreach($doctor as $doc)
+                                                                    <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                            @endforeach
                                                         @endif
-                                                        @endforeach
                                                     </select>
                                                 </div>
                                                 <label class="col-sm-2 control-label">Date:</label>
@@ -1716,15 +1719,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                         <!-- Lab Test -->
                         <div role="tabpanel" class="tab-pane fade" id="labtest">
-                            <ul class="nav nav-tabs" role="tablist" style="margin-left: 2%;">
+                            <ul class="nav nav-tabs" role="tablist">
                             <!-- E on load tapos append -->
-                                <li role="presentation" class="active">
-                                    <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#fecalysis1" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
-                                </li>
-                                <li role="presentation">
+                                @if(Session::get('position') == "Doctor")
+                                    @foreach($PatientService as $service)
+                                        @if($service->admin_panel_id == 1)
+                                            <li role="presentation">
+                                                <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
+                                            </li>
+                                        @elseif($service->admin_panel_id == 2)
+                                           <!--  <li role="presentation">
+                                                <a href="#fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
+                                            </li> -->
+                                        @endif
+                                    @endforeach
+                                @elseif(Session::get('position') == "Labtest")
+                                    @foreach($PatientService as $service)
+                                        @if($service->admin_panel_id == 1)
+                                            <li role="presentation">
+                                                <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
+                                            </li>
+                                        @elseif($service->admin_panel_id == 2)
+                                            <!-- <li role="presentation">
+                                                <a href="#fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
+                                            </li> -->
+                                        @endif
+                                    @endforeach
+                                @endif
+                                <!-- <li role="presentation">
                                     <a href="#OGTT1" role="tab" data-toggle="tab" style="font-size: 8pt;">Oral Glucose Tolerance Test</a>
                                 </li>
                                 <li role="presentation">
@@ -1732,59 +1754,61 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </li>
                                 <li role="presentation">
                                     <a href="#chemistry1" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry II</a>
-                                </li>
+                                </li> -->
                             </ul>
                             <div class="tab-content">
 
-                            <div role="tabpanel" class="tab-pane active" id="urinalysis">
-                            <div class="col-md-12">
-                                <h3>Urinalysis
-                                @if(!Session::get('user'))
-                                @else
-                                @if($uricount >= 1)
-                                @else
-                                    <button type="button" class="btn btn-primary btn-sm newurinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
-                                @endif
-                                @endif
-                                </h3>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th class="text-center">Date</th>
-                                                <th class="text-center">Physician</th>
-                                                <th class="text-center">RMT</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="urinalysis_list">
-                                        @foreach($Urinalysis as $Uri)
-                                            <tr>
-                                                <td>{{$Uri->id}}</td>
-                                                <td class="text-center">{{$Uri->date}}</td>
-                                                @foreach($doctor as $docdoc)
-                                                @if($docdoc->id == $Uri->physician_id)
-                                                <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
-                                                @endif
-                                                @if($docdoc->id == $Uri->user_id)
-                                                <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
-                                                @endif
-                                                @endforeach
-                                                <td>
-                                                @if(!Session::get('user'))
-                                                @else
-                                                    <button type="button" class="btn btn-sm btn-primary editpatienturinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static" data-id="{{$Uri->id}}">Edit</button>
-                                                    <button class="btn btn-sm btn-success">Print</button>
-                                                @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </div>
+                            @if(Session::get('position') == "Doctor")
+                                @foreach($PatientService as $service)
+                                    @if($service->admin_panel_id == 1)
+                                        <div role="tabpanel" class="tab-pane fade" id="urinalysis">
+                                            <div class="col-md-12">
+                                                <h3>Urinalysis
+                                                    @if(!Session::get('user'))
+                                                    @else
+                                                        @if($uricount >= 1)
+                                                        @else
+                                                            <button type="button" class="btn btn-primary btn-sm newurinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
+                                                        @endif
+                                                    @endif
+                                                </h3>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th class="text-center">Date</th>
+                                                            <th class="text-center">Physician</th>
+                                                            <th class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="urinalysis_list">
+                                                        @foreach($Urinalysis as $Uri)
+                                                            <tr>
+                                                                <td>{{$Uri->id}}</td>
+                                                                <td class="text-center">{{$Uri->date}}</td>
+                                                                    @foreach($doctor as $docdoc)
+                                                                        @if($docdoc->id == $Uri->physician_id)
+                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
+                                                                        @endif
+                                                                        @if($docdoc->id == $Uri->user_id)
+                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
+                                                                        @endif
+                                                                    @endforeach
+                                                                <td>
+                                                                    @if(!Session::get('user'))
+                                                                    @else
+                                                                        <button type="button" class="btn btn-sm btn-primary editpatienturinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static" data-id="{{$Uri->id}}">Edit</button>
+                                                                        <a href="/urinalysis/pdf/view/{{$Uri->id}}" target="_blank" class="btn btn-sm btn-success">Print</a>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            </div>
+                                        </div>
                 <!-- MODAL Urinalysis -->
                 <div class="modal fade" id="modal_urinalysis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog modalwidthuri" role="document">
@@ -1822,7 +1846,471 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <div class="col-sm-6">
                                                     <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
                                                 </div>
-                                                <label class="col-sm-2 control-label">Age/Sex:</label>
+                                                <label class="col-sm-2 control-label">Sex:</label>
+                                                <div class="col-sm-3">
+                                                    <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                        <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group divxrayinfo">
+                                                <label class="col-sm-1 control-label">Physician:</label>
+                                                <div class="col-sm-6">
+                                                    <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                        <option value="">-- Select One --</option>
+                                                        @foreach($doctor as $doc)
+                                                        @if(Session::get('position') == "Doctor")
+                                                            @if(Session::get('user') == $doc->id)
+                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                            @endif
+                                                        @else
+                                                            @if($doc->user->position == "Doctor")
+                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                            @endif
+                                                        @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <label class="col-sm-2 control-label">Date:</label>
+                                                <div class="col-sm-3">
+                                                <?php $datenow = date("Y-m-d"); ?>
+                                                    <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
+                                                </div>
+                                            </div><br>
+
+                                            <div class=" divxrayinfo">
+                                                <div class="row"> 
+                                                    <div class="col-sm-6">
+                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="physical" name="physical" checked="" value="Yes"> <b>PHYSICAL</b></label>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="color" required="" class="form-control color" placeholder="Color" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transparency </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="transparency" required="" class="form-control transparency" placeholder="Transparency" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specific Gravity </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="SG" required="" class="form-control SG" placeholder="Specific Gravity" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-6">
+                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="microscopic" name="microscopic" checked="" value="Yes"> <b>MICROSCOPIC</b></label>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WBC  </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="wbc" required="" class="form-control wbc" placeholder="WBC" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">HPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RBC </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="rbc" required="" class="form-control rbc" placeholder="RBC" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">HPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Epith. Cells </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="EC" required="" class="form-control EC" placeholder="Epith. Cells" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">HPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bacteria </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="bacteria" required="" class="form-control bacteria" placeholder="Bacteria" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">HPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cast(s) </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="cast" required="" class="form-control cast" placeholder="Cast" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">LPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label"></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="cast2" required="" class="form-control cast2" placeholder="Cast" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">LPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crystal(s) </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="crystal" required="" class="form-control crystal" placeholder="Crystal" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">LPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label"></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="crystal2" required="" class="form-control crystal2" placeholder="Crystal" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">LPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">Amorphous Materials </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="AM" required="" class="form-control AM" placeholder="Amorphous Materials" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">HPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mucus Thread </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="MT" required="" class="form-control MT" placeholder="Mucus Thread" value="" autocomplete="off">
+                                                            </div>
+                                                            <div>
+                                                                <label class="control-label">HPF</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Others </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="others" required="" class="form-control others" placeholder="Others" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label"></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="others2" required="" class="form-control others2" placeholder="Others" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label"></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="others3" required="" class="form-control others3" placeholder="Others" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6" style="margin-top:-33%;">
+                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="chemical" name="chemical" checked="" value="Yes"> <b>CHEMICAL</b></label>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Glucose </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="glucose" required="" class="form-control glucose" placeholder="Glucose" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bilirubin </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="bilirubin" required="" class="form-control bilirubin" placeholder="Bilirubin" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ketone </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="ketone" required="" class="form-control ketone" placeholder="Ketone" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blood </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="blood" required="" class="form-control blood" placeholder="Blood" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pH </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="ph" required="" class="form-control ph" placeholder="pH" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Protein </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="protein" required="" class="form-control protein" placeholder="Protein" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urobilingen </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="urobilingen" required="" class="form-control urobilingen" placeholder="Urobilingen" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrites </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="nitrites" required="" class="form-control nitrites" placeholder="Nitrites" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leucocytes </label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="leucocytes" required="" class="form-control leucocytes" placeholder="Leucocytes" value="" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div><br>
+                                                @if(Session::get('position') == "Doctor")
+                                                    @foreach($PatientService as $service)
+                                                        @if($service->admin_panel_id == 35)
+                                                            <div class="row">
+                                                                <div class="col-sm-12" >
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-2">
+                                                                            <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                                        </div>
+                                                                        <div class="col-sm-10">
+                                                                            <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @elseif(Session::get('position') == "Labtest")
+                                                    @foreach($PatientService as $service)
+                                                        @if($service->admin_panel_id == 35)
+                                                            <div class="row">
+                                                                <div class="col-sm-12" >
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-2">
+                                                                            <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                                        </div>
+                                                                        <div class="col-sm-10">
+                                                                            <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div><br>
+
+                                           <!--  <div class="form-group docs">
+                                                <label class="col-sm-6 control-label patho" style="text-align: center;"></label>
+                                                <label class="col-sm-6 control-label uri_rmt" style="text-align: center;"></label>
+                                            </div> -->
+                                            <!-- <div class="form-group divxrayinfo docs2">
+                                                <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">Pathologist</label>
+                                                <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">RMT</label>
+                                            </div> -->
+                                            <br>
+
+                                            <div class="form-group">
+                                                <label for="inputEmail3" class="control-label"></label>
+                                                <div class="col-sm-3">
+                                                    <button class="btn btn-sm btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END MODAL -->
+                                    @elseif($service->admin_panel_id == 2)
+                                        <div role="tabpanel" class="tab-pane fade" id="fecalysis">
+                                            <div class="col-md-12">
+                                                <h3>Fecalysis
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
+                                                </h3>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th class="text-center">Date</th>
+                                                            <th class="text-center">Physician</th>
+                                                            <th class="text-center">Result</th>
+                                                            <th class="text-center">Status</th>
+                                                            <th class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="fecalysis_list">
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>2</td>
+                                                            <td>3</td>
+                                                            <td>4</td>
+                                                            <td>5</td>
+                                                            <td>6</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @elseif(Session::get('position') == "Labtest")
+                                @foreach($PatientService as $service)
+                                    @if($service->admin_panel_id == 1)
+                                        <div role="tabpanel" class="tab-pane fade" id="urinalysis">
+                                            <div class="col-md-12">
+                                                <h3>Urinalysis
+                                                    @if(!Session::get('user'))
+                                                    @else
+                                                        @if($uricount >= 1)
+                                                        @else
+                                                            <button type="button" class="btn btn-primary btn-sm newurinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
+                                                        @endif
+                                                    @endif
+                                                </h3>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th class="text-center">Date</th>
+                                                            <th class="text-center">Physician</th>
+                                                            <th class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="urinalysis_list">
+                                                        @foreach($Urinalysis as $Uri)
+                                                            <tr>
+                                                                <td>{{$Uri->id}}</td>
+                                                                <td class="text-center">{{$Uri->date}}</td>
+                                                                    @foreach($doctor as $docdoc)
+                                                                        @if($docdoc->id == $Uri->physician_id)
+                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
+                                                                        @endif
+                                                                        @if($docdoc->id == $Uri->user_id)
+                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
+                                                                        @endif
+                                                                    @endforeach
+                                                                <td>
+                                                                    @if(!Session::get('user'))
+                                                                    @else
+                                                                        <button type="button" class="btn btn-sm btn-primary editpatienturinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static" data-id="{{$Uri->id}}">Edit</button>
+                                                                        <button class="btn btn-sm btn-success">Print</button>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            </div>
+                                        </div>
+                <!-- MODAL Urinalysis -->
+                <div class="modal fade" id="modal_urinalysis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modalwidthuri" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="table-responsive">
+                                    <div class="col-md-12">
+                                        <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                        <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                        <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                        <h4><b>URINALYSIS</b></h4>
+
+                                        <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/urinalysis">
+                                        {!! csrf_field() !!}
+                                            <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
+                                            <div class="form-group">
+                                                <label class="col-sm-1 control-label">Name:</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                    <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                </div>
+                                                <label class="col-sm-2 control-label">O.R. No.</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                </div>
+                                            </div>
+                                            <div class="form-group divxrayinfo">
+                                                <label class="col-sm-1 control-label">Address:</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                </div>
+                                                <label class="col-sm-2 control-label">Sex:</label>
                                                 <div class="col-sm-3">
                                                     <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
                                                         <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
@@ -2114,10 +2602,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 </div>
                                             </div><br>
 
-                                            <div class="form-group docs">
+                                           <!--  <div class="form-group docs">
                                                 <label class="col-sm-6 control-label patho" style="text-align: center;"></label>
                                                 <label class="col-sm-6 control-label uri_rmt" style="text-align: center;"></label>
-                                            </div>
+                                            </div> -->
                                             <!-- <div class="form-group divxrayinfo docs2">
                                                 <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">Pathologist</label>
                                                 <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">RMT</label>
@@ -2140,40 +2628,44 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </div>
                 </div>
                 <!-- END MODAL -->
+                                    @elseif($service->admin_panel_id == 2)
+                                        <div role="tabpanel" class="tab-pane fade" id="fecalysis">
+                                            <div class="col-md-12">
+                                                <h3>Fecalysis
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
+                                                </h3>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th class="text-center">Date</th>
+                                                            <th class="text-center">Physician</th>
+                                                            <th class="text-center">Result</th>
+                                                            <th class="text-center">Status</th>
+                                                            <th class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="fecalysis_list">
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>2</td>
+                                                            <td>3</td>
+                                                            <td>4</td>
+                                                            <td>5</td>
+                                                            <td>6</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @endif
 
-                            <div role="tabpanel" class="tab-pane fade" id="fecalysis">
-                            <div class="col-md-12">
-                                <h3>Fecalysis
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
-                                </h3>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th class="text-center">Date</th>
-                                                <th class="text-center">Physician</th>
-                                                <th class="text-center">Result</th>
-                                                <th class="text-center">Status</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="fecalysis_list">
-                                            <tr>
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>3</td>
-                                                <td>4</td>
-                                                <td>5</td>
-                                                <td>6</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div role="tabpanel" class="tab-pane fade" id="OGTT">
+                            
+                            <!-- <div role="tabpanel" class="tab-pane fade" id="OGTT">
                             <div class="col-md-12">
                                 <h3>Oral Glucose Tolerance Test
                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
@@ -2203,9 +2695,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </table>
                                 </div>
                             </div>
-                            </div>
+                            </div> -->
 
-                            <div role="tabpanel" class="tab-pane fade" id="hematology">
+                           <!--  <div role="tabpanel" class="tab-pane fade" id="hematology">
                             <div class="col-md-12">
                                 <h3>Hematology
                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
@@ -2235,9 +2727,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </table>
                                 </div>
                             </div>
-                            </div>
+                            </div> -->
 
-                            <div role="tabpanel" class="tab-pane fade" id="chemistry">
+                            <!-- <div role="tabpanel" class="tab-pane fade" id="chemistry">
                             <div class="col-md-12">
                                 <h3>Chemistry II
                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
@@ -2267,7 +2759,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </table>
                                 </div>
                             </div>
-                            </div>
+                            </div> -->
 
                             </div>
                         </div>

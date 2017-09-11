@@ -620,7 +620,7 @@
                                     @if(!$p_xray)
                                         N / A
                                     @else
-                                        {{$p_xray->doctor->f_name}} {{$p_xray->doctor->f_name}} {{$p_xray->doctor->f_name}}, {{$p_xray->doctor->credential}}
+                                        {{$p_xray->doctor->f_name}} {{$p_xray->doctor->m_name}} {{$p_xray->doctor->l_name}}, {{$p_xray->doctor->credential}}
                                     @endif
                                 </td>
                             </tr>
@@ -1083,6 +1083,42 @@
                                     <hr>
                                 </td>
                             </tr>
+
+                            <tr>
+                                <td style="width: 35%; text-align: right;"><b>PREGNANCY TEST:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    @if(!$uriuri)
+                                        N / A
+                                    @else
+                                        {{$uriuri->pregnancy_test}}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%; text-align: right;"></td>
+                                <td>
+                                    <table border="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 60%;"><b>REMARKS:</b></td>
+                                                <td style="width: 80%;">
+                                                    @if(!$uriuri)
+                                                        N / A
+                                                    @else
+                                                        @if(!$uriuri->preg_remark)
+                                                            N / A
+                                                        @else
+                                                            {{$uriuri->preg_remark}}
+                                                        @endif
+                                                    @endif
+                                                </td> 
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <hr>
+                                </td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </td>

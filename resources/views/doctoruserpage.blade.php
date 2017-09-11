@@ -38,8 +38,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
         @endif
         @if(Session::get('user') == 1)
-        <li class="active"><a href="/NFHSI/users"><i class="fa fa-user-circle-o"></i> <span>Users</span></a></li>
-        <li><a href="/NFHSI/doctors"><i class="fa fa-user-md"></i> <span>Doctors</span></a></li>
+        <li><a href="/NFHSI/users"><i class="fa fa-user-circle-o"></i> <span>Users</span></a></li>
+        <li class="active"><a href="/NFHSI/doctors"><i class="fa fa-user-md"></i> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><i class="fa fa-desktop"></i> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1)
@@ -53,12 +53,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div style="min-height: 245px;" class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-user-circle-o"></i> Users</h1>
+        <h1><i class="fa fa-user-md"></i> Doctors</h1>
         <ol class="breadcrumb">
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
-            <li class="active"><a href="/NFHSI/users"><b>Users</b></a></li>
+            <li><a href="/NFHSI/users">Users</a></li>
+            <li class="active"><a href="/NFHSI/doctors"><b>Doctors</b></a></li>
         </ol>
     </section>
     <section class="content">
@@ -66,7 +67,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">List of Users <button class="btn btn-primary btn-sm addnew" data-toggle="modal" data-target="#addnewuser" data-backdrop="static">Add New</button></h3>
+                        <h3 class="box-title">List of Doctors <button class="btn btn-primary btn-sm addnew" data-toggle="modal" data-target="#addnewuser" data-backdrop="static">Add New</button></h3>
                     </div>
                         <div class="box-body">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
@@ -83,11 +84,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <thead>
                                                 <tr role="row">
                                                     <th style="width: 5%;">ID</th>
-                                                    <th style="width: 30%;">Name</th>
+                                                    <th style="width: 20%;">Name</th>
+                                                    <th style="width: 5%;">Credential</th>
+                                                    <th style="width: 10%;">Specialization</th>
                                                     <th style="width: 15%;">Address</th>
                                                     <th style="width: 15%;">Email</th>
-                                                    <th style="width: 15%;">Username</th>
-                                                    <th style="width: 15%;">Position</th>
                                                     <th style="width: 5%">Action</th>
                                                 </tr>
                                             </thead>
@@ -100,10 +101,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <tr>
                                                     <td>{{$zero_id}}</td>
                                                     <td>{{$u_doctor->f_name}} {{$u_doctor->m_name}} {{$u_doctor->l_name}}</td>
+                                                    <td>{{$u_doctor->credential}}</td>
+                                                    <td>{{$u_doctor->specialization}}</td>
                                                     <td>{{$u_doctor->address}}</td>
                                                     <td>{{$u_doctor->email}}</td>
-                                                    <td>{{$u_doctor->username}}</td>
-                                                    <td>{{$u_doctor->position}}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary btn-edit-patient edituser" data-toggle="modal" data-target="#addnewuser" data-id="{{$u_doctor->id}}" data-backdrop="static">Edit</button>
                                                     </td>
@@ -138,8 +139,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <select class="form-control position" name="position" required="">
                                             <option value="">-- Select One --</option>
                                             <option value="Doctor">Doctor</option>
-                                            <option value="Xray">Xray</option>
-                                            <option value="Labtest">Lab Test</option>
                                         </select>
                                     </div>
                                 </div>
@@ -156,7 +155,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
-                                <!-- <div class="form-group  divcredential">
+                                <div class="form-group  divcredential">
                                     <label class="col-sm-2 control-label">Credential</label>
                                     <div class="col-sm-4">
                                         <input class="form-control credential" id="credential" name="credential" placeholder="Credential" type="text" autocomplete="off">
@@ -167,7 +166,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-sm-10">
                                         <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" type="text" autocomplete="off">
                                     </div>
-                                </div> -->
+                                </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Address</label>
                                     <div class="col-sm-10">
@@ -234,8 +233,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.username').removeAttr('value');
                 $('.position').empty();
                 $('.position').append('<option value+"">-- Select One --</option>\
-                                            <option value="Xray">Xray</option>\
-                                            <option value="Labtest">Lab Test</option>');
+                                            <option value="Doctor">Doctor</option>');
         })
 
         $('.edituser').on('click',function() {
@@ -266,23 +264,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     $('.divcredential').show();
                     $('.divspecialization').show();
                     $('.position').append('<option value="">-- Select One --</option>\
-                                            <option value="Doctor" selected >Doctor</option>\
-                                            <option value="Xray">Xray</option>\
-                                            <option value="Labtest">Lab Test</option>');
+                                            <option value="Doctor" selected >Doctor</option>');
                 }
                 else if (data.user.position == "Xray"){
                     $('.divcredential').hide();
                     $('.divspecialization').hide();
                     $('.position').append('<option value="">-- Select One --</option>\
-                                            <option value="Xray" selected >Xray</option>\
-                                            <option value="Labtest">Lab Test</option>');
+                                            <option value="Doctor">Doctor</option>');
                 }   
                 else if (data.user.position == "Labtest"){
                     $('.divcredential').hide();
                     $('.divspecialization').hide();
                     $('.position').append('<option value="">-- Select One --</option>\
-                                            <option value="Xray">Xray</option>\
-                                            <option value="Labtest" selected >Lab Test</option>');
+                                            <option value="Doctor">Doctor</option>');
                 }
 
             })

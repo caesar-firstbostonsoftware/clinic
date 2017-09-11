@@ -60,6 +60,12 @@ class Auth extends Controller
 				if ($user->position == "Doctor") {
 					return redirect('/myinfo');
 				}
+				elseif ($user->position == "Xray") {
+					return redirect('/myinfo');
+				}
+				elseif ($user->position == "Labtest") {
+					return redirect('/myinfo');
+				}
 				elseif ($user->position != "Doctor") {
 					return redirect('/NFHSI');
 				}

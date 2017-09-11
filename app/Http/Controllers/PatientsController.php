@@ -230,12 +230,7 @@ class PatientsController extends Controller
                 ->select('patients.*')
                 ->get();
             }
-            elseif($doctor_id == 1 ) {
-                // $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
-                // ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
-                // ->select('patients.*','doctors.f_name as doctor_fname','doctors.m_name as doctor_mname','doctors.l_name as doctor_lname','doctors.credential as doctor_credential')
-                // ->get();
-
+            else if($doctor_id == 1 ) {
                 $patientlist = Patient::all();
             }
             else {
@@ -265,14 +260,14 @@ class PatientsController extends Controller
             $Urinalysis = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->get();
             $uricount = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->count();
         }
-        else if($doctor_id == 1) {
+        elseif($doctor_id == 1) {
             $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->get();
             $xraycount = Patientxray::where('patient_id',$id)->where('visitid',$vid)->count();
 
             $Urinalysis = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->get();
             $uricount = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->count();
         }
-        else if ($doctor_id != 1 && $doctor_pos == "Doctor") {
+        elseif ($doctor_id != 1 && $doctor_pos == "Doctor") {
             $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->where('physician_id',$doctor_id)->get();
             $xraycount = Patientxray::where('patient_id',$id)->where('visitid',$vid)->where('physician_id',$doctor_id)->count();
 
@@ -316,10 +311,12 @@ class PatientsController extends Controller
             ->where('patient_visits.visitid',$vid)
             ->select('patients.*','patient_visits.purpose_visit')
             ->first();
-    	$doctor = Doctor::with('user')->get();
+    	//$doctor = Doctor::with('user')->get();
+        $doctor = Doctor::join('users','doctors.id','=','users.doc_id')->where('users.position','Doctor')->select('doctors.*')->get();
         $adminpanel = AdminPanelCategory::with('adminpanel')->get();
         $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
         $Medication = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
+        //return Response::json($doctor, 200, array(), JSON_PRETTY_PRINT);
     	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication'));
     }
 
@@ -1398,6 +1395,98 @@ class PatientsController extends Controller
             $pdf->writeHTML(view('patientgeneraterx',compact('info','med','doc'))->render());
             ob_end_clean();
             $pdf->Output('PatientGenerateRx.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
+    }
+
+    public function xraypdfview(Request $request,$id)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Patient Xray');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage();
+
+            $Patientxray = Patientxray::where('id',$id)->with('patient','doctor','xraydate')->first();
+            
+            $pdf->writeHTML(view('xraypdfview',compact('Patientxray'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientXray.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
+    }
+
+    public function urinalysispdfview(Request $request,$id)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Patient Urinalysis');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage();
+
+            $Urinalyses = Urinalyses::where('id',$id)->with('patient','phy')->first();
+            
+            $pdf->writeHTML(view('urinalysispdfview',compact('Urinalyses'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientUrinalysis.pdf','I');
 
         }
         else {

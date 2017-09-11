@@ -68,6 +68,11 @@ Route::get('/patientreceipt/pdf/view/{id}/{vid}', 'PatientsController@patientrec
 Route::get('/pdf/view2/{id}/{datefrom}/{dateto}', 'DoctorsController@printxrayreport');
 Route::get('/print/rx/{id}/{vid}', 'PatientsController@printpatientrx');
 
+Route::get('/NFHSI/doctors', 'DoctorsController@doctoruserpage');
+
+Route::get('/xray/pdf/view/{id}', 'PatientsController@xraypdfview');
+Route::get('/urinalysis/pdf/view/{id}', 'PatientsController@urinalysispdfview');
+
 
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');

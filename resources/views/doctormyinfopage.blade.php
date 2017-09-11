@@ -18,21 +18,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
-
+        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
         <li class="active"><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
+        @endif
         <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
+            @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+            @endif
             </ul>
         </li>
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-md"></i> <span>Users</span></a></li>
+        <li><a href="/NFHSI/users"><i class="fa fa-user-circle-o"></i> <span>Users</span></a></li>
+        <li><a href="/NFHSI/doctors"><i class="fa fa-user-md"></i> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
-        @elseif(Session::get('user') > 1)
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
         <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
         @endif
         <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
@@ -78,6 +82,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" value="{{$info->l_name}}" autocomplete="off">
                                         </div>
                                     </div>
+                                    @if(Session::get('position') == "Doctor")
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Credential</label>
                                         <div class="col-sm-4">
@@ -90,6 +95,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <input class="form-control" id="specialization" name="specialization" placeholder="Specialization" required="" type="text" value="{{$info->specialization}}" autocomplete="off">
                                         </div>
                                     </div>
+                                    @endif
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Address</label>
                                         <div class="col-sm-10">

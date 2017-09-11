@@ -169,9 +169,25 @@ class DoctorsController extends Controller
     {   
         if(Session::has('user')){
             $users = User::join('doctors','users.doc_id','=','doctors.id')
+            ->where('users.position','!=','Doctor')
             ->select('doctors.*')
             ->get();
             return view('userdoctorpage',compact('users'));
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
+    }
+
+    public function doctoruserpage()
+    {   
+        if(Session::has('user')){
+            $users = User::join('doctors','users.doc_id','=','doctors.id')
+            ->where('users.position','Doctor')
+            ->select('doctors.*','users.username','users.position')
+            ->get();
+            return view('doctoruserpage',compact('users'));
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -213,12 +229,22 @@ class DoctorsController extends Controller
                 $user->position = $position;
                 $user->save();
 
-                $users = User::join('doctors','users.doc_id','=','doctors.id')
-                ->select('doctors.*')
-                ->get();
-
-                Session::flash('alert-success', 'User Created.');
-                return view('userdoctorpage',compact('users'));
+                if ($user->position == 'Doctor') {
+                    $users = User::join('doctors','users.doc_id','=','doctors.id')
+                    ->where('users.position','Doctor')
+                    ->select('doctors.*','users.username','users.position')
+                    ->get();
+                    Session::flash('alert-success', 'Doctor Created.');
+                    return view('doctoruserpage',compact('users'));
+                }
+                else {
+                    $users = User::join('doctors','users.doc_id','=','doctors.id')
+                    ->where('users.position','!=','Doctor')
+                    ->select('doctors.*','users.username','users.position')
+                    ->get();
+                    Session::flash('alert-success', 'User Created.');
+                    return view('userdoctorpage',compact('users'));
+                }
             }
             else {
                 $doctor = Doctor::where('id',$user_id)->first();
@@ -237,12 +263,22 @@ class DoctorsController extends Controller
                 $user->position = $position;
                 $user->save();
 
-                $users = User::join('doctors','users.doc_id','=','doctors.id')
-                ->select('doctors.*')
-                ->get();
-
-                Session::flash('alert-success', 'User Edited.');
-                return view('userdoctorpage',compact('users'));
+                if ($user->position == 'Doctor') {
+                    $users = User::join('doctors','users.doc_id','=','doctors.id')
+                    ->where('users.position','Doctor')
+                    ->select('doctors.*','users.username','users.position')
+                    ->get();
+                    Session::flash('alert-success', 'Doctor Edited.');
+                    return view('doctoruserpage',compact('users'));
+                }
+                else{
+                    $users = User::join('doctors','users.doc_id','=','doctors.id')
+                    ->where('users.position','!=','Doctor')
+                    ->select('doctors.*','users.username','users.position')
+                    ->get();
+                    Session::flash('alert-success', 'User Edited.');
+                    return view('userdoctorpage',compact('users'));
+                }
             }
 
         }
