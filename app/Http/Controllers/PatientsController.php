@@ -370,29 +370,23 @@ class PatientsController extends Controller
 
     public function modalaeditpatient(Request $request)
     {   
-        if(Session::has('user')){
-            $p_id = $request->input('p_id');
-            $v_id = $request->input('v_id');
-            if ($v_id == 0) {
-                 $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
-                ->where('patients.id',$p_id)
-                ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
-                ->first();
-                $adminpanel = PatientService::where('patient_id',$p_id)->get();
-            }
-            else {
-                $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
-                ->where('patients.id',$p_id)
-                ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
-                ->first();
-                $adminpanel = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
-            }
-           
-            return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
+        $p_id = $request->input('p_id');
+        $v_id = $request->input('v_id');
+        if ($v_id == 0) {
+            $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+            ->where('patients.id',$p_id)
+            ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
+            ->first();
+            $adminpanel = PatientService::where('patient_id',$p_id)->get();
         }
         else {
-            return redirect()->action('Auth@checklogin');
+            $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+            ->where('patients.id',$p_id)
+            ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
+            ->first();
+            $adminpanel = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
         }
+        return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
     }
 
     public function editpatient(Request $request)

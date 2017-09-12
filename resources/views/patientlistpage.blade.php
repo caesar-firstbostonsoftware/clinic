@@ -377,11 +377,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $('.viewvisit').on( 'click', function(e){
         var p_id = $(this).data('id');
+        var ses_id = "{{Session::get('user')}}";
         $('.visitlist_modal').empty();
         $('.addnewvisit').removeAttr('href','href');
         $('.addnewvisit').attr('href','/newvisit/'+p_id+'');
         $.get('api/modalavisit?p_id=' + p_id, function(data){
-            $.each(data, function(index, visit){
+            if (!ses_id) {
+                $.each(data, function(index, visit){
+                $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td>\
+                        <button class="btn btn-sm btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-info">View</a>\
+                    </td>\
+                </tr>');
+                })
+            }
+            else {
+                $.each(data, function(index, visit){
                 $('.visitlist_modal').append('<tr>\
                     <td>'+visit.visitid+'</td>\
                     <td>'+visit.visit_date+'</td>\
@@ -393,7 +408,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="/patientreceipt/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-sm btn-success">Print Receipt</a>\
                     </td>\
                 </tr>');
-            })
+                })
+            }
 
             $('.cateservices').click(function() {
                 if ($(this).is(':checked')) {

@@ -87,7 +87,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-1 control-label">Name</label>
                                     <div class="col-sm-2">
                                         @if(!$patient)
-                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off" autofocus="" tabindex="1">
                                             <input type="text" name="patient_id" value="0" style="display: none;">
                                         @else
                                             <input class="form-control" id="fname" name="fname" placeholder="First Name" type="text" readonly="" value="{{$patient->f_name}}">
@@ -96,7 +96,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </div>
                                     <div class="col-sm-1">
                                         @if(!$patient)
-                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
+                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off" tabindex="2">
                                         @else
                                             <input class="form-control" id="mname" name="mname" placeholder="M" type="text" readonly="" value="{{$patient->m_name}}">
                                         @endif
@@ -104,7 +104,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </div>
                                     <div class="col-sm-2">
                                         @if(!$patient)
-                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off" tabindex="3">
                                         @else
                                             <input class="form-control" id="lname" name="lname" placeholder="Last Name" type="text" readonly="" value="{{$patient->l_name}}">
                                         @endif
@@ -114,7 +114,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-1 control-label">Address</label>
                                     <div class="col-sm-5">
                                         @if(!$patient)
-                                            <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off">
+                                            <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off" tabindex="4">
                                         @else
                                             <input class="form-control" id="address" name="address" placeholder="Address" type="text" readonly="" value="{{$patient->address}}">
                                         @endif
@@ -124,7 +124,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-1 control-label">Gender</label>
                                     <div class="col-sm-3">
                                         @if(!$patient)
-                                            <select id="gender" name="gender" class="form-control" required=""> 
+                                            <select id="gender" name="gender" class="form-control" required="" tabindex="5"> 
                                                 <option value="">- Select -</option>
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
@@ -140,9 +140,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-1 control-label">Birthdate</label>
                                     <div class="col-sm-3">
                                         @if(!$patient)
-                                            <input type="text" id="datepicker" name="dob" class="form-control dob" required="" placeholder="YYYY-MM-DD">
+                                            <input type="text" id="datepicker" name="dob" class="form-control dob" required="" placeholder="YYYY-MM-DD" readonly="" tabindex="6">
                                         @else
-                                            <input type="text" id="datepicker" name="dob" class="form-control dob" placeholder="YYYY-MM-DD" disabled="" value="{{$patient->dob}}">
+                                            <input type="text" id="datepicker" name="dob" class="form-control dob" placeholder="YYYY-MM-DD" disabled="" value="{{$patient->dob}}" readonly="">
                                         @endif
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-1 control-label">Age</label>
                                     <div class="col-sm-1">
                                         @if(!$patient)
-                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text">
+                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text" tabindex="-1">
                                         @else
                                             <input class="form-control age" id="age" name="age" placeholder="" readonly="" type="text" value="{{$patient->age}}">
                                         @endif
@@ -159,7 +159,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">Purpose of Visit</label>
                                     <div class="col-sm-5">
-                                        <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
+                                        <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required="" tabindex="7"></textarea>
                                     </div>
                                 </div><br>
 

@@ -136,8 +136,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Position</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control position" name="position" required="">
-                                            <option value="">-- Select One --</option>
+                                        <select class="form-control position" name="position" required="" tabindex="1">
                                             <option value="Doctor">Doctor</option>
                                         </select>
                                     </div>
@@ -146,56 +145,55 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
                                         <input class="form-control user_id" id="user_id" name="user_id" type="text" style="display: none;">
-                                        <input class="form-control fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
+                                        <input class="form-control fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off" tabindex="2">
                                     </div>
                                     <div class="col-sm-2">
-                                        <input class="form-control mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
+                                        <input class="form-control mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off" tabindex="3">
                                     </div>
                                     <div class="col-sm-4">
-                                        <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
+                                        <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off" tabindex="4">
                                     </div>
                                 </div>
                                 <div class="form-group  divcredential">
                                     <label class="col-sm-2 control-label">Credential</label>
                                     <div class="col-sm-4">
-                                        <input class="form-control credential" id="credential" name="credential" placeholder="Credential" type="text" autocomplete="off">
+                                        <input class="form-control credential" id="credential" name="credential" placeholder="Credential" type="text" autocomplete="off" tabindex="5">
                                     </div>
                                 </div>
                                 <div class="form-group  divspecialization">
                                     <label class="col-sm-2 control-label">Specialization</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" type="text" autocomplete="off">
+                                        <input class="form-control specialization" id="specialization" name="specialization" placeholder="Specialization" type="text" autocomplete="off" tabindex="6">
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Address</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control address" id="address" name="address" placeholder="Address" type="text" required="" autocomplete="off">
+                                        <input class="form-control address" id="address" name="address" placeholder="Address" type="text" required="" autocomplete="off" tabindex="7">
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Email</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control email" id="email" name="email" placeholder="Email" type="email" required="" autocomplete="off">
+                                        <input class="form-control email" id="email" name="email" placeholder="Email" type="email" required="" autocomplete="off" tabindex="8">
                                     </div>
                                 </div><br>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Username</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control username" id="username" name="username" placeholder="Username" type="text" required="" autocomplete="off">
+                                        <input class="form-control username" id="username" name="username" placeholder="Username" type="text" required="" autocomplete="off" tabindex="9">
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Password</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="" autocomplete="off">
+                                        <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="" autocomplete="off" tabindex="10">
                                     </div>
                                 </div>
                             </form>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" form="adddoctoruser" type="submit">Submit</button>
-                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                     </div>
                 </div>
             </div>
@@ -232,8 +230,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.email').removeAttr('value');
                 $('.username').removeAttr('value');
                 $('.position').empty();
-                $('.position').append('<option value+"">-- Select One --</option>\
-                                            <option value="Doctor">Doctor</option>');
+                $('.position').append('<option value="Doctor">Doctor</option>');
         })
 
         $('.edituser').on('click',function() {
@@ -263,22 +260,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 if (data.user.position == "Doctor") {
                     $('.divcredential').show();
                     $('.divspecialization').show();
-                    $('.position').append('<option value="">-- Select One --</option>\
-                                            <option value="Doctor" selected >Doctor</option>');
+                    $('.position').append('<option value="Doctor" selected >Doctor</option>');
                 }
-                else if (data.user.position == "Xray"){
-                    $('.divcredential').hide();
-                    $('.divspecialization').hide();
-                    $('.position').append('<option value="">-- Select One --</option>\
-                                            <option value="Doctor">Doctor</option>');
-                }   
-                else if (data.user.position == "Labtest"){
-                    $('.divcredential').hide();
-                    $('.divspecialization').hide();
-                    $('.position').append('<option value="">-- Select One --</option>\
-                                            <option value="Doctor">Doctor</option>');
-                }
-
             })
         })
 
@@ -287,14 +270,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             if (optionSelected == "Doctor") {
                 $('.divcredential').show();
                 $('.divspecialization').show();
-            }
-            else if (optionSelected == "Xray") {
-                $('.divcredential').hide();
-                $('.divspecialization').hide();
-            }
-            else if (optionSelected == "Labtest") {
-                $('.divcredential').hide();
-                $('.divspecialization').hide();
             }
         })
 

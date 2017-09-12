@@ -135,9 +135,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Position</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control position" name="position" required="">
+                                        <select class="form-control position" name="position" required="" tabindex="1">
                                             <option value="">-- Select One --</option>
-                                            <option value="Doctor">Doctor</option>
                                             <option value="Xray">Xray</option>
                                             <option value="Labtest">Lab Test</option>
                                         </select>
@@ -147,13 +146,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
                                         <input class="form-control user_id" id="user_id" name="user_id" type="text" style="display: none;">
-                                        <input class="form-control fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
+                                        <input class="form-control fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off" tabindex="2">
                                     </div>
                                     <div class="col-sm-2">
-                                        <input class="form-control mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
+                                        <input class="form-control mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off" tabindex="3">
                                     </div>
                                     <div class="col-sm-4">
-                                        <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
+                                        <input class="form-control lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off" tabindex="4">
                                     </div>
                                 </div>
                                 <!-- <div class="form-group  divcredential">
@@ -171,32 +170,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Address</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control address" id="address" name="address" placeholder="Address" type="text" required="" autocomplete="off">
+                                        <input class="form-control address" id="address" name="address" placeholder="Address" type="text" required="" autocomplete="off" tabindex="5">
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Email</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control email" id="email" name="email" placeholder="Email" type="email" required="" autocomplete="off">
+                                        <input class="form-control email" id="email" name="email" placeholder="Email" type="email" required="" autocomplete="off" tabindex="6">
                                     </div>
                                 </div><br>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Username</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control username" id="username" name="username" placeholder="Username" type="text" required="" autocomplete="off">
+                                        <input class="form-control username" id="username" name="username" placeholder="Username" type="text" required="" autocomplete="off" tabindex="7">
                                     </div>
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Password</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="" autocomplete="off">
+                                        <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="" autocomplete="off" tabindex="8">
                                     </div>
                                 </div>
                             </form>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" form="adddoctoruser" type="submit">Submit</button>
-                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                     </div>
                 </div>
             </div>
@@ -233,7 +231,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.email').removeAttr('value');
                 $('.username').removeAttr('value');
                 $('.position').empty();
-                $('.position').append('<option value+"">-- Select One --</option>\
+                $('.position').append('<option value="">-- Select One --</option>\
                                             <option value="Xray">Xray</option>\
                                             <option value="Labtest">Lab Test</option>');
         })
@@ -262,15 +260,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.email').attr('value',data.email);
                 $('.username').attr('value',data.user.username);
 
-                if (data.user.position == "Doctor") {
-                    $('.divcredential').show();
-                    $('.divspecialization').show();
-                    $('.position').append('<option value="">-- Select One --</option>\
-                                            <option value="Doctor" selected >Doctor</option>\
-                                            <option value="Xray">Xray</option>\
-                                            <option value="Labtest">Lab Test</option>');
-                }
-                else if (data.user.position == "Xray"){
+                if (data.user.position == "Xray"){
                     $('.divcredential').hide();
                     $('.divspecialization').hide();
                     $('.position').append('<option value="">-- Select One --</option>\
@@ -290,11 +280,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         $('.position').on('change',function() {
         var optionSelected = $(this).val();
-            if (optionSelected == "Doctor") {
-                $('.divcredential').show();
-                $('.divspecialization').show();
-            }
-            else if (optionSelected == "Xray") {
+            if (optionSelected == "Xray") {
                 $('.divcredential').hide();
                 $('.divspecialization').hide();
             }

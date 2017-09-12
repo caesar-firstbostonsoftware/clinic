@@ -73,57 +73,57 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="form-group ">
                                         <label class="col-sm-2 control-label">Name</label>
                                         <div class="col-sm-4">
-                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" value="{{$info->f_name}}" autocomplete="off">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" value="{{$info->f_name}}" autocomplete="off" autofocus="" tabindex="1">
                                         </div>
                                         <div class="col-sm-2 nameleft">
-                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" value="{{$info->m_name}}" autocomplete="off">
+                                            <input class="form-control" id="mname" name="mname" placeholder="M" type="text" value="{{$info->m_name}}" autocomplete="off" tabindex="2">
                                         </div>
                                         <div class="col-sm-4 nameleft">
-                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" value="{{$info->l_name}}" autocomplete="off">
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" value="{{$info->l_name}}" autocomplete="off" tabindex="3">
                                         </div>
                                     </div>
                                     @if(Session::get('position') == "Doctor")
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Credential</label>
                                         <div class="col-sm-4">
-                                            <input class="form-control" id="credential" name="credential" placeholder="Credential" required="" type="text" value="{{$info->credential}}" autocomplete="off">
+                                            <input class="form-control" id="credential" name="credential" placeholder="Credential" required="" type="text" value="{{$info->credential}}" autocomplete="off" tabindex="4">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Specialization</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="specialization" name="specialization" placeholder="Specialization" required="" type="text" value="{{$info->specialization}}" autocomplete="off">
+                                            <input class="form-control" id="specialization" name="specialization" placeholder="Specialization" required="" type="text" value="{{$info->specialization}}" autocomplete="off" tabindex="5">
                                         </div>
                                     </div>
                                     @endif
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Address</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" required="" value="{{$info->address}}" autocomplete="off">
+                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" required="" value="{{$info->address}}" autocomplete="off" tabindex="6">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Email</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="email" name="email" placeholder="Email" type="email" required="" value="{{$info->email}}" autocomplete="off">
+                                            <input class="form-control" id="email" name="email" placeholder="Email" type="email" required="" value="{{$info->email}}" autocomplete="off" tabindex="7">
                                         </div>
                                     </div><br>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="username" name="username" placeholder="Username" type="text" required="" value="{{$user->username}}" autocomplete="off">
+                                            <input class="form-control" id="username" name="username" placeholder="Username" type="text" required="" value="{{$user->username}}" autocomplete="off" tabindex="8">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Password</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" id="password" name="password" placeholder="Password" type="text">
+                                            <input class="form-control" id="password" name="password" placeholder="Password" type="text" tabindex="9">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label"></label>
                                         <div class="col-sm-4">
-                                            <button class="btn btn-primary" id="btn-submit-personal_info" type="submit">Save Changes</button>
+                                            <button class="btn btn-sm btn-primary" id="btn-submit-personal_info" type="submit">Save Changes</button>
                                         </div>
                                     </div>
                                 </form>

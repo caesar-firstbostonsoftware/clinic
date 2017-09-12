@@ -1728,9 +1728,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
                                             </li>
                                         @elseif($service->admin_panel_id == 2)
-                                           <!--  <li role="presentation">
+                                            <li role="presentation">
                                                 <a href="#fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
-                                            </li> -->
+                                            </li>
+                                        @elseif($service->admin_panel_id == 6)
+                                            <li role="presentation">
+                                                <a href="#OGTT" role="tab" data-toggle="tab" style="font-size: 8pt;">Oral Glucose Tolerance Test</a>
+                                            </li>
+                                        @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
+                                            <li role="presentation">
+                                                <a href="#hematology" role="tab" data-toggle="tab" style="font-size: 8pt;">Hematology</a>
+                                            </li>
+                                        @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
+                                            <li role="presentation">
+                                                <a href="#chemistry" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry II</a>
+                                            </li>
                                         @endif
                                     @endforeach
                                 @elseif(Session::get('position') == "Labtest")
@@ -1740,21 +1752,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
                                             </li>
                                         @elseif($service->admin_panel_id == 2)
-                                            <!-- <li role="presentation">
+                                            <li role="presentation">
                                                 <a href="#fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
-                                            </li> -->
+                                            </li>
+                                        @elseif($service->admin_panel_id == 6)
+                                            <li role="presentation">
+                                                <a href="#OGTT" role="tab" data-toggle="tab" style="font-size: 8pt;">Oral Glucose Tolerance Test</a>
+                                            </li>
+                                        @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
+                                            <li role="presentation">
+                                                <a href="#hematology" role="tab" data-toggle="tab" style="font-size: 8pt;">Hematology</a>
+                                            </li>
+                                        @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
+                                            <li role="presentation">
+                                                <a href="#chemistry" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry II</a>
+                                            </li>
                                         @endif
                                     @endforeach
                                 @endif
-                                <!-- <li role="presentation">
-                                    <a href="#OGTT1" role="tab" data-toggle="tab" style="font-size: 8pt;">Oral Glucose Tolerance Test</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#hematology1" role="tab" data-toggle="tab" style="font-size: 8pt;">Hematology</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#chemistry1" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry II</a>
-                                </li> -->
                             </ul>
                             <div class="tab-content">
 
@@ -2208,16 +2223,112 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     </thead>
                                                     <tbody id="fecalysis_list">
                                                         <tr>
-                                                            <td>1</td>
-                                                            <td>2</td>
-                                                            <td>3</td>
-                                                            <td>4</td>
-                                                            <td>5</td>
-                                                            <td>6</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            </div>
+                                        </div>
+                                    @elseif($service->admin_panel_id == 6)
+                                        <div role="tabpanel" class="tab-pane fade" id="OGTT">
+                                            <div class="col-md-12">
+                                                <h3>Oral Glucose Tolerance Test
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
+                                                </h3>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th class="text-center">Date</th>
+                                                                <th class="text-center">Physician</th>
+                                                                <th class="text-center">Result</th>
+                                                                <th class="text-center">Status</th>
+                                                                <th class="text-center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="OGTT_list">
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
+                                        <div role="tabpanel" class="tab-pane fade" id="hematology">
+                                            <div class="col-md-12">
+                                                <h3>Hematology
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
+                                                </h3>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th class="text-center">Date</th>
+                                                                <th class="text-center">Physician</th>
+                                                                <th class="text-center">Result</th>
+                                                                <th class="text-center">Status</th>
+                                                                <th class="text-center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="hematology_list">
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
+                                        <div role="tabpanel" class="tab-pane fade" id="chemistry">
+                                            <div class="col-md-12">
+                                                <h3>Chemistry II
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
+                                                </h3>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th class="text-center">Date</th>
+                                                                <th class="text-center">Physician</th>
+                                                                <th class="text-center">Result</th>
+                                                                <th class="text-center">Status</th>
+                                                                <th class="text-center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="chemistry_list">
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     @endif
@@ -2648,118 +2759,117 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     </thead>
                                                     <tbody id="fecalysis_list">
                                                         <tr>
-                                                            <td>1</td>
-                                                            <td>2</td>
-                                                            <td>3</td>
-                                                            <td>4</td>
-                                                            <td>5</td>
-                                                            <td>6</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
                                             </div>
                                         </div>
+                                    @elseif($service->admin_panel_id == 6)
+                                        <div role="tabpanel" class="tab-pane fade" id="OGTT">
+                                            <div class="col-md-12">
+                                                <h3>Oral Glucose Tolerance Test
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
+                                                </h3>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th class="text-center">Date</th>
+                                                                <th class="text-center">Physician</th>
+                                                                <th class="text-center">Result</th>
+                                                                <th class="text-center">Status</th>
+                                                                <th class="text-center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="OGTT_list">
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
+                                        <div role="tabpanel" class="tab-pane fade" id="hematology">
+                                            <div class="col-md-12">
+                                                <h3>Hematology
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
+                                                </h3>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th class="text-center">Date</th>
+                                                                <th class="text-center">Physician</th>
+                                                                <th class="text-center">Result</th>
+                                                                <th class="text-center">Status</th>
+                                                                <th class="text-center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="hematology_list">
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
+                                        <div role="tabpanel" class="tab-pane fade" id="chemistry">
+                                            <div class="col-md-12">
+                                                <h3>Chemistry II
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
+                                                </h3>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th class="text-center">Date</th>
+                                                                <th class="text-center">Physician</th>
+                                                                <th class="text-center">Result</th>
+                                                                <th class="text-center">Status</th>
+                                                                <th class="text-center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="chemistry_list">
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endif
                                 @endforeach
                             @endif
-
-                            
-                            <!-- <div role="tabpanel" class="tab-pane fade" id="OGTT">
-                            <div class="col-md-12">
-                                <h3>Oral Glucose Tolerance Test
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
-                                </h3>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th class="text-center">Date</th>
-                                                <th class="text-center">Physician</th>
-                                                <th class="text-center">Result</th>
-                                                <th class="text-center">Status</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="OGTT_list">
-                                            <tr>
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>3</td>
-                                                <td>4</td>
-                                                <td>5</td>
-                                                <td>6</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </div> -->
-
-                           <!--  <div role="tabpanel" class="tab-pane fade" id="hematology">
-                            <div class="col-md-12">
-                                <h3>Hematology
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
-                                </h3>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th class="text-center">Date</th>
-                                                <th class="text-center">Physician</th>
-                                                <th class="text-center">Result</th>
-                                                <th class="text-center">Status</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="hematology_list">
-                                            <tr>
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>3</td>
-                                                <td>4</td>
-                                                <td>5</td>
-                                                <td>6</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </div> -->
-
-                            <!-- <div role="tabpanel" class="tab-pane fade" id="chemistry">
-                            <div class="col-md-12">
-                                <h3>Chemistry II
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
-                                </h3>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th class="text-center">Date</th>
-                                                <th class="text-center">Physician</th>
-                                                <th class="text-center">Result</th>
-                                                <th class="text-center">Status</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="chemistry_list">
-                                            <tr>
-                                                <td>1</td>
-                                                <td>2</td>
-                                                <td>3</td>
-                                                <td>4</td>
-                                                <td>5</td>
-                                                <td>6</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </div> -->
 
                             </div>
                         </div>
