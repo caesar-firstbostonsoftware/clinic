@@ -24,36 +24,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.mainheader')
 
 <aside class="main-sidebar">
-    <ul class="sidebar-menu">
+     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
-        @if(Session::get('user') != 0)
-        <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
-        <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
-        <li class="treeview"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
+        @if(Session::get('position') == "Doctor")
+        <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
+        @endif
+        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+        <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
+        @endif
+        
+        <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
+            @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
+            @endif
             </ul>
         </li>
-        @else
-        <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
-            <ul style="display: block;" class="treeview-menu menu-open">
-                <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-                <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
-            </ul>
-        </li>
-        @endif
+
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-circle-o"></i> <span>Users</span></a></li>
-        <li><a href="/NFHSI/doctors"><i class="fa fa-user-md"></i> <span>Doctors</span></a></li>
-        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        <li class="active"><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
-        @elseif(Session::get('user') > 1)
-        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        <li><a href="/NFHSI/users"><img src="{{ asset('/img/2012.png') }}" height="20" width="20"> <span>Users</span></a></li>
+        <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        <li class="active"><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
+        <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         @endif
-        <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
+        <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
 </aside>
     
@@ -61,7 +59,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div style="min-height: 245px;" class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-flask"></i> Services</h1>
+        <h1><img src="{{ asset('/img/2015.png') }}" height="30" width="30"> Services</h1>
         <ol class="breadcrumb">
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/myinfo">My Info</a></li>
@@ -113,7 +111,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             @else
                                                             <td style="text-align: right;">{{$panel->price}}</td>
                                                             <td>
-                                                               <a href="#" class="btn btn-sm editservice" data-id="{{$panel->id}}" data-subid="0" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+                                                               <a href="#" class="btn btn-xs editservice" data-id="{{$panel->id}}" data-subid="0" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
                                                             </td>
                                                             @endif
                                                         </tr>
@@ -123,7 +121,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{{$panelsub->name}}</i></td>
                                                                     <td style="text-align: right;">{{$panelsub->price}}</td>
                                                                     <td>
-                                                                        <a href="#" class="btn btn-sm editservice" data-id="{{$panel->id}}" data-subid="{{$panelsub->id}}" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+                                                                        <a href="#" class="btn btn-xs editservice" data-id="{{$panel->id}}" data-subid="{{$panelsub->id}}" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
                                                                     </td>
                                                                 </tr>
                                                             @endif
@@ -168,7 +166,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="submit" form="formeditservices" class="btn btn-primary btn-sm" id="btn-add-medication">Submit</button>
+                                                <button type="submit" form="formeditservices" class="btn btn-primary btn-xs" id="btn-add-medication">Submit</button>
                                             </div>
                                         </div>
                                     </div>

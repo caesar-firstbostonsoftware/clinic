@@ -170,8 +170,9 @@ class DoctorsController extends Controller
         if(Session::has('user')){
             $users = User::join('doctors','users.doc_id','=','doctors.id')
             ->where('users.position','!=','Doctor')
-            ->select('doctors.*')
+            ->select('doctors.*','users.username','users.position')
             ->get();
+           //return Response::json($users, 200, array(), JSON_PRETTY_PRINT);
             return view('userdoctorpage',compact('users'));
         }
         else {
@@ -235,7 +236,7 @@ class DoctorsController extends Controller
                     ->select('doctors.*','users.username','users.position')
                     ->get();
                     Session::flash('alert-success', 'Doctor Created.');
-                    return view('doctoruserpage',compact('users'));
+                    return redirect()->action('DoctorsController@doctoruserpage');
                 }
                 else {
                     $users = User::join('doctors','users.doc_id','=','doctors.id')
@@ -243,7 +244,7 @@ class DoctorsController extends Controller
                     ->select('doctors.*','users.username','users.position')
                     ->get();
                     Session::flash('alert-success', 'User Created.');
-                    return view('userdoctorpage',compact('users'));
+                    return redirect()->action('DoctorsController@userdoctorpage');
                 }
             }
             else {
@@ -269,7 +270,7 @@ class DoctorsController extends Controller
                     ->select('doctors.*','users.username','users.position')
                     ->get();
                     Session::flash('alert-success', 'Doctor Edited.');
-                    return view('doctoruserpage',compact('users'));
+                    return redirect()->action('DoctorsController@doctoruserpage');
                 }
                 else{
                     $users = User::join('doctors','users.doc_id','=','doctors.id')
@@ -277,7 +278,7 @@ class DoctorsController extends Controller
                     ->select('doctors.*','users.username','users.position')
                     ->get();
                     Session::flash('alert-success', 'User Edited.');
-                    return view('userdoctorpage',compact('users'));
+                    return redirect()->action('DoctorsController@userdoctorpage');
                 }
             }
 

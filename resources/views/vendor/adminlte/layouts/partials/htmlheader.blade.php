@@ -7,6 +7,7 @@
 
     <link href="{{ asset('/css/all.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ asset('/jquery-ui-1.12.1.custom/jquery-ui.min.css') }}">
+    <link href="{{ asset('/css/jquery.dataTables.min.css') }}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

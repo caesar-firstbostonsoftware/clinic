@@ -12,6 +12,7 @@ use App\Doctor;
 use App\User;
 use App\PatientVisit;
 use DB;
+use App\Patientxray;
 
 class AdminPanelContoller extends Controller
 {
@@ -52,10 +53,11 @@ class AdminPanelContoller extends Controller
 
             $pv2 = PatientVisit::where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->with('patient')->get();
             $income = DB::table('patient_visits')->where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->sum('totalbill');
+            $Patientxray = Patientxray::where('status','New')->with('patient')->orderBy('id','asc')->orderBy('status','asc')->get();
 
             //return Response::json($pv, 200, array(), JSON_PRETTY_PRINT);
 
-            return view('dashboard',compact('info','user','pv','count','pv2','income'));
+            return view('dashboard',compact('info','user','pv','count','pv2','income','Patientxray'));
         }
         else {
             return redirect()->action('Auth@checklogin');

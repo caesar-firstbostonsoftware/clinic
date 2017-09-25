@@ -345,6 +345,7 @@ class PatientsController extends Controller
      	  $patientxray->finding = $finding;
      	  $patientxray->finding_info = $comm;
      	  $patientxray->visitid = $vid;
+          $patientxray->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
      	  $patientxray->save();
 
           $logs = new PatientXrayLog;
@@ -454,7 +455,7 @@ class PatientsController extends Controller
             //$patientxray = Patientxray::where('id',$xray_id)->first();
             $patientxray = Patientxray::join('doctors','patientxrays.physician_id','=','doctors.id')
             ->where('patientxrays.id',$xray_id)
-            ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info','patientxrays.or_no as or_no')
+            ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info','patientxrays.or_no as or_no','patientxrays.phy_fee')
             ->first();
             return Response::json($patientxray, 200, array(), JSON_PRETTY_PRINT);
         }
@@ -943,6 +944,7 @@ class PatientsController extends Controller
             $patientxray = Patientxray::where('id',$xray_id)->first();
             $patientxray->finding = $finding;
             $patientxray->finding_info = $comm;
+            $patientxray->status = 'Old';
             $patientxray->save();
 
             $logs = new PatientXrayLog;

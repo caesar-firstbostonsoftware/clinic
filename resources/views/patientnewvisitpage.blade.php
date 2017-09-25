@@ -18,11 +18,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
-        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
-        <li><a href="/dashboard"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
-        <li><a href="/myinfo"><i class="fa fa-info-circle"></i> <span>My Info</span></a></li>
+        @if(Session::get('position') == "Doctor")
+        <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
         @endif
-        <li class="treeview active"><a href="/NFHSI"><i class="fa fa-users"></i> <span>Patients</span><span class="pull-right-container"></span></a>
+        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+        <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
+        @endif
+        
+        <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -31,15 +34,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
             @endif
             </ul>
         </li>
+
         @if(Session::get('user') == 1)
-        <li><a href="/NFHSI/users"><i class="fa fa-user-circle-o"></i> <span>Users</span></a></li>
-        <li><a href="/NFHSI/doctors"><i class="fa fa-user-md"></i> <span>Doctors</span></a></li>
-        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
-        <li><a href="/NFHSI/services"><i class="fa fa-flask"></i> <span>Services</span></a></li>
+        <li><a href="/NFHSI/users"><img src="{{ asset('/img/2012.png') }}" height="20" width="20"> <span>Users</span></a></li>
+        <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
-        <li><a href="/reports/{{Session::get('user')}}"><i class="fa fa-bar-chart"></i> <span>Reports</span></a></li>
+        <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         @endif
-        <li><a href="/logout"><i class="fa fa-sign-out"></i> <span>Sign out</span></a></li>
+        <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
 </aside>
 
@@ -47,7 +51,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div style="min-height: 245px;" class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><i class="fa fa-users"></i> Patients</h1>
+        <h1><img src="{{ asset('/img/2010.png') }}" height="30" width="30"> Patients</h1>
         <ol class="breadcrumb">
             
             @if(Session::get('position') == "Doctor")
@@ -64,8 +68,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Patient Visit 
-                    <!-- <a href="#" class="btn btn-warning btn-sm" target="_blank"> Generate Medical Certificate</a>
-                    <a href="#" class="btn btn-info btn-sm" target="_blank"> Preview</a> -->
+                    <!-- <a href="#" class="btn btn-warning btn-xs" target="_blank"> Generate Medical Certificate</a>
+                    <a href="#" class="btn btn-info btn-xs" target="_blank"> Preview</a> -->
                 </h3>
             </div>
             <div class="box-body">
@@ -209,7 +213,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                                 <div class="form-group">
                                     <div class="col-sm-1">
-                                        <button class="btn btn-primary" id="btn-submit-personal_info" type="submit">Submit</button>
+                                        <button class="btn btn-primary btn-xs" id="btn-submit-personal_info" type="submit">Submit</button>
                                     </div>
                                 </div>
                             </form>
