@@ -118,21 +118,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </li>
                     @if(Session::get('position') == "Doctor")
                         @foreach($PatientService as $service)
-                            @if($service->admin_panel_id == 36)
+                            @if($service->department == 'xray')
                                 <li role="presentation">
                                     <a href="#xray" role="tab" data-toggle="tab" style="font-size: 8pt;">X-ray</a>
                                 </li>
-                            @elseif($service->admin_panel_id == 1 || $service->admin_panel_id == 2 || $service->admin_panel_id == 6 || $service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29 || $service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
+                            @elseif($service->department == 'labtest')
                                 <li role="presentation">
                                     <a href="#labtest" role="tab" data-toggle="tab" style="font-size: 8pt;">Lab Test</a>
                                 </li>
-                                <?php break;?>
                             @endif
                         @endforeach
                     
                     @elseif(Session::get('position') == "Xray")
                         @foreach($PatientService as $service)
-                            @if($service->admin_panel_id == 36)
+                            @if($service->department == 'xray')
                                 <li role="presentation">
                                     <a href="#xray" role="tab" data-toggle="tab" style="font-size: 8pt;">X-ray</a>
                                 </li>
@@ -140,12 +139,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         @endforeach
                     @elseif(Session::get('position') == "Labtest")
                         @foreach($PatientService as $service)
-                        @if($service->admin_panel_id == 1 || $service->admin_panel_id == 2 || $service->admin_panel_id == 6 || $service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29 || $service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
-                        <li role="presentation">
-                            <a href="#labtest" role="tab" data-toggle="tab" style="font-size: 8pt;">Lab Test</a>
-                        </li>
-                        <?php break;?>
-                        @endif
+                            @if($service->department == 'labtest')
+                                <li role="presentation">
+                                    <a href="#labtest" role="tab" data-toggle="tab" style="font-size: 8pt;">Lab Test</a>
+                                </li>
+                            @endif
                         @endforeach
                     @endif
                     @endif
@@ -1740,1160 +1738,2594 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- Lab Test -->
                         <div role="tabpanel" class="tab-pane fade" id="labtest">
                             <ul class="nav nav-tabs" role="tablist">
-                            <!-- E on load tapos append -->
                                 @if(Session::get('position') == "Doctor")
-                                    @foreach($PatientService as $service)
-                                        @if($service->admin_panel_id == 1)
-                                            <li role="presentation">
-                                                <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
+                                    @foreach($PatientService1003 as $service)
+                                        @if($service->admin_panel_cat_id == 1)
+                                            <li role="presentation" class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 8pt;">{{$service->cat_name}} <span class="caret"></span></a>
+                                                    <ul class="dropdown-menu">
+                                                        @foreach($PatientService1002 as $service1002)
+                                                            @if($service1002->admin_panel_id == 1)
+                                                                <li role="presentation">
+                                                                    <a href="#Urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
+                                                                </li>
+                                                            @elseif($service1002->admin_panel_id == 2 || $service1002->admin_panel_id == 3)
+                                                                <li role="presentation">
+                                                                    <a href="#Fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach                       
+                                                    </ul>
                                             </li>
-                                        @elseif($service->admin_panel_id == 2)
-                                            <li role="presentation">
-                                                <a href="#fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
+                                        @elseif($service->admin_panel_cat_id == 2)
+                                            <li role="presentation" class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 8pt;">{{$service->cat_name}} <span class="caret"></span></a>
+                                                    <ul class="dropdown-menu">
+                                                        @foreach($PatientService1002 as $service1002)
+                                                            @if($service1002->admin_panel_id == 4 || $service1002->admin_panel_id == 5 || $service1002->admin_panel_id == 9 || $service1002->admin_panel_id == 10 || $service1002->admin_panel_id == 11 || $service1002->admin_panel_id == 12 || $service1002->admin_panel_id == 13 || $service1002->admin_panel_id == 14 || $service1002->admin_panel_id == 15 || $service1002->admin_panel_id == 16 || $service1002->admin_panel_id == 17 || $service1002->admin_panel_id == 18 || $service1002->admin_panel_id == 19 || $service1002->admin_panel_id == 20 || $service1002->admin_panel_id == 21 || $service1002->admin_panel_id == 22 || $service1002->admin_panel_id == 23 || $service1002->admin_panel_id == 24)
+                                                                <li role="presentation">
+                                                                    <a href="#Chemistry" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry</a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                        @foreach($PatientService1002 as $service1002)
+                                                            @if($service1002->admin_panel_id == 6 || $service1002->admin_panel_id == 7 || $service1002->admin_panel_id == 8)
+                                                                <li role="presentation">
+                                                                    <a href="#OGTT" role="tab" data-toggle="tab" style="font-size: 8pt;">OGTT</a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach                    
+                                                    </ul>
                                             </li>
-                                        @elseif($service->admin_panel_id == 6)
+                                        @else
                                             <li role="presentation">
-                                                <a href="#OGTT" role="tab" data-toggle="tab" style="font-size: 8pt;">Oral Glucose Tolerance Test</a>
-                                            </li>
-                                        @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
-                                            <li role="presentation">
-                                                <a href="#hematology" role="tab" data-toggle="tab" style="font-size: 8pt;">Hematology</a>
-                                            </li>
-                                        @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
-                                            <li role="presentation">
-                                                <a href="#chemistry" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry II</a>
+                                                <a href="#{{$service->admin_panel_cat_id}}aa" role="tab" data-toggle="tab" style="font-size: 8pt;">{{$service->cat_name}}</a>
                                             </li>
                                         @endif
                                     @endforeach
                                 @elseif(Session::get('position') == "Labtest")
-                                    @foreach($PatientService as $service)
-                                        @if($service->admin_panel_id == 1)
+                                    @foreach($PatientService1003 as $service)
                                             <li role="presentation">
-                                                <a href="#urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
+                                                <a href="#{{$service->admin_panel_cat_id}}aa" role="tab" data-toggle="tab" style="font-size: 8pt;">{{$service->cat_name}}</a>
                                             </li>
-                                        @elseif($service->admin_panel_id == 2)
-                                            <li role="presentation">
-                                                <a href="#fecalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Fecalysis</a>
-                                            </li>
-                                        @elseif($service->admin_panel_id == 6)
-                                            <li role="presentation">
-                                                <a href="#OGTT" role="tab" data-toggle="tab" style="font-size: 8pt;">Oral Glucose Tolerance Test</a>
-                                            </li>
-                                        @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
-                                            <li role="presentation">
-                                                <a href="#hematology" role="tab" data-toggle="tab" style="font-size: 8pt;">Hematology</a>
-                                            </li>
-                                        @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
-                                            <li role="presentation">
-                                                <a href="#chemistry" role="tab" data-toggle="tab" style="font-size: 8pt;">Chemistry II</a>
-                                            </li>
-                                        @endif
                                     @endforeach
                                 @endif
                             </ul>
+
                             <div class="tab-content">
-
-                            @if(Session::get('position') == "Doctor")
-                                @foreach($PatientService as $service)
-                                    @if($service->admin_panel_id == 1)
-                                        <div role="tabpanel" class="tab-pane fade" id="urinalysis">
-                                            <div class="col-md-12">
-                                                <h3>Urinalysis
-                                                    @if(!Session::get('user'))
-                                                    @else
-                                                        @if($uricount >= 1)
-                                                        @else
-                                                            <button type="button" class="btn btn-primary btn-xs newurinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
-                                                        @endif
-                                                    @endif
-                                                </h3>
+                                <!-- done -->
+                                <div role="tabpanel" class="tab-pane fade" id="Urinalysis">
+                                <div class="col-md-12">
+                                    <div class="flash-message top-message topmessage7"></div>
                                             <div class="table-responsive">
-                                                <table class="table table-hover table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>ID</th>
-                                                            <th class="text-center">Date</th>
-                                                            <th class="text-center">Physician</th>
-                                                            <th class="text-center">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="urinalysis_list">
-                                                        @foreach($Urinalysis as $Uri)
-                                                            <tr>
-                                                                <td>{{$Uri->id}}</td>
-                                                                <td class="text-center">{{$Uri->date}}</td>
-                                                                    @foreach($doctor as $docdoc)
-                                                                        @if($docdoc->id == $Uri->physician_id)
-                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
+                                                <div class="col-md-12">
+                                                    <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                                    <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                                    <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                                    <h4><b>URINALYSIS</b></h4>
+                                                    @if(!$Urinalyses)
+                                                    <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/urinalysis">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-1 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-1 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-3">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-1 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if(Session::get('user') == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
                                                                         @endif
-                                                                        @if($docdoc->id == $Uri->user_id)
-                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
-                                                                        @endif
-                                                                    @endforeach
-                                                                <td>
-                                                                    @if(!Session::get('user'))
                                                                     @else
-                                                                        <button type="button" class="btn btn-xs btn-primary editpatienturinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static" data-id="{{$Uri->id}}">Edit</button>
-                                                                        <a href="/urinalysis/pdf/view/{{$Uri->id}}" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
                                                                     @endif
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            </div>
-                                        </div>
-                <!-- MODAL Urinalysis -->
-                <div class="modal fade" id="modal_urinalysis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modalwidthuri" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-3">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                        <div class="row"> 
+                                                            <div class="col-sm-6">
+                                                                <label class="control-label" style="text-align: left;"><input type="checkbox" class="physical" name="physical" checked="" value="Yes"> <b>PHYSICAL</b></label>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="color" required="" class="form-control color" placeholder="Color" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transparency </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="transparency" required="" class="form-control transparency" placeholder="Transparency" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specific Gravity </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="SG" required="" class="form-control SG" placeholder="Specific Gravity" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-                                <div class="table-responsive">
-                                    <div class="col-md-12">
-                                        <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
-                                        <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
-                                        <center><p class="nor">Tel. No. (035) 225-3544</p></center>
-                                        <h4><b>URINALYSIS</b></h4>
-
-                                        <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/urinalysis">
-                                        {!! csrf_field() !!}
-                                            <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
-                                            <div class="form-group">
-                                                <label class="col-sm-1 control-label">Name:</label>
-                                                <div class="col-sm-6">
-                                                    <input type="text" name="P_id" value="{{$id}}" style="display: none;">
-                                                    <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
-                                                </div>
-                                                <label class="col-sm-2 control-label">O.R. No.</label>
-                                                <div class="col-sm-3">
-                                                    <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
-                                                </div>
-                                            </div>
-                                            <div class="form-group divxrayinfo">
-                                                <label class="col-sm-1 control-label">Address:</label>
-                                                <div class="col-sm-6">
-                                                    <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
-                                                </div>
-                                                <label class="col-sm-2 control-label">Sex:</label>
-                                                <div class="col-sm-3">
-                                                    <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
-                                                        <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group divxrayinfo">
-                                                <label class="col-sm-1 control-label">Physician:</label>
-                                                <div class="col-sm-6">
-                                                    <select id="physician" name="physician" class="form-control uri_physician" required="">
-                                                        <option value="">-- Select One --</option>
-                                                        @foreach($doctor as $doc)
+                                                            <div class="col-sm-6">
+                                                                <label class="control-label" style="text-align: left;"><input type="checkbox" class="microscopic" name="microscopic" checked="" value="Yes"> <b>MICROSCOPIC</b></label>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WBC  </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="wbc" required="" class="form-control wbc" placeholder="WBC" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RBC </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="rbc" required="" class="form-control rbc" placeholder="RBC" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Epith. Cells </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="EC" required="" class="form-control EC" placeholder="Epith. Cells" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bacteria </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="bacteria" required="" class="form-control bacteria" placeholder="Bacteria" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cast(s) </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="cast" required="" class="form-control cast" placeholder="Cast" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="cast2" required="" class="form-control cast2" placeholder="Cast" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crystal(s) </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="crystal" required="" class="form-control crystal" placeholder="Crystal" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="crystal2" required="" class="form-control crystal2" placeholder="Crystal" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">Amorphous Materials </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="AM" required="" class="form-control AM" placeholder="Amorphous Materials" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mucus Thread </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="MT" required="" class="form-control MT" placeholder="Mucus Thread" value="" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Others </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="others" required="" class="form-control others" placeholder="Others" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="others2" required="" class="form-control others2" placeholder="Others" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="others3" required="" class="form-control others3" placeholder="Others" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6" style="margin-top:-33%;">
+                                                                <label class="control-label" style="text-align: left;"><input type="checkbox" class="chemical" name="chemical" checked="" value="Yes"> <b>CHEMICAL</b></label>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Glucose </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="glucose" required="" class="form-control glucose" placeholder="Glucose" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bilirubin </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="bilirubin" required="" class="form-control bilirubin" placeholder="Bilirubin" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ketone </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="ketone" required="" class="form-control ketone" placeholder="Ketone" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blood </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="blood" required="" class="form-control blood" placeholder="Blood" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pH </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="ph" required="" class="form-control ph" placeholder="pH" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Protein </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="protein" required="" class="form-control protein" placeholder="Protein" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urobilingen </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="urobilingen" required="" class="form-control urobilingen" placeholder="Urobilingen" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrites </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="nitrites" required="" class="form-control nitrites" placeholder="Nitrites" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leucocytes </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="leucocytes" required="" class="form-control leucocytes" placeholder="Leucocytes" value="" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
                                                         @if(Session::get('position') == "Doctor")
-                                                            @if(Session::get('user') == $doc->id)
-                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                            @endif
-                                                        @else
-                                                            @if($doc->user->position == "Doctor")
-                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                            @endif
-                                                        @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <label class="col-sm-2 control-label">Date:</label>
-                                                <div class="col-sm-3">
-                                                <?php $datenow = date("Y-m-d"); ?>
-                                                    <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
-                                                </div>
-                                            </div><br>
-
-                                            <div class=" divxrayinfo">
-                                                <div class="row"> 
-                                                    <div class="col-sm-6">
-                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="physical" name="physical" checked="" value="Yes"> <b>PHYSICAL</b></label>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="color" required="" class="form-control color" placeholder="Color" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transparency </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="transparency" required="" class="form-control transparency" placeholder="Transparency" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specific Gravity </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="SG" required="" class="form-control SG" placeholder="Specific Gravity" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-6">
-                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="microscopic" name="microscopic" checked="" value="Yes"> <b>MICROSCOPIC</b></label>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WBC  </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="wbc" required="" class="form-control wbc" placeholder="WBC" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RBC </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="rbc" required="" class="form-control rbc" placeholder="RBC" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Epith. Cells </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="EC" required="" class="form-control EC" placeholder="Epith. Cells" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bacteria </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="bacteria" required="" class="form-control bacteria" placeholder="Bacteria" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cast(s) </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="cast" required="" class="form-control cast" placeholder="Cast" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="cast2" required="" class="form-control cast2" placeholder="Cast" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crystal(s) </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="crystal" required="" class="form-control crystal" placeholder="Crystal" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="crystal2" required="" class="form-control crystal2" placeholder="Crystal" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">Amorphous Materials </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="AM" required="" class="form-control AM" placeholder="Amorphous Materials" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mucus Thread </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="MT" required="" class="form-control MT" placeholder="Mucus Thread" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Others </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="others" required="" class="form-control others" placeholder="Others" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="others2" required="" class="form-control others2" placeholder="Others" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="others3" required="" class="form-control others3" placeholder="Others" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6" style="margin-top:-33%;">
-                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="chemical" name="chemical" checked="" value="Yes"> <b>CHEMICAL</b></label>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Glucose </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="glucose" required="" class="form-control glucose" placeholder="Glucose" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bilirubin </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="bilirubin" required="" class="form-control bilirubin" placeholder="Bilirubin" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ketone </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="ketone" required="" class="form-control ketone" placeholder="Ketone" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blood </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="blood" required="" class="form-control blood" placeholder="Blood" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pH </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="ph" required="" class="form-control ph" placeholder="pH" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Protein </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="protein" required="" class="form-control protein" placeholder="Protein" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urobilingen </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="urobilingen" required="" class="form-control urobilingen" placeholder="Urobilingen" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrites </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="nitrites" required="" class="form-control nitrites" placeholder="Nitrites" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leucocytes </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="leucocytes" required="" class="form-control leucocytes" placeholder="Leucocytes" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div><br>
-                                                @if(Session::get('position') == "Doctor")
-                                                    @foreach($PatientService as $service)
-                                                        @if($service->admin_panel_id == 35)
-                                                            <div class="row">
-                                                                <div class="col-sm-12" >
-                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                            @foreach($PatientService1002 as $service)
+                                                                @if($service->admin_panel_id == 34)
                                                                     <div class="row">
-                                                                        <div class="col-sm-2">
-                                                                            <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                                        <div class="col-sm-12" >
+                                                                            <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                            <div class="row">
+                                                                                <div class="col-sm-2">
+                                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                                                </div>
+                                                                                <div class="col-sm-10">
+                                                                                    <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="col-sm-10">
-                                                                            <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        @elseif(Session::get('position') == "Labtest")
+                                                            @foreach($PatientService1002 as $service)
+                                                                @if($service->admin_panel_id == 34)
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12" >
+                                                                            <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                            <div class="row">
+                                                                                <div class="col-sm-2">
+                                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                                                </div>
+                                                                                <div class="col-sm-10">
+                                                                                    <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    @else
+                                                    <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/urinalysis">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="{{$Urinalyses->id}}" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-1 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="orno" class="form-control uri_orno" value="{{$Urinalyses->or_no}}" placeholder="O.R. No.">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-1 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-3">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-1 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if($Urinalyses->physician_id == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-3">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                        <div class="row"> 
+                                                            <div class="col-sm-6">
+                                                                @if($Urinalyses->physical == 'Yes')
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="physical" name="physical" checked="" value="Yes"> <b>PHYSICAL</b></label>
+                                                                @else
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="physical" name="physical" value="Yes"> <b>PHYSICAL</b></label>
+                                                                @endif
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="color" required="" class="form-control color" placeholder="Color" value="{{$Urinalyses->color}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transparency </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="transparency" required="" class="form-control transparency" placeholder="Transparency" value="{{$Urinalyses->transparency}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specific Gravity </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="SG" required="" class="form-control SG" placeholder="Specific Gravity" value="{{$Urinalyses->specific_gravity}}" autocomplete="off">
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @endif
-                                                    @endforeach
-                                                @elseif(Session::get('position') == "Labtest")
-                                                    @foreach($PatientService as $service)
-                                                        @if($service->admin_panel_id == 35)
-                                                            <div class="row">
-                                                                <div class="col-sm-12" >
-                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
-                                                                    <div class="row">
-                                                                        <div class="col-sm-2">
-                                                                            <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
-                                                                        </div>
-                                                                        <div class="col-sm-10">
-                                                                            <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
-                                                                        </div>
+
+                                                            <div class="col-sm-6">
+                                                                @if($Urinalyses->microscopic == 'Yes')
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="microscopic" name="microscopic" checked="" value="Yes"> <b>MICROSCOPIC</b></label>
+                                                                @else
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="microscopic" name="microscopic" value="Yes"> <b>MICROSCOPIC</b></label>
+                                                                @endif
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WBC  </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="wbc" required="" class="form-control wbc" placeholder="WBC" value="{{$Urinalyses->wbc}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RBC </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="rbc" required="" class="form-control rbc" placeholder="RBC" value="{{$Urinalyses->rbc}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Epith. Cells </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="EC" required="" class="form-control EC" placeholder="Epith. Cells" value="{{$Urinalyses->epith_cell}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bacteria </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="bacteria" required="" class="form-control bacteria" placeholder="Bacteria" value="{{$Urinalyses->bacteria}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cast(s) </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="cast" required="" class="form-control cast" placeholder="Cast" value="{{$Urinalyses->cast}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="cast2" required="" class="form-control cast2" placeholder="Cast" value="{{$Urinalyses->cast2}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crystal(s) </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="crystal" required="" class="form-control crystal" placeholder="Crystal" value="{{$Urinalyses->crystal}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="crystal2" required="" class="form-control crystal2" placeholder="Crystal" value="{{$Urinalyses->crystal2}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">LPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">Amorphous Materials </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="AM" required="" class="form-control AM" placeholder="Amorphous Materials" value="{{$Urinalyses->amorphous_material}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mucus Thread </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="MT" required="" class="form-control MT" placeholder="Mucus Thread" value="{{$Urinalyses->mucus_thread}}" autocomplete="off">
+                                                                    </div>
+                                                                    <div>
+                                                                        <label class="control-label">HPF</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Others </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="others" required="" class="form-control others" placeholder="Others" value="{{$Urinalyses->other}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="others2" required="" class="form-control others2" placeholder="Others" value="{{$Urinalyses->other2}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label"></label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="others3" required="" class="form-control others3" placeholder="Others" value="{{$Urinalyses->other3}}" autocomplete="off">
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6" style="margin-top:-33%;">
+                                                                @if($Urinalyses->chemical == 'Yes')
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="chemical" name="chemical" checked="" value="Yes"> <b>CHEMICAL</b></label>
+                                                                @else
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="chemical" name="chemical" value="Yes"> <b>CHEMICAL</b></label>
+                                                                @endif
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Glucose </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="glucose" required="" class="form-control glucose" placeholder="Glucose" value="{{$Urinalyses->glucose}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bilirubin </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="bilirubin" required="" class="form-control bilirubin" placeholder="Bilirubin" value="{{$Urinalyses->bilirubin}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ketone </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="ketone" required="" class="form-control ketone" placeholder="Ketone" value="{{$Urinalyses->ketone}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blood </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="blood" required="" class="form-control blood" placeholder="Blood" value="{{$Urinalyses->blood}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pH </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="ph" required="" class="form-control ph" placeholder="pH" value="{{$Urinalyses->ph}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Protein </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="protein" required="" class="form-control protein" placeholder="Protein" value="{{$Urinalyses->protein}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urobilingen </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="urobilingen" required="" class="form-control urobilingen" placeholder="Urobilingen" value="{{$Urinalyses->urobilinogen}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrites </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="nitrites" required="" class="form-control nitrites" placeholder="Nitrites" value="{{$Urinalyses->nitrites}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-4">
+                                                                        <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leucocytes </label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" name="leucocytes" required="" class="form-control leucocytes" placeholder="Leucocytes" value="{{$Urinalyses->leucocytes}}" autocomplete="off">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+                                                        @if(Session::get('position') == "Doctor")
+                                                            @foreach($PatientService1002 as $service)
+                                                                @if($service->admin_panel_id == 34)
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12" >
+                                                                            @if($Urinalyses->pregnancy_test == 'Yes')
+                                                                                <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                            @else
+                                                                                <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                            @endif
+                                                                            <div class="row">
+                                                                                <div class="col-sm-2">
+                                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                                                </div>
+                                                                                <div class="col-sm-10">
+                                                                                    <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks">{{$Urinalyses->preg_remark}}</textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        @elseif(Session::get('position') == "Labtest")
+                                                            @foreach($PatientService1002 as $service)
+                                                                @if($service->admin_panel_id == 34)
+                                                                    <div class="row">
+                                                                        <div class="col-sm-12" >
+                                                                            @if($Urinalyses->pregnancy_test == 'Yes')
+                                                                                <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                            @else
+                                                                                <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" value="Yes"> <b>PREGNANCY TEST</b></label>
+                                                                            @endif
+                                                                            <div class="row">
+                                                                                <div class="col-sm-2">
+                                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
+                                                                                </div>
+                                                                                <div class="col-sm-10">
+                                                                                    <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks">{{$Urinalyses->preg_remark}}</textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
                                                         @endif
-                                                    @endforeach
-                                                @endif
-                                            </div><br>
-
-                                           <!--  <div class="form-group docs">
-                                                <label class="col-sm-6 control-label patho" style="text-align: center;"></label>
-                                                <label class="col-sm-6 control-label uri_rmt" style="text-align: center;"></label>
-                                            </div> -->
-                                            <!-- <div class="form-group divxrayinfo docs2">
-                                                <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">Pathologist</label>
-                                                <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">RMT</label>
-                                            </div> -->
-                                            <br>
-
-                                            <div class="form-group">
-                                                <label for="inputEmail3" class="control-label"></label>
-                                                <div class="col-sm-3">
-                                                    <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    @endif
                                                 </div>
                                             </div>
-
-                                        </form>
-                                    </div>
                                 </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END MODAL -->
-                                    @elseif($service->admin_panel_id == 2)
-                                        <div role="tabpanel" class="tab-pane fade" id="fecalysis">
-                                            <div class="col-md-12">
-                                                <h3>Fecalysis
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
-                                                </h3>
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>ID</th>
-                                                            <th class="text-center">Date</th>
-                                                            <th class="text-center">Physician</th>
-                                                            <th class="text-center">Result</th>
-                                                            <th class="text-center">Status</th>
-                                                            <th class="text-center">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="fecalysis_list">
-                                                        <tr>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            </div>
-                                        </div>
-                                    @elseif($service->admin_panel_id == 6)
-                                        <div role="tabpanel" class="tab-pane fade" id="OGTT">
-                                            <div class="col-md-12">
-                                                <h3>Oral Glucose Tolerance Test
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
-                                                </h3>
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th class="text-center">Date</th>
-                                                                <th class="text-center">Physician</th>
-                                                                <th class="text-center">Result</th>
-                                                                <th class="text-center">Status</th>
-                                                                <th class="text-center">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="OGTT_list">
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
-                                        <div role="tabpanel" class="tab-pane fade" id="hematology">
-                                            <div class="col-md-12">
-                                                <h3>Hematology
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
-                                                </h3>
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th class="text-center">Date</th>
-                                                                <th class="text-center">Physician</th>
-                                                                <th class="text-center">Result</th>
-                                                                <th class="text-center">Status</th>
-                                                                <th class="text-center">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="hematology_list">
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
-                                        <div role="tabpanel" class="tab-pane fade" id="chemistry">
-                                            <div class="col-md-12">
-                                                <h3>Chemistry II
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
-                                                </h3>
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th class="text-center">Date</th>
-                                                                <th class="text-center">Physician</th>
-                                                                <th class="text-center">Result</th>
-                                                                <th class="text-center">Status</th>
-                                                                <th class="text-center">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="chemistry_list">
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            @elseif(Session::get('position') == "Labtest")
-                                @foreach($PatientService as $service)
-                                    @if($service->admin_panel_id == 1)
-                                        <div role="tabpanel" class="tab-pane fade" id="urinalysis">
-                                            <div class="col-md-12">
-                                                <h3>Urinalysis
-                                                    @if(!Session::get('user'))
-                                                    @else
-                                                        @if($uricount >= 1)
-                                                        @else
-                                                            <button type="button" class="btn btn-primary btn-xs newurinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static">Add New</button>
-                                                        @endif
-                                                    @endif
-                                                </h3>
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>ID</th>
-                                                            <th class="text-center">Date</th>
-                                                            <th class="text-center">Physician</th>
-                                                            <th class="text-center">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="urinalysis_list">
-                                                        @foreach($Urinalysis as $Uri)
-                                                            <tr>
-                                                                <td>{{$Uri->id}}</td>
-                                                                <td class="text-center">{{$Uri->date}}</td>
-                                                                    @foreach($doctor as $docdoc)
-                                                                        @if($docdoc->id == $Uri->physician_id)
-                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
-                                                                        @endif
-                                                                        @if($docdoc->id == $Uri->user_id)
-                                                                            <td class="text-center">{{$docdoc->f_name}} {{$docdoc->m_name}} {{$docdoc->l_name}}, {{$docdoc->credential}}</td>
-                                                                        @endif
-                                                                    @endforeach
-                                                                <td>
-                                                                    @if(!Session::get('user'))
-                                                                    @else
-                                                                        <button type="button" class="btn btn-xs btn-primary editpatienturinalysis" data-toggle="modal" data-target="#modal_urinalysis" data-backdrop="static" data-id="{{$Uri->id}}">Edit</button>
-                                                                        <button class="btn btn-xs btn-success">Print</button>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            </div>
-                                        </div>
-                <!-- MODAL Urinalysis -->
-                <div class="modal fade" id="modal_urinalysis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modalwidthuri" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-
-                                <div class="table-responsive">
-                                    <div class="col-md-12">
-                                        <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
-                                        <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
-                                        <center><p class="nor">Tel. No. (035) 225-3544</p></center>
-                                        <h4><b>URINALYSIS</b></h4>
-
-                                        <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/urinalysis">
-                                        {!! csrf_field() !!}
-                                            <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
-                                            <div class="form-group">
-                                                <label class="col-sm-1 control-label">Name:</label>
-                                                <div class="col-sm-6">
-                                                    <input type="text" name="P_id" value="{{$id}}" style="display: none;">
-                                                    <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
-                                                </div>
-                                                <label class="col-sm-2 control-label">O.R. No.</label>
-                                                <div class="col-sm-3">
-                                                    <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
-                                                </div>
-                                            </div>
-                                            <div class="form-group divxrayinfo">
-                                                <label class="col-sm-1 control-label">Address:</label>
-                                                <div class="col-sm-6">
-                                                    <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
-                                                </div>
-                                                <label class="col-sm-2 control-label">Sex:</label>
-                                                <div class="col-sm-3">
-                                                    <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
-                                                        <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group divxrayinfo">
-                                                <label class="col-sm-1 control-label">Physician:</label>
-                                                <div class="col-sm-6">
-                                                    <select id="physician" name="physician" class="form-control uri_physician" required="">
-                                                        <option value="">-- Select One --</option>
-                                                        @foreach($doctor as $doc)
-                                                        @if(Session::get('position') == "Doctor")
-                                                            @if(Session::get('user') == $doc->id)
-                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                            @endif
-                                                        @else
-                                                            @if($doc->user->position == "Doctor")
-                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                            @endif
-                                                        @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <label class="col-sm-2 control-label">Date:</label>
-                                                <div class="col-sm-3">
-                                                <?php $datenow = date("Y-m-d"); ?>
-                                                    <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
-                                                </div>
-                                            </div><br>
-
-                                            <div class=" divxrayinfo">
-                                                <div class="row"> 
-                                                    <div class="col-sm-6">
-                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="physical" name="physical" checked="" value="Yes"> <b>PHYSICAL</b></label>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color </label>
-                                                            </div>
+                                </div>
+                                <!-- done -->
+                                <div role="tabpanel" class="tab-pane fade" id="Fecalysis">
+                                <div class="col-md-12">
+                                    <div class="flash-message top-message topmessage7"></div>
+                                        <div class="col-md-12">
+                                            <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                            <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                            <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                            <h4>
+                                                <i style="font-size: 8pt;">Clinical Laboratory</i><br>
+                                                <b>FECALYSIS</b>
+                                            </h4>
+                                            @if(!$Fecalyses)
+                                                <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/fecalysis">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="color" required="" class="form-control color" placeholder="Color" value="" autocomplete="off">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transparency </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="transparency" required="" class="form-control transparency" placeholder="Transparency" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specific Gravity </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="SG" required="" class="form-control SG" placeholder="Specific Gravity" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-6">
-                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="microscopic" name="microscopic" checked="" value="Yes"> <b>MICROSCOPIC</b></label>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WBC  </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="wbc" required="" class="form-control wbc" placeholder="WBC" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RBC </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="rbc" required="" class="form-control rbc" placeholder="RBC" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Epith. Cells </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="EC" required="" class="form-control EC" placeholder="Epith. Cells" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bacteria </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="bacteria" required="" class="form-control bacteria" placeholder="Bacteria" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cast(s) </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="cast" required="" class="form-control cast" placeholder="Cast" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="cast2" required="" class="form-control cast2" placeholder="Cast" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Crystal(s) </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="crystal" required="" class="form-control crystal" placeholder="Crystal" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="crystal2" required="" class="form-control crystal2" placeholder="Crystal" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">LPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">Amorphous Materials </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="AM" required="" class="form-control AM" placeholder="Amorphous Materials" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mucus Thread </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="MT" required="" class="form-control MT" placeholder="Mucus Thread" value="" autocomplete="off">
-                                                            </div>
-                                                            <div>
-                                                                <label class="control-label">HPF</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Others </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="others" required="" class="form-control others" placeholder="Others" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="others2" required="" class="form-control others2" placeholder="Others" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label"></label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="others3" required="" class="form-control others3" placeholder="Others" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6" style="margin-top:-33%;">
-                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="chemical" name="chemical" checked="" value="Yes"> <b>CHEMICAL</b></label>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Glucose </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="glucose" required="" class="form-control glucose" placeholder="Glucose" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bilirubin </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="bilirubin" required="" class="form-control bilirubin" placeholder="Bilirubin" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ketone </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="ketone" required="" class="form-control ketone" placeholder="Ketone" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blood </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="blood" required="" class="form-control blood" placeholder="Blood" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pH </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="ph" required="" class="form-control ph" placeholder="pH" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Protein </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="protein" required="" class="form-control protein" placeholder="Protein" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Urobilingen </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="urobilingen" required="" class="form-control urobilingen" placeholder="Urobilingen" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nitrites </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="nitrites" required="" class="form-control nitrites" placeholder="Nitrites" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leucocytes </label>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                                <input type="text" name="leucocytes" required="" class="form-control leucocytes" placeholder="Leucocytes" value="" autocomplete="off">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div><br>
-                                                <div class="row">
-                                                    <div class="col-sm-12" >
-                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="preg_test" name="preg_test" checked="" value="Yes"> <b>PREGNANCY TEST</b></label>
-                                                        <div class="row">
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMARKS </label>
-                                                            </div>
-                                                            <div class="col-sm-10">
-                                                                <textarea class="form-control preg_remarks" name="preg_remarks" rows="5" id="preg_remarks"></textarea>
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div><br>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if(Session::get('user') == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Requesting M.D.</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" class="form-control req_doc" name="req_doc" placeholder="Requesting M.D.">
+                                                            </div>
+                                                        </div>
 
-                                           <!--  <div class="form-group docs">
-                                                <label class="col-sm-6 control-label patho" style="text-align: center;"></label>
-                                                <label class="col-sm-6 control-label uri_rmt" style="text-align: center;"></label>
-                                            </div> -->
-                                            <!-- <div class="form-group divxrayinfo docs2">
-                                                <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">Pathologist</label>
-                                                <label class="col-sm-6 control-label" style="text-align: center; font-size: 8pt; margin-top: -1.1%;">RMT</label>
-                                            </div> -->
-                                            <br>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="routine" name="routine" checked="" value="Yes"> <b>ROUTINE</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Consistency </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="consistency" class="form-control consistency" placeholder="Consistency" value="" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Color </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="color" class="form-control color" placeholder="Color" value="" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Red Cells </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="red_cells" class="form-control red_cells" placeholder="Red Cells" value="" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Ascaris </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="ascaris" class="form-control ascaris" placeholder="Ascaris" value="" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pus Cells </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="pus_cells" class="form-control pus_cells" placeholder="Pus Cells" value="" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Trichuris </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="trichuris" class="form-control trichuris" placeholder="Trichuris" value="" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="amoeba" name="amoeba" checked="" value="Yes"> <b>Amoeba</b></label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="amoeba_desc" class="form-control amoeba_desc" placeholder="Amoeba" value="" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Hookworm </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="hookworm" class="form-control hookworm" placeholder="Hookworm" value="" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>Others</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control others_desc" name="others_desc" rows="2"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>Remarks</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control remarks" name="remarks" rows="2"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
 
-                                            <div class="form-group">
-                                                <label for="inputEmail3" class="control-label"></label>
-                                                <div class="col-sm-3">
-                                                    <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
-                                                </div>
-                                            </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
 
-                                        </form>
-                                    </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <i style="font-size: 9pt;">Time Submitted ______________________</i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <i style="font-size: 9pt;">Time Done __________________________</i>
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                </form>
+                                            @else
+                                                <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/fecalysis">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="{{$Fecalyses->id}}" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Fecalyses->or_no}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if($Fecalyses->doc_id == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$Fecalyses->date_reg}}" disabled="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Requesting M.D.</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" class="form-control req_doc" name="req_doc" placeholder="Requesting M.D." value="{{$Fecalyses->req_doc}}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Fecalyses->routine == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="routine" name="routine" checked="" value="Yes"> <b>ROUTINE</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="routine" name="routine" value="Yes"> <b>ROUTINE</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Consistency </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="consistency" class="form-control consistency" placeholder="Consistency" value="{{$Fecalyses->consistency}}" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Color </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="color" class="form-control color" placeholder="Color" value="{{$Fecalyses->color}}" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Red Cells </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="red_cells" class="form-control red_cells" placeholder="Red Cells" value="{{$Fecalyses->red_cell}}" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Ascaris </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="ascaris" class="form-control ascaris" placeholder="Ascaris" value="{{$Fecalyses->ascari}}" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pus Cells </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="pus_cells" class="form-control pus_cells" placeholder="Pus Cells" value="{{$Fecalyses->pus_cell}}" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Trichuris </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="trichuris" class="form-control trichuris" placeholder="Trichuris" value="{{$Fecalyses->trichuri}}" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    @if($Fecalyses->amoeba == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="amoeba" name="amoeba" checked="" value="Yes"> <b>Amoeba</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="amoeba" name="amoeba" value="Yes"> <b>Amoeba</b></label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="amoeba_desc" class="form-control amoeba_desc" placeholder="Amoeba" value="{{$Fecalyses->amoeba_desc}}" autocomplete="off">
+                                                                </div>
+                                                                <div class="col-sm-2" style="text-align: right;">
+                                                                    <label class="control-label">Hookworm </label>
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" name="hookworm" class="form-control hookworm" placeholder="Hookworm" value="{{$Fecalyses->hookworm}}" autocomplete="off">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>Others</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control others_desc" name="others_desc" rows="2">{{$Fecalyses->feca_other}}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>Remarks</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control remarks" name="remarks" rows="2">{{$Fecalyses->remark}}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <i style="font-size: 9pt;">Time Submitted ______________________</i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <i style="font-size: 9pt;">Time Done __________________________</i>
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                            </div>
+                                                        </div>
+                                                </form>
+                                            @endif
+                                        </div>
                                 </div>
+                                </div>
+                                <!-- done -->
+                                <div role="tabpanel" class="tab-pane fade" id="Chemistry">
+                                <div class="col-md-12">
+                                    <div class="flash-message top-message topmessage7"></div>
+                                        <div class="col-md-12">
+                                            <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                            <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                            <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                            <h4><b>CHEMISTRY II</b></h4>
+                                        @if(!$Chemistry)
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/chemistryii">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if(Session::get('user') == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
+                                                            </div>
+                                                        </div>
 
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="blood_sugar" name="blood_sugar" checked="" value="Yes"> <b>BLOOD SUGAR</b></label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Result</b></label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Normal Value</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting" name="fasting" checked="" value="Yes"> Fasting</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="fasting_result" class="form-control fasting_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">75 - 115 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="ppbs" name="ppbs" checked="" value="Yes"> 2-hrs PPBS</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="ppbs_result" class="form-control ppbs_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">70 - 150 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="random" name="random" checked="" value="Yes"> Random</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="random_result" class="form-control random_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">< 60 yO 45 - 130mg/dl<br> > 60yO 70 - 160mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hbaic" name="hbaic" checked="" value="Yes"> HbAIC</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hbaic_result" class="form-control hbaic_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">4.5 -6.3 %</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>KIDNEY FUNCTION</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="creatinine" name="creatinine" checked="" value="Yes"> Creatinine</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="creatinine_result" class="form-control creatinine_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M09 - 13mg/dl <br> F06 - 11mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="bun" name="bun" checked="" value="Yes"> BUN</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="bun_result" class="form-control bun_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">10 - 50mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="uricacid" name="uricacid" checked="" value="Yes"> Uric Acid</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="uricacid_result" class="form-control uricacid_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">F24 - 57mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="liver_function" name="liver_function" checked="" value="Yes"> <b>LIVER FUNCTION</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sgpt" name="sgpt" checked="" value="Yes"> SGPT</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="sgpt_result" class="form-control sgpt_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M 0 - 42 U/L<br>F 0 - 32 U/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sgot" name="sgot" checked="" value="Yes"> SGOT</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="sgot_result" class="form-control sgot_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M 0 - 37 U/L<br>F 0 - 31 U/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="alk_phos" name="alk_phos" checked="" value="Yes"> Alk. Phos.</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="alk_phos_result" class="form-control alk_phos_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M 80 - 306 U/L<br>F 64 - 306 U/L</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="lipid_profile" name="lipid_profile" checked="" value="Yes"> <b>LIPID PROFILE</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hdl_cholesterol" name="hdl_cholesterol" checked="" value="Yes"> HDL-Cholesterol</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hdl_cholesterol_result" class="form-control hdl_cholesterol_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M  > 55 mg/dl<br>F > 65 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="triglycerides" name="triglycerides" checked="" value="Yes"> Triglycerides</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="triglycerides_result" class="form-control triglycerides_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">40 - 190 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="total_cholesterol" name="total_cholesterol" checked="" value="Yes"> Total Cholesterol</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="total_cholesterol_result" class="form-control total_cholesterol_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 220 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="ldl_cholesterol" name="ldl_cholesterol" checked="" value="Yes"> LDL - Cholesterol</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="ldl_cholesterol_result" class="form-control ldl_cholesterol_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 150 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="tc_hdl_ratio" name="tc_hdl_ratio" checked="" value="Yes"> TC/HDL Ratio</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="tc_hdl_ratio_result" class="form-control tc_hdl_ratio_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 4.5 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="electrolytes" name="electrolytes" checked="" value="Yes"> <b>ELECTROLYTES</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sodium" name="sodium" checked="" value="Yes"> Sodium</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="sodium_result" class="form-control sodium_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">F 135 - 155 mmol/L<br>M 135 - 148 mmol/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="potassium" name="potassium" checked="" value="Yes"> Potassium</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="potassium_result" class="form-control potassium_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">3.5 - 5.3 mmol/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="calcium" name="calcium" checked="" value="Yes"> Calcium</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="calcium_result" class="form-control calcium_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">8.6 - 10.3 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>OTHERS</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control chem_others" name="chem_others" rows="2"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>REMARKS</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control chem_remarks" name="chem_remarks" rows="2"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                            </div>
+                                                        </div>
+                                            </form>
+                                        @else
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/chemistryii">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="{{$Chemistry->id}}" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Chemistry->or_no}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if($Chemistry->doc_id == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$Chemistry->date_reg}}" disabled="">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->blood_sugar == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="blood_sugar" name="blood_sugar" checked="" value="Yes"> <b>BLOOD SUGAR</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="blood_sugar" name="blood_sugar" value="Yes"> <b>BLOOD SUGAR</b></label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Result</b></label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Normal Value</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->fasting == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting" name="fasting" checked="" value="Yes"> Fasting</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting" name="fasting" value="Yes"> Fasting</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="fasting_result" class="form-control fasting_result" value="{{$Chemistry->fasting_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">75 - 115 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->hours_ppbs == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="ppbs" name="ppbs" checked="" value="Yes"> 2-hrs PPBS</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="ppbs" name="ppbs" value="Yes"> 2-hrs PPBS</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="ppbs_result" class="form-control ppbs_result" value="{{$Chemistry->ppbs_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">70 - 150 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->random == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="random" name="random" checked="" value="Yes"> Random</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="random" name="random" value="Yes"> Random</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="random_result" class="form-control random_result" value="{{$Chemistry->random_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">< 60 yO 45 - 130mg/dl<br> > 60yO 70 - 160mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->hbaic == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hbaic" name="hbaic" checked="" value="Yes"> HbAIC</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hbaic" name="hbaic" value="Yes"> HbAIC</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hbaic_result" class="form-control hbaic_result" value="{{$Chemistry->hbaic_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">4.5 -6.3 %</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->kidney_function == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>KIDNEY FUNCTION</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" value="Yes"> <b>KIDNEY FUNCTION</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->creatinine == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="creatinine" name="creatinine" checked="" value="Yes"> Creatinine</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="creatinine" name="creatinine" value="Yes"> Creatinine</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="creatinine_result" class="form-control creatinine_result" value="{{$Chemistry->creatinine_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M09 - 13mg/dl <br> F06 - 11mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->bun == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="bun" name="bun" checked="" value="Yes"> BUN</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="bun" name="bun" value="Yes"> BUN</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="bun_result" class="form-control bun_result" value="{{$Chemistry->bun_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">10 - 50mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->uric_acid == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="uricacid" name="uricacid" checked="" value="Yes"> Uric Acid</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="uricacid" name="uricacid" value="Yes"> Uric Acid</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="uricacid_result" class="form-control uricacid_result" value="{{$Chemistry->uric_acid_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">F24 - 57mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->liver_function == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="liver_function" name="liver_function" checked="" value="Yes"> <b>LIVER FUNCTION</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="liver_function" name="liver_function" value="Yes"> <b>LIVER FUNCTION</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->sgpt == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sgpt" name="sgpt" checked="" value="Yes"> SGPT</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sgpt" name="sgpt" value="Yes"> SGPT</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="sgpt_result" class="form-control sgpt_result" value="{{$Chemistry->sgpt_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M 0 - 42 U/L<br>F 0 - 32 U/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->sgot == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sgot" name="sgot" checked="" value="Yes"> SGOT</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sgot" name="sgot" value="Yes"> SGOT</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="sgot_result" class="form-control sgot_result" value="{{$Chemistry->sgot_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M 0 - 37 U/L<br>F 0 - 31 U/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->alk_phos == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="alk_phos" name="alk_phos" checked="" value="Yes"> Alk. Phos.</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="alk_phos" name="alk_phos" value="Yes"> Alk. Phos.</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="alk_phos_result" class="form-control alk_phos_result" value="{{$Chemistry->alk_phos_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M 80 - 306 U/L<br>F 64 - 306 U/L</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->lipid_profile == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="lipid_profile" name="lipid_profile" checked="" value="Yes"> <b>LIPID PROFILE</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="lipid_profile" name="lipid_profile" value="Yes"> <b>LIPID PROFILE</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->hdl_cholesterol == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hdl_cholesterol" name="hdl_cholesterol" checked="" value="Yes"> HDL-Cholesterol</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hdl_cholesterol" name="hdl_cholesterol" value="Yes"> HDL-Cholesterol</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hdl_cholesterol_result" class="form-control hdl_cholesterol_result" value="{{$Chemistry->hdl_cholesterol_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">M  > 55 mg/dl<br>F > 65 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->triglycerides == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="triglycerides" name="triglycerides" checked="" value="Yes"> Triglycerides</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="triglycerides" name="triglycerides" value="Yes"> Triglycerides</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="triglycerides_result" class="form-control triglycerides_result" value="{{$Chemistry->triglycerides_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">40 - 190 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->total_cholesterol == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="total_cholesterol" name="total_cholesterol" checked="" value="Yes"> Total Cholesterol</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="total_cholesterol" name="total_cholesterol" value="Yes"> Total Cholesterol</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="total_cholesterol_result" class="form-control total_cholesterol_result" value="{{$Chemistry->total_cholesterol_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 220 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->ldl_cholesterol == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="ldl_cholesterol" name="ldl_cholesterol" checked="" value="Yes"> LDL - Cholesterol</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="ldl_cholesterol" name="ldl_cholesterol" checked="" value="Yes"> LDL - Cholesterol</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="ldl_cholesterol_result" class="form-control ldl_cholesterol_result" value="{{$Chemistry->ldl_cholesterol_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 150 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->tc_hdl_ratio == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="tc_hdl_ratio" name="tc_hdl_ratio" checked="" value="Yes"> TC/HDL Ratio</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="tc_hdl_ratio" name="tc_hdl_ratio" value="Yes"> TC/HDL Ratio</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="tc_hdl_ratio_result" class="form-control tc_hdl_ratio_result" value="{{$Chemistry->tc_hdl_ratio_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 4.5 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->electrolytes == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="electrolytes" name="electrolytes" checked="" value="Yes"> <b>ELECTROLYTES</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="electrolytes" name="electrolytes" value="Yes"> <b>ELECTROLYTES</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->sodium == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sodium" name="sodium" checked="" value="Yes"> Sodium</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sodium" name="sodium" value="Yes"> Sodium</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="sodium_result" class="form-control sodium_result" value="{{$Chemistry->sodium_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;font-size: 9pt;">
+                                                                    <label class="control-label">F 135 - 155 mmol/L<br>M 135 - 148 mmol/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->potassium == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="potassium" name="potassium" checked="" value="Yes"> Potassium</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="potassium" name="potassium" value="Yes"> Potassium</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="potassium_result" class="form-control potassium_result" value="{{$Chemistry->potassium_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">3.5 - 5.3 mmol/L</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Chemistry->calcium == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="calcium" name="calcium" checked="" value="Yes"> Calcium</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="calcium" name="calcium" value="Yes"> Calcium</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="calcium_result" class="form-control calcium_result" value="{{$Chemistry->calcium_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">8.6 - 10.3 mg/dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>OTHERS</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control chem_others" name="chem_others" rows="2">{{$Chemistry->chem_other}}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>REMARKS</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-12">
+                                                                    <textarea class="form-control chem_remarks" name="chem_remarks" rows="2">{{$Chemistry->remark}}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                            </div>
+                                                        </div>
+                                            </form>
+                                        @endif
+                                        </div>
+                                </div>
+                                </div>
+                                <!-- db, functions on save and edit, fetch for edit -->
+                                <div role="tabpanel" class="tab-pane fade" id="OGTT">
+                                <div class="col-md-12">
+                                    <div class="flash-message top-message topmessage7"></div>
+                                        <div class="col-md-12">
+                                            <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                            <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                            <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                            <h4><b>ORAL GLUCOSE TOLERANCE TEST</b></h4>
+
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/chemistryii">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if(Session::get('user') == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"></label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Result</b></label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Normal Value</b></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>50 GRAMS</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firsthour" name="firsthour" checked="" value="Yes"> 1st Hour</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="firsthour_result" required="" class="form-control firsthour_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">90 - 165 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>75 GRAMS</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting_oggt" name="fasting_oggt" checked="" value="Yes"> Fasting</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="fasting_oggt_result" required="" class="form-control fasting_oggt_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 95 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firshour_oggt" name="firshour_oggt" checked="" value="Yes"> 1st Hour</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="firshour_oggt_result" required="" class="form-control firshour_oggt_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 180 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="secondhour_oggt" name="secondhour_oggt" checked="" value="Yes"> 2nd Hour</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="secondhour_oggt_result" required="" class="form-control secondhour_oggt_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 155 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>100 GRAMS</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting_oggt_grams" name="fasting_oggt_grams" checked="" value="Yes"> Fasting</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="fasting_oggt_grams_result" required="" class="form-control fasting_oggt_grams_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 95 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firshour_oggt_grams" name="firshour_oggt_grams" checked="" value="Yes"> 1st Hour</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="firshour_oggt_grams_result" required="" class="form-control firshour_oggt_grams_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 180 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="secondhour_oggt_grams" name="secondhour_oggt_grams" checked="" value="Yes"> 2nd Hour</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="secondhour_oggt_grams_result" required="" class="form-control secondhour_oggt_grams_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 155 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="thirdhour_oggt_grams" name="thirdhour_oggt_grams" checked="" value="Yes"> 3rd Hour</label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="thirdhour_oggt_grams_result" required="" class="form-control thirdhour_oggt_grams_result" value="" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 155 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                            </div>
+                                                        </div>
+                                            </form>
+                                        </div>
+                                </div>
+                                </div>
+                                <!-- db, functions on save and edit, fetch for edit -->
+                                <div role="tabpanel" class="tab-pane fade" id="3aa">
+                                <div class="col-md-12">
+                                    <div class="flash-message top-message topmessage7"></div>
+                                        <div class="col-md-12">
+                                            <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                            <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                            <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                            <h4><b>HEMATOLOGY</b></h4>
+
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/chemistryii">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if(Session::get('user') == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$datenow}}" disabled="">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="cbc" name="cbc" checked="" value="Yes"> <b>CBC</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hematocrit" name="hematocrit" checked="" value="Yes"> Hematocrit</label>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hematocrit_desc" required="" class="form-control hematocrit_desc" value="" autocomplete="off"> 
+                                                                    </label> %
+                                                                </div>
+                                                                <div class="col-sm-1" style="font-size: 8pt;">
+                                                                    F42 ± 5<br>M47 ± 7
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clotting_lw" name="clotting_lw" checked="" value="Yes"> Clotting(Lee & White)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    Time :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="clotting_lw_desc" required="" class="form-control clotting_lw_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:6-17 min.
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hemoglobin" name="hemoglobin" checked="" value="Yes"> Hemoglobin</label>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hemoglobin_desc" required="" class="form-control hemoglobin_desc" value="" autocomplete="off"> 
+                                                                    </label> %
+                                                                </div>
+                                                                <div class="col-sm-1" style="font-size: 8pt;">
+                                                                    F14 ± 2
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clotting" name="clotting" checked="" value="Yes"> Clotting</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    Time :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="clotting_desc" required="" class="form-control clotting_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:3-5 min.
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="wbc" name="wbc" checked="" value="Yes"> WBC</label>
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="wbc_desc" required="" class="form-control wbc_desc" value="" autocomplete="off"> 
+                                                                    </label> T/mm
+                                                                </div>
+                                                                <div class="col-sm-1" style="font-size: 8pt;">
+                                                                    3A5 10<br>CH6 13
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="bleeding" name="bleeding" checked="" value="Yes"> Bleeding(Duke Method)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    Time :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="bleeding_desc" required="" class="form-control bleeding_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:1-3 min.
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>Differential Count %</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">BAND<br>0 - 10</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">PMN<br>53 - 70</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">BASO<br>0 - 1</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">EOS<br>1 - 4</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">MONO<br>1 - 6</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">LYMPHS<br>20 - 36</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="band" class="band form-control">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="pmn" class="pmn form-control">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="baso" class="baso form-control">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="eos" class="eos form-control">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="mono" class="mono form-control">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="lymphs" class="lymphs form-control">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clot" name="clot" checked="" value="Yes"> Clot</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    Retraction :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="clot_desc" required="" class="form-control clot_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:48-64%
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="platelet" name="platelet" checked="" value="Yes"> Platelet</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    Count :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="platelet_desc" required="" class="form-control platelet_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:150-400 T/mm*
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="esr" name="esr" checked="" value="Yes"> ESR (WESTERNGREEN)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="esr_desc" required="" class="form-control esr_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                    mm/HR.
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="protime" name="protime" checked="" value="Yes"> <b>PRO TIME</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">Control</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="control_desc" required="" class="form-control control_desc" value="" autocomplete="off"> 
+                                                                    </label> sec.
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="grp" name="grp" checked="" value="Yes"> GRP</label>
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="grp_desc" required="" class="form-control grp_desc" value="" autocomplete="off" > 
+                                                                    </label>
+                                                                    <label class="control-label" style="text-align: right;"> Rh</label>
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="rh_desc" required="" class="form-control rh_desc" value="" autocomplete="off" style="width: 50%;"> 
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">Patient</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="patient_desc" required="" class="form-control patient_desc" value="" autocomplete="off"> 
+                                                                    </label> sec.
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="smp" name="smp" checked="" value="Yes"> SMP</label>
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="smp_desc" required="" class="form-control smp_desc" value="" autocomplete="off" > 
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">%A</label>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="a_desc" required="" class="form-control a_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">INR.</label>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="inr_desc" required="" class="form-control inr_desc" value="" autocomplete="off"> 
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="cellindices" name="cellindices" checked="" value="Yes"> <b>CELL INDICES</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">MCV</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="mcv_desc" required="" class="form-control mcv_desc" value="" autocomplete="off"> 
+                                                                    </label> 80 - 90
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="retic" name="retic" checked="" value="Yes"> RETIC</label>
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="retic_desc" required="" class="form-control retic_desc" value="" autocomplete="off">
+                                                                    </label> %0.5 - 1.5
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">INDICES MCH</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="indices_mch_desc" required="" class="form-control indices_mch_desc" value="" autocomplete="off"> 
+                                                                    </label> 21 - 31 pg
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="rbc" name="rbc" checked="" value="Yes"> RBC&nbsp;&nbsp;&nbsp;</label>
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="rbc_desc" required="" class="form-control rbc_desc" value="" autocomplete="off">
+                                                                    </label> MIL/mm4<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F 4 - 5.5 &nbsp;&nbsp;&nbsp;&nbsp;M 4.5 - 6.0
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">MCHC</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="mchc_desc" required="" class="form-control mchc_desc" value="" autocomplete="off"> 
+                                                                    </label> 33 - 38 %
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Submit</button>
+                                                            </div>
+                                                        </div>
+                                            </form>
+                                        </div>
+                                </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END MODAL -->
-                                    @elseif($service->admin_panel_id == 2)
-                                        <div role="tabpanel" class="tab-pane fade" id="fecalysis">
-                                            <div class="col-md-12">
-                                                <h3>Fecalysis
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_fecalysis" data-backdrop="static">Add New</button>
-                                                </h3>
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>ID</th>
-                                                            <th class="text-center">Date</th>
-                                                            <th class="text-center">Physician</th>
-                                                            <th class="text-center">Result</th>
-                                                            <th class="text-center">Status</th>
-                                                            <th class="text-center">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="fecalysis_list">
-                                                        <tr>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            </div>
-                                        </div>
-                                    @elseif($service->admin_panel_id == 6)
-                                        <div role="tabpanel" class="tab-pane fade" id="OGTT">
-                                            <div class="col-md-12">
-                                                <h3>Oral Glucose Tolerance Test
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_OGTT" data-backdrop="static">Add New</button>
-                                                </h3>
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th class="text-center">Date</th>
-                                                                <th class="text-center">Physician</th>
-                                                                <th class="text-center">Result</th>
-                                                                <th class="text-center">Status</th>
-                                                                <th class="text-center">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="OGTT_list">
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @elseif($service->admin_panel_id == 26 || $service->admin_panel_id == 27 || $service->admin_panel_id == 28 || $service->admin_panel_id == 29)
-                                        <div role="tabpanel" class="tab-pane fade" id="hematology">
-                                            <div class="col-md-12">
-                                                <h3>Hematology
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_hematology" data-backdrop="static">Add New</button>
-                                                </h3>
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th class="text-center">Date</th>
-                                                                <th class="text-center">Physician</th>
-                                                                <th class="text-center">Result</th>
-                                                                <th class="text-center">Status</th>
-                                                                <th class="text-center">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="hematology_list">
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @elseif($service->admin_panel_id == 4 || $service->admin_panel_id == 5 || $service->admin_panel_id == 7 || $service->admin_panel_id == 8 || $service->admin_panel_id == 9 || $service->admin_panel_id == 10 || $service->admin_panel_id == 11 || $service->admin_panel_id == 12 || $service->admin_panel_id == 13 || $service->admin_panel_id == 14 || $service->admin_panel_id == 15 || $service->admin_panel_id == 16 || $service->admin_panel_id == 17 || $service->admin_panel_id == 18 || $service->admin_panel_id == 19 || $service->admin_panel_id == 20 || $service->admin_panel_id == 21 || $service->admin_panel_id == 22 || $service->admin_panel_id == 23 || $service->admin_panel_id == 24 || $service->admin_panel_id == 25)
-                                        <div role="tabpanel" class="tab-pane fade" id="chemistry">
-                                            <div class="col-md-12">
-                                                <h3>Chemistry II
-                                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_chemistry" data-backdrop="static">Add New</button>
-                                                </h3>
-                                                <div class="table-responsive">
-                                                    <table class="table table-hover table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th class="text-center">Date</th>
-                                                                <th class="text-center">Physician</th>
-                                                                <th class="text-center">Result</th>
-                                                                <th class="text-center">Status</th>
-                                                                <th class="text-center">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="chemistry_list">
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            @endif
 
-                            </div>
                         </div>
 
+                        
                     </div>
 
             </div>

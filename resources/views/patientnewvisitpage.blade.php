@@ -168,7 +168,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div><br>
 
                                 <h3>Services</h3>
-                                @foreach($adminpanelcat as $cat)
+                                <!-- @foreach($adminpanelcat as $cat)
                                 <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
                                     @foreach($adminpanel as $panel)
                                         @if($cat->id == $panel->admin_panel_cat_id)
@@ -186,23 +186,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     @endif
                                                 </div>
                                             </div>
-                                            @foreach($sub as $panelsub)
-                                                @if($panel->id == $panelsub->admin_panel_id)
-                                                    <div class="form-group ">
-                                                        <label class="col-sm-1 control-label"></label>
-                                                        <div class="col-sm-6">
-                                                            <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}} cateservices" name="services[]" value="{{$panel->id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b></label>
-                                                        </div>
-                                                        <div class="col-sm-2" style="text-align: right;">
-                                                            <?php $price = number_format($panelsub->price,2); ?>
-                                                            <label class="priceprice"><b> {{$price}}</b></label>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            @endforeach
                                         @endif
                                     @endforeach
+                                @endforeach -->
+
+                                @foreach($adminpanelcat as $cat)
+                                <div class="col-sm-12 {{$cat->id}}">
+                                    <div class="row">
+                                        <div class="col-sm-2" style="margin-left: 3%;">
+                                            <h5>
+                                                <i><b>{{$cat->cat_name}}</b></i>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-1" style="margin-top: .5%;">
+                                            <button type="button" class="btn btn-xs btn-primary appendservice" data-mainid="{{$cat->id}}">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 @endforeach
+
                                 <hr>
                                 <div class="form-group ">
                                     <label class="col-sm-5 control-label total" style="text-align: left;">
@@ -305,6 +307,84 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.totalprice').val(finaltotal);
         }
     });
+
+    $('.appendservice').on('click',function() {
+            var main_id = $(this).data('mainid');
+            $(this).attr('disabled','disabled');     
+            $('.'+main_id+'').append('<div class="row">\
+                                    <div class="col-sm-1"></div>\
+                                    <div class="col-sm-4">\
+                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
+                                        </select>\
+                                        <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off" style="margin-top:-11%;margin-left:105%;width:50%;">\
+                                    </div>\
+                                    <div class="col-sm-2">\
+                                    </div>\
+                                    <div class="col-sm-1">\
+                                        <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
+                                    </div>\
+                                    </div>');
+
+            $.getJSON('/api/submainservices?main_id=' + main_id, function(data){
+                $('.service_name'+main_id+':last').empty();
+                $('.service_name'+main_id+':last').append('<option value="">--Select One--</option>');
+                $.each(data,function(index,subsub) {
+                    $('.service_name'+main_id+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'">'+subsub.name+'</option>');
+                })
+                $('.appendservice').removeAttr('disabled');
+            });
+
+            $('.serser_name').on('change',function() {
+                var serserval = $('option:selected',this).data('price');
+                $(this).next('input').val(serserval);
+
+                var aa = $(this).val();
+                var bbaa = aa.replace(/,/g , '');
+                $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
+
+                var sum = 0;
+                $('.services').each(function() {
+                    var others = $(this).val();
+                    var others2 = others.replace(/,/g , '');
+                        if (others2 == '') {
+                            var oth = 0;
+                        }
+                        else {
+                            var oth = others2;
+                        }
+                            sum += parseFloat(oth);
+                })
+                    var cc = sum.toString();
+                    var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    $('.totalprice').val(cc);
+                    $('.totaltotal').text(dd);
+
+            })
+
+            $('.removeservice').on('click',function() {
+                $(this).parent().parent().remove();
+                var sum = 0;
+                    $('.services').each(function() {
+                        var others = $(this).val();
+                        var others2 = others.replace(/,/g , '');
+                            if (others2 == '') {
+                                var oth = 0;
+                            }
+                            else {
+                                var oth = others2;
+                            }
+                                sum += parseFloat(oth);
+                            })
+                        var cc = sum.toString();
+                        var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                        $('.totalprice').val(cc);
+                        $('.totaltotal').text(dd);
+                return false;
+            })
+
+    });
+    
+
 </script>
 @show
 

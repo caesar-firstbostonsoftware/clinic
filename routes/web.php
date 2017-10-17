@@ -47,6 +47,8 @@ Route::post('/visit/{id}/{vid}/edit', 'PatientsController@editpatientxray');
 Route::get('/reports/{id}', 'DoctorsController@reports');
 
 Route::post('/visit/{id}/{vid}/urinalysis', 'PatientsController@newurinalysis');
+Route::post('/visit/{id}/{vid}/fecalysis', 'PatientsController@newfecalysis');
+Route::post('/visit/{id}/{vid}/chemistryii', 'PatientsController@newchemistryii');
 
 // Route::get('/adminpanel', 'AdminPanelContoller@adminpanel');
 
@@ -60,6 +62,9 @@ Route::get('/generate/medcert', 'DoctorsController@medcert');
 Route::post('/generate/medcert', 'DoctorsController@postmedcert');
 
 Route::post('/NFHSI/services/edit/service', 'AdminPanelContoller@editservicepost');
+Route::post('/NFHSI/services/addmain', 'AdminPanelContoller@addmain');
+Route::post('/NFHSI/services/subadd', 'AdminPanelContoller@subadd');
+Route::post('/NFHSI/services/editmain', 'AdminPanelContoller@editmain');
 
 // --- PDF ---
 Route::get('/pdf/view/{id}/{datefrom}/{dateto}', 'DoctorsController@printreport');
@@ -108,4 +113,6 @@ Route::get('api/editmedication','PatientsController@editmedication');
 Route::get('api/xrayreportsreports','DoctorsController@xrayreportsreports');
 
 Route::get('api/editservice','AdminPanelContoller@editservice');
+
+Route::get('api/submainservices','PatientsController@submainservices');
 

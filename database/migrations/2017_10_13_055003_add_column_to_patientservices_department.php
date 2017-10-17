@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnToPatientServices extends Migration
+class AddColumnToPatientservicesDepartment extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddColumnToPatientServices extends Migration
     public function up()
     {
         Schema::table('patient_services', function($table) {
-            $table->integer('visit_id')->nullable();
+            $table->string('department');
         });
     }
 
@@ -26,7 +26,7 @@ class AddColumnToPatientServices extends Migration
     public function down()
     {
         Schema::table('patient_services', function($table) {
-            $table->dropColumn('visit_id');
+            $table->dropColumn('department');
         });
     }
 }

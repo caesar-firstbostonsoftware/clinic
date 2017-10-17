@@ -170,7 +170,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         {!! csrf_field() !!}
                         <input type="text" name="editvisit_p_id" class="editvisit_p_id" style="display: none;">
                         <input type="text" name="editvisit_v_id" class="editvisit_v_id" style="display: none;">
-                        @foreach($adminpanelcat as $cat)
+                        <!-- @foreach($adminpanelcat as $cat)
                             <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
                                 @foreach($adminpanel as $panel)
                                     @if($cat->id == $panel->admin_panel_cat_id)
@@ -208,7 +208,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @endforeach
                                     @endif
                                 @endforeach
+                            @endforeach -->
+
+                            @foreach($adminpanelcat as $cat)
+                                <div class="col-sm-12 {{$cat->id}}">
+                                    <div class="row">
+                                        <div class="col-sm-3" style="margin-left: 3%;">
+                                            <h5>
+                                                <i><b>{{$cat->cat_name}}</b></i>
+                                            </h5>
+                                        </div>
+                                        <div class="col-sm-1" style="margin-top: .5%;">
+                                            <button type="button" class="btn btn-xs btn-primary appendservice" data-mainid="{{$cat->id}}">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
+
                             <hr>
                             <div class="row">
                                 <label class="col-sm-5 control-label total" style="text-align: left;">
@@ -454,6 +470,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 }
             });
 
+            
             $('.editvisit').on( 'click', function(e){
                 var p_id = $(this).data('p_id');
                 var v_id = $(this).data('v_id');
@@ -464,13 +481,94 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 $('.totaltotal').empty();
                 $('.totalprice').empty();
+                $('.wawsee').remove();
                 $.get('api/modalaeditpatient?p_id=' + p_id + '&v_id=' + v_id, function(data){
-                    $('.totaltotal').append(''+data.patient.totalbill+'');
+                    var aa = data.patient.totalbill;
+                    var bbaa = aa.replace(/,/g , '');
+                    var cc = bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    $('.totaltotal').append(''+cc+'');
                     $('.totalprice').val(data.patient.totalbill);
-                $.each(data.adminpanel, function(index, panel){
-                    $('.'+panel.admin_panel_id+'').attr('checked','checked')
-                    $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').removeAttr('disabled','disabled')
-                    $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').attr('checked','checked')
+
+                // $.each(data.adminpanel, function(index, panel){
+                //     $('.'+panel.admin_panel_id+'').attr('checked','checked')
+                //     $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').removeAttr('disabled','disabled')
+                //     $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').attr('checked','checked')
+                // })
+                $.each(data.adminpanel,function(index,selser) {
+                    $.getJSON('/api/submainservices?main_id=' + selser.APC_ID, function(data){
+                        $('.'+selser.APC_ID+'').append('<div class="row wawsee">\
+                                        <div class="col-sm-2"></div>\
+                                        <div class="col-sm-4">\
+                                            <select class="form-control serser_name service_name'+selser.APC_ID+'" name="service_name[]" required="">\
+                                            </select>\
+                                            <input class="form-control services" type="text" placeholder="0.00" required="" value="'+selser.AP_PRICE+'" readonly="" autocomplete="off" style="margin-top:-14%;margin-left:105%;width:50%;">\
+                                        </div>\
+                                        <div class="col-sm-2">\
+                                        </div>\
+                                        <div class="col-sm-1">\
+                                            <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
+                                        </div>\
+                                        </div>');
+
+                        $('.service_name'+selser.APC_ID+':last').empty();
+                        $('.service_name'+selser.APC_ID+':last').append('<option value="">--Select One--</option>');
+                            $.each(data,function(index,subsub) {
+                                if (selser.AP_ID == subsub.id) {
+                                    $('.service_name'+selser.APC_ID+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'" selected>'+subsub.name+'</option>');
+                                }
+                                else {
+                                    $('.service_name'+selser.APC_ID+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'">'+subsub.name+'</option>');
+                                }
+                            })
+
+                    $('.serser_name').on('change',function() {
+                        var serserval = $('option:selected',this).data('price');
+                        $(this).next('input').val(serserval);
+
+                        var aa = $(this).val();
+                        var bbaa = aa.replace(/,/g , '');
+                        $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
+
+                        var sum = 0;
+                        $('.services').each(function() {
+                            var others = $(this).val();
+                            var others2 = others.replace(/,/g , '');
+                                if (others2 == '') {
+                                    var oth = 0;
+                                }
+                                else {
+                                    var oth = others2;
+                                }
+                                    sum += parseFloat(oth);
+                        })
+                        var cc = sum.toString();
+                        var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                        $('.totalprice').val(cc);
+                        $('.totaltotal').text(dd);
+                    })
+
+                    $('.removeservice').on('click',function() {
+                        $(this).parent().parent().remove();
+                        var sum = 0;
+                            $('.services').each(function() {
+                                var others = $(this).val();
+                                var others2 = others.replace(/,/g , '');
+                                    if (others2 == '') {
+                                        var oth = 0;
+                                    }
+                                    else {
+                                        var oth = others2;
+                                    }
+                                sum += parseFloat(oth);
+                            })
+                            var cc = sum.toString();
+                            var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                            $('.totalprice').val(cc);
+                            $('.totaltotal').text(dd);
+                        return false;
+                    })
+
+                    });
                 })
             })
             });
@@ -538,6 +636,82 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.sub'+split[0]+'').prop('checked',false);
             $('.sub'+split[0]+'').attr('disabled','disabled');
         }
+    });
+
+    $('.appendservice').on('click',function() {
+            var main_id = $(this).data('mainid');
+            $(this).attr('disabled','disabled');     
+            $('.'+main_id+'').append('<div class="row">\
+                                    <div class="col-sm-2"></div>\
+                                    <div class="col-sm-4">\
+                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
+                                        </select>\
+                                        <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off" style="margin-top:-14%;margin-left:105%;width:50%;">\
+                                    </div>\
+                                    <div class="col-sm-2">\
+                                    </div>\
+                                    <div class="col-sm-1">\
+                                        <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
+                                    </div>\
+                                    </div>');
+
+            $.getJSON('/api/submainservices?main_id=' + main_id, function(data){
+                $('.service_name'+main_id+':last').empty();
+                $('.service_name'+main_id+':last').append('<option value="">--Select One--</option>');
+                $.each(data,function(index,subsub) {
+                    $('.service_name'+main_id+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'">'+subsub.name+'</option>');
+                })
+                $('.appendservice').removeAttr('disabled');
+            });
+
+            $('.serser_name').on('change',function() {
+                var serserval = $('option:selected',this).data('price');
+                $(this).next('input').val(serserval);
+
+                var aa = $(this).val();
+                var bbaa = aa.replace(/,/g , '');
+                $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
+
+                var sum = 0;
+                $('.services').each(function() {
+                    var others = $(this).val();
+                    var others2 = others.replace(/,/g , '');
+                        if (others2 == '') {
+                            var oth = 0;
+                        }
+                        else {
+                            var oth = others2;
+                        }
+                            sum += parseFloat(oth);
+                })
+                    var cc = sum.toString();
+                    var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    $('.totalprice').val(cc);
+                    $('.totaltotal').text(dd);
+
+            })
+
+            $('.removeservice').on('click',function() {
+                $(this).parent().parent().remove();
+                var sum = 0;
+                    $('.services').each(function() {
+                        var others = $(this).val();
+                        var others2 = others.replace(/,/g , '');
+                            if (others2 == '') {
+                                var oth = 0;
+                            }
+                            else {
+                                var oth = others2;
+                            }
+                                sum += parseFloat(oth);
+                            })
+                        var cc = sum.toString();
+                        var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                        $('.totalprice').val(cc);
+                        $('.totaltotal').text(dd);
+                return false;
+            })
+
     });
 </script>
 @show

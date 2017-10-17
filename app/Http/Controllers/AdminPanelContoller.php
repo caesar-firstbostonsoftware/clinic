@@ -83,22 +83,67 @@ class AdminPanelContoller extends Controller
         if(Session::has('user')){
             $id_service = $request->input('id_service');
             $subid_service = $request->input('subid_service');
+            $name_service = $request->input('name_service');
             $price_service = $request->input('price_service');
 
-            if ($id_service != 0 && $subid_service == 0) {
-                $editadmin = AdminPanel::where('id',$id_service)->first();
-                $editadmin->price = $price_service;
-                $editadmin->save();
-            }
-            else {
-                $editadmin = AdminPanelSub::where('id',$id_service)->where('admin_panel_id',$subid_service)->first();
-                $editadmin->price = $price_service;
-                $editadmin->save();
-            }
+            $editadmin = AdminPanel::where('id',$id_service)->first();
+            $editadmin->name = $name_service;
+            $editadmin->price = $price_service;
+            $editadmin->save();
 
-            $adminpanelcat = AdminPanelCategory::all();
-            $adminpanel = AdminPanel::all();
-            $sub = AdminPanelSub::all();
+            return redirect()->action('AdminPanelContoller@services');
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function addmain(Request $request)
+    {
+        if(Session::has('user')){
+            $sersermain = $request->input('sersermain');
+
+            $AdminPanelCategory = new AdminPanelCategory;
+            $AdminPanelCategory->cat_name = $sersermain;
+            $AdminPanelCategory->save();
+
+            return redirect()->action('AdminPanelContoller@services');
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function subadd(Request $request)
+    {
+        if(Session::has('user')){
+            $sub_mainedit_id = $request->input('sub_mainedit_id');
+            $subname = $request->input('subname');
+            $price_service = $request->input('price_service');
+
+            $AdminPanel = new AdminPanel;
+            $AdminPanel->admin_panel_cat_id = $sub_mainedit_id;
+            $AdminPanel->name = $subname;
+            $AdminPanel->price = $price_service;
+            $AdminPanel->save();
+
+            return redirect()->action('AdminPanelContoller@services');
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function editmain(Request $request)
+    {
+        if(Session::has('user')){
+            $mainedit_id = $request->input('mainedit_id');
+            $mainedit_name = $request->input('mainedit_name');
+
+            $AdminPanelCategory = AdminPanelCategory::where('id',$mainedit_id)->first();
+            $AdminPanelCategory->cat_name = $mainedit_name;
+            $AdminPanelCategory->save();
+
             return redirect()->action('AdminPanelContoller@services');
         }
         else {

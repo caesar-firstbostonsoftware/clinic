@@ -15,6 +15,7 @@ class AddColumnToPatientServices extends Migration
     {
         Schema::table('patient_services', function($table) {
             $table->integer('admin_panel_sub_id');
+            $table->integer('visit_id')->nullable();
         });
     }
 
@@ -27,6 +28,7 @@ class AddColumnToPatientServices extends Migration
     {
         Schema::table('patient_services', function($table) {
             $table->dropColumn('admin_panel_sub_id');
+            $table->dropColumn('visit_id');
         });
     }
 }

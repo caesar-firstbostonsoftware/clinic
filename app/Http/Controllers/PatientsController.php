@@ -30,6 +30,8 @@ use Dompdf\Dompdf;
 use TCPDF;
 use DB;
 use App\Medication;
+use App\Fecalyses;
+use App\Chemistry;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -72,7 +74,6 @@ class PatientsController extends Controller
         $adminpanel = AdminPanel::all();
         $sub = AdminPanelSub::all();
         $patient = 0;
-        //return Response::json($adminpanel, 200, array(), JSON_PRETTY_PRINT);
     	return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
     }
 
@@ -90,7 +91,7 @@ class PatientsController extends Controller
             $purpose_visit = $request->input('purpose_visit');
             $totalprice = $request->input('totalprice');
 
-            $services = $request->input('services');
+            $service_name = $request->input('service_name');
 
             $patient = new Patient;
             $patient->f_name = $fname;
@@ -113,16 +114,19 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = $totalprice;
                 $patientvisit->save();
 
-                foreach ($services as $key) {
-                    $explode = explode('-', $key);
-                    $fisrt = $explode[0];
-                    $second = $explode[1];
-
+                foreach ($service_name as $key) {
+                    if ($key == 35) {
+                        $department = 'xray';
+                    }
+                    else {
+                        $department = 'labtest';
+                    }
                     $service = new PatientService;
                     $service->patient_id = $patient->id;
-                    $service->admin_panel_id = $fisrt;
-                    $service->admin_panel_sub_id = $second;
+                    $service->admin_panel_id = $key;
+                    $service->admin_panel_sub_id = 0;
                     $service->visit_id = 1;
+                    $service->department = $department;
                     $service->save();
                 }
 
@@ -137,16 +141,19 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = $totalprice;
                 $patientvisit->save();
 
-                foreach ($services as $key) {
-                    $explode = explode('-', $key);
-                    $fisrt = $explode[0];
-                    $second = $explode[1];
-
+                foreach ($service_name as $key) {
+                    if ($key == 35) {
+                        $department = 'xray';
+                    }
+                    else {
+                        $department = 'labtest';
+                    }
                     $service = new PatientService;
                     $service->patient_id = $patient->id;
-                    $service->admin_panel_id = $fisrt;
-                    $service->admin_panel_sub_id = $second;
+                    $service->admin_panel_id = $key;
+                    $service->admin_panel_sub_id = 0;
                     $service->visit_id = $check_p_v->visitid + 1;
+                    $service->department = $department;
                     $service->save();
                 }
             }
@@ -314,10 +321,25 @@ class PatientsController extends Controller
     	//$doctor = Doctor::with('user')->get();
         $doctor = Doctor::join('users','doctors.id','=','users.doc_id')->where('users.position','Doctor')->select('doctors.*')->get();
         $adminpanel = AdminPanelCategory::with('adminpanel')->get();
-        $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
+        $PatientService1002 = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
+        $PatientService = PatientService::select('department')
+        ->where('patient_id',$id)
+        ->where('visit_id',$vid)
+        ->groupBy('department')
+        ->get();
+        $PatientService1003 = PatientService::join('admin_panels','patient_services.admin_panel_id','=','admin_panels.id')
+        ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','admin_panel_categories.id')
+        ->select('admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
+        ->where('patient_services.patient_id',$id)
+        ->where('patient_services.visit_id',$vid)
+        ->groupBy('admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
+        ->get();
         $Medication = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
-        //return Response::json($doctor, 200, array(), JSON_PRETTY_PRINT);
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication'));
+        $Urinalyses = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $Fecalyses = Fecalyses::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $Chemistry = Chemistry::where('patient_id',$id)->where('visit_id',$vid)->first();
+        //return Response::json($PatientService1003, 200, array(), JSON_PRETTY_PRINT);
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -373,20 +395,19 @@ class PatientsController extends Controller
     {   
         $p_id = $request->input('p_id');
         $v_id = $request->input('v_id');
-        if ($v_id == 0) {
-            $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
-            ->where('patients.id',$p_id)
-            ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
-            ->first();
-            $adminpanel = PatientService::where('patient_id',$p_id)->get();
-        }
-        else {
-            $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
-            ->where('patients.id',$p_id)
-            ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
-            ->first();
-            $adminpanel = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
-        }
+
+        $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+        ->where('patients.id',$p_id)
+        ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
+        ->first();
+        //$adminpanel = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->with('adminPanels')->get();
+
+        $adminpanel = PatientService::join('admin_panels','patient_services.admin_panel_id','=','admin_panels.id')
+        ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','=','admin_panel_categories.id')
+        ->where('patient_services.patient_id',$p_id)
+        ->where('patient_services.visit_id',$v_id)
+        ->select('patient_services.*','admin_panels.id as AP_ID','admin_panels.name as AP_NAME','admin_panels.price as AP_PRICE','admin_panel_categories.id as APC_ID')
+        ->get();
         return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
     }
 
@@ -1200,41 +1221,39 @@ class PatientsController extends Controller
 
     public function editvisit(Request $request)
     {   
-        if(Session::has('user')){
-            $p_id = $request->input('editvisit_p_id');
-            $v_id = $request->input('editvisit_v_id');
-            $totalprice = $request->input('totalprice');
+        $p_id = $request->input('editvisit_p_id');
+        $v_id = $request->input('editvisit_v_id');
+        $totalprice = $request->input('totalprice');
 
-            $services = $request->input('services');
+        $service_name = $request->input('service_name');
 
-            $delete = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
-                foreach ($delete as $del) {
-                   $deldel = PatientService::where('id',$del->id)->first();
-                   $deldel->delete();
-                }
-
-            foreach ($services as $key) {
-                $explode = explode('-', $key);
-                $fisrt = $explode[0];
-                $second = $explode[1];
-
-                $service = new PatientService;
-                $service->patient_id = $p_id;
-                $service->admin_panel_id = $fisrt;
-                $service->admin_panel_sub_id = $second;
-                $service->visit_id = $v_id;
-                $service->save();
+        $delete = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
+            foreach ($delete as $del) {
+                $deldel = PatientService::where('id',$del->id)->first();
+                $deldel->delete();
             }
 
-            $patientvisit = PatientVisit::where('patient_id',$p_id)->where('visitid',$v_id)->first();
-            $patientvisit->totalbill = $totalprice;
-            $patientvisit->save(); 
+        foreach ($service_name as $key) {
+            if ($key == 35) {
+                $department = 'xray';
+            }
+            else {
+                $department = 'labtest';
+            }
+            $service = new PatientService;
+            $service->patient_id = $p_id;
+            $service->admin_panel_id = $key;
+            $service->admin_panel_sub_id = 0;
+            $service->visit_id = $v_id;
+            $service->department = $department;
+            $service->save();
+        }
 
-            return redirect()->action('PatientsController@patientlist');
-        }
-        else {
-            return redirect()->action('Auth@checklogin');
-        }
+        $patientvisit = PatientVisit::where('patient_id',$p_id)->where('visitid',$v_id)->first();
+        $patientvisit->totalbill = $totalprice;
+        $patientvisit->save(); 
+
+        return redirect()->action('PatientsController@patientlist');
     }
 
     public function newvisit1002($id)
@@ -1489,6 +1508,389 @@ class PatientsController extends Controller
             return redirect()->action('Auth@checklogin');
         }
         
+    }
+
+    public function submainservices(Request $request)
+    {      
+        $main_id = $request->input('main_id');
+
+        $AdminPanel = AdminPanel::where('admin_panel_cat_id',$main_id)->get();
+        return Response::json($AdminPanel, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function newfecalysis(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $uri_id = $request->input('uri_id');
+            $physician = $request->input('physician');
+            $orno = $request->input('orno');
+            $now = date("Y-m-d");
+            $req_doc = $request->input('req_doc');
+
+            $routine = $request->input('routine');
+            if ($routine == "Yes") {
+                $rout = $routine;
+            }
+            else {
+                $rout = "No";
+            }
+
+            $amoeba = $request->input('amoeba');
+            if ($amoeba == "Yes") {
+                $amoe = $amoeba;
+            }
+            else {
+                $amoe = "No";
+            }
+            
+            if(!$uri_id) {
+                $Fecalyses = new Fecalyses;
+                $Fecalyses->patient_id = $id;
+                $Fecalyses->visit_id = $vid;
+                $Fecalyses->doc_id = $physician;
+                $Fecalyses->date_reg = $now;
+                $Fecalyses->or_no = $orno;
+                $Fecalyses->req_doc = $req_doc;
+
+                $Fecalyses->routine = $rout;
+                $Fecalyses->consistency = $request->input('consistency');
+                $Fecalyses->color = $request->input('color');
+                $Fecalyses->red_cell = $request->input('red_cells');
+                $Fecalyses->ascari = $request->input('ascaris');
+                $Fecalyses->pus_cell = $request->input('pus_cells');
+                $Fecalyses->trichuri = $request->input('trichuris');
+
+                $Fecalyses->amoeba = $amoe;
+                $Fecalyses->amoeba_desc = $request->input('amoeba_desc');
+                $Fecalyses->hookworm = $request->input('hookworm');
+
+                $Fecalyses->feca_other = $request->input('others_desc');
+                $Fecalyses->remark = $request->input('remarks');
+                $Fecalyses->save();
+            }
+            else {
+                $Fecalyses = Fecalyses::where('id',$uri_id)->first();
+                $Fecalyses->doc_id = $physician;
+                $Fecalyses->or_no = $orno;
+                $Fecalyses->req_doc = $req_doc;
+
+                $Fecalyses->routine = $rout;
+                $Fecalyses->consistency = $request->input('consistency');
+                $Fecalyses->color = $request->input('color');
+                $Fecalyses->red_cell = $request->input('red_cells');
+                $Fecalyses->ascari = $request->input('ascaris');
+                $Fecalyses->pus_cell = $request->input('pus_cells');
+                $Fecalyses->trichuri = $request->input('trichuris');
+
+                $Fecalyses->amoeba = $amoe;
+                $Fecalyses->amoeba_desc = $request->input('amoeba_desc');
+                $Fecalyses->hookworm = $request->input('hookworm');
+
+                $Fecalyses->feca_other = $request->input('others_desc');
+                $Fecalyses->remark = $request->input('remarks');
+                $Fecalyses->save();
+            }
+    
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newchemistryii(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $uri_id = $request->input('uri_id');
+            $physician = $request->input('physician');
+            $orno = $request->input('orno');
+            $now = date("Y-m-d");
+            // 1st
+            $blood_sugar = $request->input('blood_sugar');
+            if ($blood_sugar == "Yes") {
+                $bloodsugar = $blood_sugar;
+            }
+            else {
+                $bloodsugar = "No";
+            }
+            $fasting = $request->input('fasting');
+            if ($fasting == "Yes") {
+                $fasting1002 = $fasting;
+            }
+            else {
+                $fasting1002 = "No";
+            }
+            $ppbs = $request->input('ppbs');
+            if ($ppbs == "Yes") {
+                $ppbs1002 = $ppbs;
+            }
+            else {
+                $ppbs1002 = "No";
+            }
+            $random = $request->input('random');
+            if ($random == "Yes") {
+                $random1002 = $random;
+            }
+            else {
+                $random1002 = "No";
+            }
+            $hbaic = $request->input('hbaic');
+            if ($hbaic == "Yes") {
+                $hbaic1002 = $hbaic;
+            }
+            else {
+                $hbaic1002 = "No";
+            }
+            // 2nd
+            $kidney_function = $request->input('kidney_function');
+            if ($kidney_function == "Yes") {
+                $kidneyfunction = $kidney_function;
+            }
+            else {
+                $kidneyfunction = "No";
+            }
+            $creatinine = $request->input('creatinine');
+            if ($creatinine == "Yes") {
+                $creatinine1002 = $creatinine;
+            }
+            else {
+                $creatinine1002 = "No";
+            }
+            $bun = $request->input('bun');
+            if ($bun == "Yes") {
+                $bun1002 = $bun;
+            }
+            else {
+                $bun1002 = "No";
+            }
+            $uricacid = $request->input('uricacid');
+            if ($uricacid == "Yes") {
+                $uricacid1002 = $uricacid;
+            }
+            else {
+                $uricacid1002 = "No";
+            }
+            // 3rd
+            $liver_function = $request->input('liver_function');
+            if ($liver_function == "Yes") {
+                $liverfunction = $liver_function;
+            }
+            else {
+                $liverfunction = "No";
+            }
+            $sgpt = $request->input('sgpt');
+            if ($sgpt == "Yes") {
+                $sgpt1002 = $sgpt;
+            }
+            else {
+                $sgpt1002 = "No";
+            }
+            $sgot = $request->input('sgot');
+            if ($sgot == "Yes") {
+                $sgot1002 = $sgot;
+            }
+            else {
+                $sgot1002 = "No";
+            }
+            $alk_phos = $request->input('alk_phos');
+            if ($alk_phos == "Yes") {
+                $alk_phos1002 = $alk_phos;
+            }
+            else {
+                $alk_phos1002 = "No";
+            }
+            // 4th
+            $lipid_profile = $request->input('lipid_profile');
+            if ($lipid_profile == "Yes") {
+                $lipidprofile = $lipid_profile;
+            }
+            else {
+                $lipidprofile = "No";
+            }
+            $hdl_cholesterol = $request->input('hdl_cholesterol');
+            if ($hdl_cholesterol == "Yes") {
+                $hdl_cholesterol1002 = $hdl_cholesterol;
+            }
+            else {
+                $hdl_cholesterol1002 = "No";
+            }
+            $triglycerides = $request->input('triglycerides');
+            if ($triglycerides == "Yes") {
+                $triglycerides1002 = $triglycerides;
+            }
+            else {
+                $triglycerides1002 = "No";
+            }
+            $total_cholesterol = $request->input('total_cholesterol');
+            if ($total_cholesterol == "Yes") {
+                $total_cholesterol1002 = $total_cholesterol;
+            }
+            else {
+                $total_cholesterol1002 = "No";
+            }
+            $ldl_cholesterol = $request->input('ldl_cholesterol');
+            if ($ldl_cholesterol == "Yes") {
+                $ldl_cholesterol1002 = $ldl_cholesterol;
+            }
+            else {
+                $ldl_cholesterol1002 = "No";
+            }
+            $tc_hdl_ratio = $request->input('tc_hdl_ratio');
+            if ($tc_hdl_ratio == "Yes") {
+                $tc_hdl_ratio1002 = $tc_hdl_ratio;
+            }
+            else {
+                $tc_hdl_ratio1002 = "No";
+            }
+            // 5th
+            $electrolytes = $request->input('electrolytes');
+            if ($electrolytes == "Yes") {
+                $electrolytes2 = $electrolytes;
+            }
+            else {
+                $electrolytes2 = "No";
+            }
+            $sodium = $request->input('sodium');
+            if ($sodium == "Yes") {
+                $sodium1002 = $sodium;
+            }
+            else {
+                $sodium1002 = "No";
+            }
+            $potassium = $request->input('potassium');
+            if ($potassium == "Yes") {
+                $potassium1002 = $potassium;
+            }
+            else {
+                $potassium1002 = "No";
+            }
+            $calcium = $request->input('calcium');
+            if ($calcium == "Yes") {
+                $calcium1002 = $calcium;
+            }
+            else {
+                $calcium1002 = "No";
+            }
+
+            if(!$uri_id) {
+                $Chemistry = new Chemistry;
+                $Chemistry->patient_id = $id;
+                $Chemistry->visit_id = $vid;
+                $Chemistry->doc_id = $physician;
+                $Chemistry->date_reg = $now;
+                $Chemistry->or_no = $orno;
+
+                $Chemistry->blood_sugar = $blood_sugar;
+                $Chemistry->fasting = $fasting1002;
+                $Chemistry->fasting_result = $request->input('fasting_result');
+                $Chemistry->hours_ppbs = $ppbs1002;
+                $Chemistry->ppbs_result = $request->input('ppbs_result');
+                $Chemistry->random = $random1002;
+                $Chemistry->random_result = $request->input('random_result');
+                $Chemistry->hbaic = $hbaic1002;
+                $Chemistry->hbaic_result = $request->input('hbaic_result');
+
+                $Chemistry->kidney_function = $kidneyfunction;
+                $Chemistry->creatinine = $creatinine1002;
+                $Chemistry->creatinine_result = $request->input('creatinine_result');
+                $Chemistry->bun = $bun1002;
+                $Chemistry->bun_result = $request->input('bun_result');
+                $Chemistry->uric_acid = $uricacid1002;
+                $Chemistry->uric_acid_result = $request->input('uricacid_result');
+
+                $Chemistry->liver_function = $liverfunction;
+                $Chemistry->sgpt = $sgpt1002;
+                $Chemistry->sgpt_result = $request->input('sgpt_result');
+                $Chemistry->sgot = $sgot1002;
+                $Chemistry->sgot_result = $request->input('sgot_result');
+                $Chemistry->alk_phos = $alk_phos1002;
+                $Chemistry->alk_phos_result = $request->input('alk_phos_result');
+
+                $Chemistry->lipid_profile = $lipidprofile;
+                $Chemistry->hdl_cholesterol = $hdl_cholesterol1002;
+                $Chemistry->hdl_cholesterol_result = $request->input('hdl_cholesterol_result');
+                $Chemistry->triglycerides = $triglycerides1002;
+                $Chemistry->triglycerides_result = $request->input('triglycerides_result');
+                $Chemistry->total_cholesterol = $total_cholesterol1002;
+                $Chemistry->total_cholesterol_result = $request->input('total_cholesterol_result');
+                $Chemistry->ldl_cholesterol = $ldl_cholesterol1002;
+                $Chemistry->ldl_cholesterol_result = $request->input('ldl_cholesterol_result');
+                $Chemistry->tc_hdl_ratio = $tc_hdl_ratio1002;
+                $Chemistry->tc_hdl_ratio_result = $request->input('tc_hdl_ratio_result');
+
+                $Chemistry->electrolytes = $electrolytes2;
+                $Chemistry->sodium = $sodium1002;
+                $Chemistry->sodium_result = $request->input('sodium_result');
+                $Chemistry->potassium = $potassium1002;
+                $Chemistry->potassium_result = $request->input('potassium_result');
+                $Chemistry->calcium = $calcium1002;
+                $Chemistry->calcium_result = $request->input('calcium_result');
+
+                $Chemistry->chem_other = $request->input('chem_others');
+                $Chemistry->remark = $request->input('chem_remarks');
+                $Chemistry->save();
+            }
+            else {
+                $Chemistry = Chemistry::where('id',$uri_id)->first();
+                $Chemistry->doc_id = $physician;
+                $Chemistry->or_no = $orno;
+
+                $Chemistry->blood_sugar = $blood_sugar;
+                $Chemistry->fasting = $fasting1002;
+                $Chemistry->fasting_result = $request->input('fasting_result');
+                $Chemistry->hours_ppbs = $ppbs1002;
+                $Chemistry->ppbs_result = $request->input('ppbs_result');
+                $Chemistry->random = $random1002;
+                $Chemistry->random_result = $request->input('random_result');
+                $Chemistry->hbaic = $hbaic1002;
+                $Chemistry->hbaic_result = $request->input('hbaic_result');
+
+                $Chemistry->kidney_function = $kidneyfunction;
+                $Chemistry->creatinine = $creatinine1002;
+                $Chemistry->creatinine_result = $request->input('creatinine_result');
+                $Chemistry->bun = $bun1002;
+                $Chemistry->bun_result = $request->input('bun_result');
+                $Chemistry->uric_acid = $uricacid1002;
+                $Chemistry->uric_acid_result = $request->input('uricacid_result');
+
+                $Chemistry->liver_function = $liverfunction;
+                $Chemistry->sgpt = $sgpt1002;
+                $Chemistry->sgpt_result = $request->input('sgpt_result');
+                $Chemistry->sgot = $sgot1002;
+                $Chemistry->sgot_result = $request->input('sgot_result');
+                $Chemistry->alk_phos = $alk_phos1002;
+                $Chemistry->alk_phos_result = $request->input('alk_phos_result');
+
+                $Chemistry->lipid_profile = $lipidprofile;
+                $Chemistry->hdl_cholesterol = $hdl_cholesterol1002;
+                $Chemistry->hdl_cholesterol_result = $request->input('hdl_cholesterol_result');
+                $Chemistry->triglycerides = $triglycerides1002;
+                $Chemistry->triglycerides_result = $request->input('triglycerides_result');
+                $Chemistry->total_cholesterol = $total_cholesterol1002;
+                $Chemistry->total_cholesterol_result = $request->input('total_cholesterol_result');
+                $Chemistry->ldl_cholesterol = $ldl_cholesterol1002;
+                $Chemistry->ldl_cholesterol_result = $request->input('ldl_cholesterol_result');
+                $Chemistry->tc_hdl_ratio = $tc_hdl_ratio1002;
+                $Chemistry->tc_hdl_ratio_result = $request->input('tc_hdl_ratio_result');
+
+                $Chemistry->electrolytes = $electrolytes2;
+                $Chemistry->sodium = $sodium1002;
+                $Chemistry->sodium_result = $request->input('sodium_result');
+                $Chemistry->potassium = $potassium1002;
+                $Chemistry->potassium_result = $request->input('potassium_result');
+                $Chemistry->calcium = $calcium1002;
+                $Chemistry->calcium_result = $request->input('calcium_result');
+
+                $Chemistry->chem_other = $request->input('chem_others');
+                $Chemistry->remark = $request->input('chem_remarks');
+                $Chemistry->save();
+            }
+    
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     

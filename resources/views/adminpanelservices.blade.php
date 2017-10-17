@@ -74,7 +74,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">List of Service</h3>
+                        <h3 class="box-title">List of Service &nbsp; 
+                            <button type="button" class="btn btn-primary btn-xs addserviceadd" data-toggle="modal" data-target="#modal_addservice" data-backdrop="static">Add New</button>
+                        </h3>
                     </div>
                         <div class="box-body">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
@@ -98,34 +100,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <tbody>
                                             @foreach($adminpanelcat as $cat)
                                                 <tr>
-                                                    <td><b>{{$cat->cat_name}}</b></td>
+                                                    <td style="text-transform: uppercase;"><b><i>{{$cat->cat_name}}</i></b></td>
                                                     <td></td>
-                                                    <td></td>
+                                                    <td>
+                                                        <a href="#" class="mainedit" data-id="{{$cat->id}}" data-mainname="{{$cat->cat_name}}" data-toggle="modal" data-target="#modal_mainedit" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+                                                        &nbsp;&nbsp;&nbsp;
+                                                        <a href="#" class="addsub" data-id="{{$cat->id}}" data-toggle="modal" data-target="#modal_addsub" data-backdrop="static"><i class="fa fa-plus-circle fa-lg"></i></a>
+                                                    </td>
                                                 </tr>
                                                 @foreach($adminpanel as $panel)
                                                     @if($cat->id == $panel->admin_panel_cat_id)
                                                         <tr>
                                                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$panel->name}}</td>
-                                                            @if($panel->price == 0)
-                                                            <td style="text-align: right;"></td>
-                                                            @else
                                                             <td style="text-align: right;">{{$panel->price}}</td>
                                                             <td>
                                                                <a href="#" class="btn btn-xs editservice" data-id="{{$panel->id}}" data-subid="0" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
                                                             </td>
-                                                            @endif
                                                         </tr>
-                                                        @foreach($sub as $panelsub)
-                                                            @if($panel->id == $panelsub->admin_panel_id)
-                                                                <tr>
-                                                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>{{$panelsub->name}}</i></td>
-                                                                    <td style="text-align: right;">{{$panelsub->price}}</td>
-                                                                    <td>
-                                                                        <a href="#" class="btn btn-xs editservice" data-id="{{$panel->id}}" data-subid="{{$panelsub->id}}" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
-                                                                    </td>
-                                                                </tr>
-                                                            @endif
-                                                        @endforeach
                                                     @endif
                                                 @endforeach
                                             @endforeach
@@ -149,15 +140,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="modal-body">
                                                 <form class="form-horizontal" id="formeditservices" method="POST" action="/NFHSI/services/edit/service">
                                                 {!! csrf_field() !!}
-                                                    <div class="form-group divxrayinfo">
+                                                    <div class="form-group">
                                                         <label class="col-sm-3 control-label">Name</label>
                                                         <div class="col-sm-8">
                                                             <input class="form-control id_service" id="id_service" name="id_service" type="text" value="" style="display: none;">
                                                             <input class="form-control subid_service" id="subid_service" name="subid_service" type="text" value="" style="display: none;">
-                                                            <input class="form-control name_service" id="name_service" name="name_service" type="text" value="" readonly="">
+                                                            <input class="form-control name_service" id="name_service" name="name_service" type="text" value="" autocomplete="off">
                                                         </div>
                                                     </div>
-                                                    <div class="form-group divxrayinfo">
+                                                    <div class="form-group">
                                                         <label class="col-sm-3 control-label">Price</label>
                                                         <div class="col-sm-4">
                                                             <input class="form-control price_service" id="price_service" name="price_service" type="text" placeholder="Price" autocomplete="off" onkeypress="return isNumberKey(event)">
@@ -171,6 +162,89 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </div>
                                     </div>
                                 </div>
+
+            <div class="modal fade" id="modal_addservice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close close_add" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Add New Main Service</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" id="frm_addservice" method="Post" action="/NFHSI/services/addmain">
+                            {!! csrf_field() !!}
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Service Description</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control sersermain" name="sersermain" type="text" placeholder="Service Description" required="" autocomplete="off">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" form="frm_addservice" class="btn btn-xs btn-primary submitsubmit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal_addsub" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close close_add" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Add New Sub Service</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" id="frm_addsub" method="Post" action="/NFHSI/services/subadd">
+                            {!! csrf_field() !!}
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Service Description</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control sub_mainedit_id" name="sub_mainedit_id" type="text" style="display: none;">
+                                        <input class="form-control subname" name="subname" type="text" placeholder="Service Description" required="" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Price</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control price_service" id="price_service" name="price_service" type="text" placeholder="Price" autocomplete="off" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" form="frm_addsub" class="btn btn-xs btn-primary submitsubmit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal_mainedit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close close_add" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Edit Main Service</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" id="frm_mainedit" method="Post" action="/NFHSI/services/editmain">
+                            {!! csrf_field() !!}
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Service Description</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control mainedit_id" name="mainedit_id" type="text" style="display: none;">
+                                        <input class="form-control mainedit_name" name="mainedit_name" type="text" placeholder="Service Description" required="" autocomplete="off">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" form="frm_mainedit" class="btn btn-xs btn-primary submitsubmit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
                                 <!-- END MODAL -->
 
     </section>
@@ -213,6 +287,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.name_service').val(data.name);
                 $('.price_service').val(data.price);
             })
+        })
+
+        $('.addsub').on('click',function() {
+            var id = $(this).data('id');
+            $('.sub_mainedit_id').val(id);
+        })
+
+        $('.mainedit').on('click',function() {
+            var id = $(this).data('id');
+            var mainname = $(this).data('mainname');
+            $('.mainedit_id').val(id);
+            $('.mainedit_name').val(mainname);
         })
     </script>
 @show
