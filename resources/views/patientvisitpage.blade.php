@@ -27,7 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
-        @if(Session::get('position') == "Doctor")
+        @if(Session::get('position') == "Doctor" && Session::get('user') == 1)
         <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
         @endif
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
@@ -38,19 +38,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-            @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+            @if(Session::get('position') == "Doctor")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             @endif
             </ul>
         </li>
 
         @if(Session::get('user') == 1)
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         <li><a href="/NFHSI/users"><img src="{{ asset('/img/2012.png') }}" height="20" width="20"> <span>Users</span></a></li>
         <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
@@ -1351,7 +1355,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="flash-message top-message topmessage8"></div>
                                 <h3>Medications 
                                     <button type="button" class="btn btn-primary btn-xs addmedadd" data-toggle="modal" data-target="#modal_medication_add" data-backdrop="static">Add New</button> 
-                                    <a href="/print/rx/{{$id}}/{{$vid}}" target="_blank" class="btn btn-xs btn-warning">Generate Rx</a>
+                                    <a href="/print/rx/{{$id}}/{{$vid}}" target="_blank" class="btn btn-xs btn-warning genrx">Generate Rx</a>
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -3749,7 +3753,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </div>
                                 </div>
                                 </div>
-                                <!-- db, functions on save and edit, fetch for edit -->
+                                <!-- done -->
                                 <div role="tabpanel" class="tab-pane fade" id="OGTT">
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div>
@@ -3758,8 +3762,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>ORAL GLUCOSE TOLERANCE TEST</b></h4>
-
-                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/chemistryii">
+                                        @if(!$Ogtt)
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/ogtt">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
@@ -3826,7 +3830,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>50 GRAMS</b></label>
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="50_grams" name="50_grams" checked="" value="Yes"> <b>50 GRAMS</b></label>
                                                                 </div>
                                                             </div>
                                                             <div class="row"> 
@@ -3835,7 +3839,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="firsthour_result" required="" class="form-control firsthour_result" value="" autocomplete="off">
+                                                                        <input type="text" name="firsthour_result" class="form-control firsthour_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3846,7 +3850,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>75 GRAMS</b></label>
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="75_grams" name="75_grams" checked="" value="Yes"> <b>75 GRAMS</b></label>
                                                                 </div>
                                                             </div>
                                                             <div class="row"> 
@@ -3855,7 +3859,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="fasting_oggt_result" required="" class="form-control fasting_oggt_result" value="" autocomplete="off">
+                                                                        <input type="text" name="fasting_oggt_result" class="form-control fasting_oggt_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3868,7 +3872,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="firshour_oggt_result" required="" class="form-control firshour_oggt_result" value="" autocomplete="off">
+                                                                        <input type="text" name="firshour_oggt_result" class="form-control firshour_oggt_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3881,7 +3885,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="secondhour_oggt_result" required="" class="form-control secondhour_oggt_result" value="" autocomplete="off">
+                                                                        <input type="text" name="secondhour_oggt_result" class="form-control secondhour_oggt_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3892,7 +3896,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="kidney_function" name="kidney_function" checked="" value="Yes"> <b>100 GRAMS</b></label>
+                                                                    <label class="control-label" style="text-align: left;"><input type="checkbox" class="100_grams" name="100_grams" checked="" value="Yes"> <b>100 GRAMS</b></label>
                                                                 </div>
                                                             </div>
                                                             <div class="row"> 
@@ -3901,7 +3905,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="fasting_oggt_grams_result" required="" class="form-control fasting_oggt_grams_result" value="" autocomplete="off">
+                                                                        <input type="text" name="fasting_oggt_grams_result" class="form-control fasting_oggt_grams_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3914,7 +3918,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="firshour_oggt_grams_result" required="" class="form-control firshour_oggt_grams_result" value="" autocomplete="off">
+                                                                        <input type="text" name="firshour_oggt_grams_result" class="form-control firshour_oggt_grams_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3927,7 +3931,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="secondhour_oggt_grams_result" required="" class="form-control secondhour_oggt_grams_result" value="" autocomplete="off">
+                                                                        <input type="text" name="secondhour_oggt_grams_result" class="form-control secondhour_oggt_grams_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3940,7 +3944,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="thirdhour_oggt_grams_result" required="" class="form-control thirdhour_oggt_grams_result" value="" autocomplete="off">
+                                                                        <input type="text" name="thirdhour_oggt_grams_result" class="form-control thirdhour_oggt_grams_result" value="" autocomplete="off">
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-3" style="text-align: center;">
@@ -3969,6 +3973,262 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                         </div>
                                             </form>
+                                        @else
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/ogtt">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="{{$Ogtt->id}}" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Ogtt->or_no}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if($Ogtt->doc_id == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$Ogtt->date_reg}}" disabled="">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"></label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Result</b></label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label"><b>Normal Value</b></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->fifty_gram == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="50_grams" name="50_grams" checked="" value="Yes"> <b>50 GRAMS</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="50_grams" name="50_grams" value="Yes"> <b>50 GRAMS</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->first_hour == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firsthour" name="firsthour" checked="" value="Yes"> 1st Hour</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firsthour" name="firsthour" value="Yes"> 1st Hour</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="firsthour_result" class="form-control firsthour_result" value="{{$Ogtt->first_hour_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">90 - 165 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->seventy_five_gram == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="75_grams" name="75_grams" checked="" value="Yes"> <b>75 GRAMS</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="75_grams" name="75_grams" value="Yes"> <b>75 GRAMS</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->fasting == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting_oggt" name="fasting_oggt" checked="" value="Yes"> Fasting</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting_oggt" name="fasting_oggt" value="Yes"> Fasting</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="fasting_oggt_result" class="form-control fasting_oggt_result" value="{{$Ogtt->fasting_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 95 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->sv_first_hour == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firshour_oggt" name="firshour_oggt" checked="" value="Yes"> 1st Hour</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firshour_oggt" name="firshour_oggt" value="Yes"> 1st Hour</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="firshour_oggt_result" class="form-control firshour_oggt_result" value="{{$Ogtt->sv_first_hour_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 180 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->sv_second_hour == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="secondhour_oggt" name="secondhour_oggt" checked="" value="Yes"> 2nd Hour</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="secondhour_oggt" name="secondhour_oggt" value="Yes"> 2nd Hour</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="secondhour_oggt_result" class="form-control secondhour_oggt_result" value="{{$Ogtt->sv_second_hour_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 155 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->one_hundred_gram == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="100_grams" name="100_grams" checked="" value="Yes"> <b>100 GRAMS</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="100_grams" name="100_grams" value="Yes"> <b>100 GRAMS</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->oh_fasting == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting_oggt_grams" name="fasting_oggt_grams" checked="" value="Yes"> Fasting</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="fasting_oggt_grams" name="fasting_oggt_grams" value="Yes"> Fasting</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="fasting_oggt_grams_result" class="form-control fasting_oggt_grams_result" value="{{$Ogtt->oh_fasting_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 95 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->oh_first_hour == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firshour_oggt_grams" name="firshour_oggt_grams" checked="" value="Yes"> 1st Hour</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="firshour_oggt_grams" name="firshour_oggt_grams" value="Yes"> 1st Hour</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="firshour_oggt_grams_result" class="form-control firshour_oggt_grams_result" value="{{$Ogtt->oh_first_hour_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 180 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->oh_second_hour == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="secondhour_oggt_grams" name="secondhour_oggt_grams" checked="" value="Yes"> 2nd Hour</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="secondhour_oggt_grams" name="secondhour_oggt_grams" value="Yes"> 2nd Hour</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="secondhour_oggt_grams_result" class="form-control secondhour_oggt_grams_result" value="{{$Ogtt->oh_second_hour_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 155 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Ogtt->oh_third_hour == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="thirdhour_oggt_grams" name="thirdhour_oggt_grams" checked="" value="Yes"> 3rd Hour</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="thirdhour_oggt_grams" name="thirdhour_oggt_grams" value="Yes"> 3rd Hour</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="thirdhour_oggt_grams_result" class="form-control thirdhour_oggt_grams_result" value="{{$Ogtt->oh_third_hour_result}}" autocomplete="off">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-3" style="text-align: center;">
+                                                                    <label class="control-label">< 155 mg / dl</label>
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                            </div>
+                                                        </div>
+                                            </form>
+                                        @endif
                                         </div>
                                 </div>
                                 </div>
@@ -3981,8 +4241,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>HEMATOLOGY</b></h4>
-
-                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/chemistryii">
+                                        @if(!$Hematology)
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/hematology">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
@@ -4045,7 +4305,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="hematocrit_desc" required="" class="form-control hematocrit_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="hematocrit_desc" class="form-control hematocrit_desc" value="" autocomplete="off"> 
                                                                     </label> %
                                                                 </div>
                                                                 <div class="col-sm-1" style="font-size: 8pt;">
@@ -4056,7 +4316,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     Time :
                                                                     <label class="control-label">
-                                                                        <input type="text" name="clotting_lw_desc" required="" class="form-control clotting_lw_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="clotting_lw_desc" class="form-control clotting_lw_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                     N:6-17 min.
                                                                 </div>
@@ -4067,7 +4327,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="hemoglobin_desc" required="" class="form-control hemoglobin_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="hemoglobin_desc" class="form-control hemoglobin_desc" value="" autocomplete="off"> 
                                                                     </label> %
                                                                 </div>
                                                                 <div class="col-sm-1" style="font-size: 8pt;">
@@ -4078,7 +4338,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     Time :
                                                                     <label class="control-label">
-                                                                        <input type="text" name="clotting_desc" required="" class="form-control clotting_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="clotting_desc" class="form-control clotting_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                     N:3-5 min.
                                                                 </div>
@@ -4089,7 +4349,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="wbc_desc" required="" class="form-control wbc_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="wbc_desc" class="form-control wbc_desc" value="" autocomplete="off"> 
                                                                     </label> T/mm
                                                                 </div>
                                                                 <div class="col-sm-1" style="font-size: 8pt;">
@@ -4100,7 +4360,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     Time :
                                                                     <label class="control-label">
-                                                                        <input type="text" name="bleeding_desc" required="" class="form-control bleeding_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="bleeding_desc" class="form-control bleeding_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                     N:1-3 min.
                                                                 </div>
@@ -4156,7 +4416,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     Retraction :
                                                                     <label class="control-label">
-                                                                        <input type="text" name="clot_desc" required="" class="form-control clot_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="clot_desc" class="form-control clot_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                     N:48-64%
                                                                 </div>
@@ -4169,7 +4429,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     Count :
                                                                     <label class="control-label">
-                                                                        <input type="text" name="platelet_desc" required="" class="form-control platelet_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="platelet_desc" class="form-control platelet_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                     N:150-400 T/mm*
                                                                 </div>
@@ -4181,7 +4441,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="esr" name="esr" checked="" value="Yes"> ESR (WESTERNGREEN)</label><br>
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                     <label class="control-label">
-                                                                        <input type="text" name="esr_desc" required="" class="form-control esr_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="esr_desc" class="form-control esr_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                     mm/HR.
                                                                 </div>
@@ -4199,17 +4459,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-5">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="control_desc" required="" class="form-control control_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="control_desc" class="form-control control_desc" value="" autocomplete="off"> 
                                                                     </label> sec.
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="grp" name="grp" checked="" value="Yes"> GRP</label>
                                                                     <label class="control-label">
-                                                                        <input type="text" name="grp_desc" required="" class="form-control grp_desc" value="" autocomplete="off" > 
+                                                                        <input type="text" name="grp_desc" class="form-control grp_desc" value="" autocomplete="off" > 
                                                                     </label>
                                                                     <label class="control-label" style="text-align: right;"> Rh</label>
                                                                     <label class="control-label">
-                                                                        <input type="text" name="rh_desc" required="" class="form-control rh_desc" value="" autocomplete="off" style="width: 50%;"> 
+                                                                        <input type="text" name="rh_desc" class="form-control rh_desc" value="" autocomplete="off" style="width: 50%;"> 
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -4219,13 +4479,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-5">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="patient_desc" required="" class="form-control patient_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="patient_desc" class="form-control patient_desc" value="" autocomplete="off"> 
                                                                     </label> sec.
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="smp" name="smp" checked="" value="Yes"> SMP</label>
                                                                     <label class="control-label">
-                                                                        <input type="text" name="smp_desc" required="" class="form-control smp_desc" value="" autocomplete="off" > 
+                                                                        <input type="text" name="smp_desc" class="form-control smp_desc" value="" autocomplete="off" > 
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -4235,7 +4495,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-2">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="a_desc" required="" class="form-control a_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="a_desc" class="form-control a_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                 </div>
                                                                 <div class="col-sm-1" style="text-align: right;">
@@ -4243,7 +4503,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-2">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="inr_desc" required="" class="form-control inr_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="inr_desc" class="form-control inr_desc" value="" autocomplete="off"> 
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -4260,13 +4520,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-5">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="mcv_desc" required="" class="form-control mcv_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="mcv_desc" class="form-control mcv_desc" value="" autocomplete="off"> 
                                                                     </label> 80 - 90
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="retic" name="retic" checked="" value="Yes"> RETIC</label>
                                                                     <label class="control-label">
-                                                                        <input type="text" name="retic_desc" required="" class="form-control retic_desc" value="" autocomplete="off">
+                                                                        <input type="text" name="retic_desc" class="form-control retic_desc" value="" autocomplete="off">
                                                                     </label> %0.5 - 1.5
                                                                 </div>
                                                             </div>
@@ -4276,13 +4536,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-5">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="indices_mch_desc" required="" class="form-control indices_mch_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="indices_mch_desc" class="form-control indices_mch_desc" value="" autocomplete="off"> 
                                                                     </label> 21 - 31 pg
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="rbc" name="rbc" checked="" value="Yes"> RBC&nbsp;&nbsp;&nbsp;</label>
                                                                     <label class="control-label">
-                                                                        <input type="text" name="rbc_desc" required="" class="form-control rbc_desc" value="" autocomplete="off">
+                                                                        <input type="text" name="rbc_desc" class="form-control rbc_desc" value="" autocomplete="off">
                                                                     </label> MIL/mm4<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F 4 - 5.5 &nbsp;&nbsp;&nbsp;&nbsp;M 4.5 - 6.0
                                                                 </div>
                                                             </div>
@@ -4292,7 +4552,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="col-sm-5">
                                                                     <label class="control-label">
-                                                                        <input type="text" name="mchc_desc" required="" class="form-control mchc_desc" value="" autocomplete="off"> 
+                                                                        <input type="text" name="mchc_desc" class="form-control mchc_desc" value="" autocomplete="off"> 
                                                                     </label> 33 - 38 %
                                                                 </div>
                                                             </div>
@@ -4318,6 +4578,414 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                         </div>
                                             </form>
+                                        @else
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/hematology">
+                                                    {!! csrf_field() !!}
+                                                    <input type="text" name="uri_id" value="{{$Hematology->id}}" class="uri_id" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label">Name:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">O.R. No.</label>
+                                                            <div class="col-sm-2">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Hematology->or_no}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Address:</label>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Sex:</label>
+                                                            <div class="col-sm-2">
+                                                                <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                    <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-2 control-label">Physician:</label>
+                                                            <div class="col-sm-6">
+                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @if($Hematology->doc_id == $doc->id)
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @else
+                                                                        @if($doc->user->position == "Doctor")
+                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <label class="col-sm-2 control-label">Date:</label>
+                                                            <div class="col-sm-2">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" id="datepicker" class="form-control uri_date" required="" value="{{$Hematology->date_reg}}" disabled="">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->cbc == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="cbc" name="cbc" checked="" value="Yes"> <b>CBC</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="cbc" name="cbc" value="Yes"> <b>CBC</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    @if($Hematology->hematocrit == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hematocrit" name="hematocrit" checked="" value="Yes"> Hematocrit</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hematocrit" name="hematocrit" value="Yes"> Hematocrit</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hematocrit_desc" class="form-control hematocrit_desc" value="{{$Hematology->hematocrit_desc}}" autocomplete="off"> 
+                                                                    </label> %
+                                                                </div>
+                                                                <div class="col-sm-1" style="font-size: 8pt;">
+                                                                    F42 ± 5<br>M47 ± 7
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->clottinglw == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clotting_lw" name="clotting_lw" checked="" value="Yes"> Clotting(Lee & White)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clotting_lw" name="clotting_lw" value="Yes"> Clotting(Lee & White)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @endif
+                                                                    Time :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="clotting_lw_desc" class="form-control clotting_lw_desc" value="{{$Hematology->clottinglw_time}}" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:6-17 min.
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    @if($Hematology->hemoglobin == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hemoglobin" name="hemoglobin" checked="" value="Yes"> Hemoglobin</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="hemoglobin" name="hemoglobin" value="Yes"> Hemoglobin</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="hemoglobin_desc" class="form-control hemoglobin_desc" value="{{$Hematology->hemoglobin_desc}}" autocomplete="off"> 
+                                                                    </label> %
+                                                                </div>
+                                                                <div class="col-sm-1" style="font-size: 8pt;">
+                                                                    F14 ± 2
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->clotting == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clotting" name="clotting" checked="" value="Yes"> Clotting</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clotting" name="clotting" value="Yes"> Clotting</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @endif
+                                                                    Time :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="clotting_desc" class="form-control clotting_desc" value="{{$Hematology->clotting_time}}" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:3-5 min.
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-2">
+                                                                    @if($Hematology->wbc == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="wbc" name="wbc" checked="" value="Yes"> WBC</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="wbc" name="wbc" value="Yes"> WBC</label>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="wbc_desc" class="form-control wbc_desc" value="{{$Hematology->wbc_desc}}" autocomplete="off"> 
+                                                                    </label> T/mm
+                                                                </div>
+                                                                <div class="col-sm-1" style="font-size: 8pt;">
+                                                                    3A5 10<br>CH6 13
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->bleedingdm == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="bleeding" name="bleeding" checked="" value="Yes"> Bleeding(Duke Method)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="bleeding" name="bleeding" value="Yes"> Bleeding(Duke Method)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @endif
+                                                                    Time :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="bleeding_desc" class="form-control bleeding_desc" value="{{$Hematology->bleedingdm_time}}" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:1-3 min.
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    <label class="control-label" style="text-align: left;"><b>Differential Count %</b></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">BAND<br>0 - 10</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">PMN<br>53 - 70</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">BASO<br>0 - 1</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">EOS<br>1 - 4</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">MONO<br>1 - 6</label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <label class="control-label" style="text-align: center;font-size: 9pt;">LYMPHS<br>20 - 36</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="band" class="band form-control" value="{{$Hematology->dc_band}}">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="pmn" class="pmn form-control" value="{{$Hematology->dc_pmn}}">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="baso" class="baso form-control" value="{{$Hematology->dc_baso}}">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="eos" class="eos form-control" value="{{$Hematology->dc_eos}}">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="mono" class="mono form-control" value="{{$Hematology->dc_mono}}">
+                                                                </div>
+                                                                <div class="col-sm-1" style="border: 1px solid black;">
+                                                                    <input type="text" name="lymphs" class="lymphs form-control" value="{{$Hematology->dc_lymph}}">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->clot == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clot" name="clot" checked="" value="Yes"> Clot</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="clot" name="clot" value="Yes"> Clot</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @endif
+                                                                    Retraction :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="clot_desc" class="form-control clot_desc" value="{{$Hematology->clot_retraction}}" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:48-64%
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->platelet == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="platelet" name="platelet" checked="" value="Yes"> Platelet</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="platelet" name="platelet" value="Yes"> Platelet</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @endif
+                                                                    Count :
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="platelet_desc" class="form-control platelet_desc" value="{{$Hematology->platelet_count}}" autocomplete="off"> 
+                                                                    </label>
+                                                                    N:150-400 T/mm*
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->esr == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="esr" name="esr" checked="" value="Yes"> ESR (WESTERNGREEN)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="esr" name="esr" value="Yes"> ESR (WESTERNGREEN)</label><br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    @endif
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="esr_desc" class="form-control esr_desc" value="{{$Hematology->esr_desc}}" autocomplete="off"> 
+                                                                    </label>
+                                                                    mm/HR.
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->protime == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="protime" name="protime" checked="" value="Yes"> <b>PRO TIME</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="protime" name="protime" value="Yes"> <b>PRO TIME</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">Control</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="control_desc" class="form-control control_desc" value="{{$Hematology->control_desc}}" autocomplete="off"> 
+                                                                    </label> sec.
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->grp == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="grp" name="grp" checked="" value="Yes"> GRP</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="grp" name="grp" value="Yes"> GRP</label>
+                                                                    @endif
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="grp_desc" class="form-control grp_desc" value="{{$Hematology->grp_desc}}" autocomplete="off" > 
+                                                                    </label>
+                                                                    <label class="control-label" style="text-align: right;"> Rh</label>
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="rh_desc" class="form-control rh_desc" value="{{$Hematology->rh_desc}}" autocomplete="off" style="width: 50%;"> 
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">Patient</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="patient_desc" class="form-control patient_desc" value="{{$Hematology->patient_desc}}" autocomplete="off"> 
+                                                                    </label> sec.
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->smp == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="smp" name="smp" checked="" value="Yes"> SMP</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="smp" name="smp" value="Yes"> SMP</label>
+                                                                    @endif
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="smp_desc" class="form-control smp_desc" value="{{$Hematology->smp_desc}}" autocomplete="off" > 
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">%A</label>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="a_desc" class="form-control a_desc" value="{{$Hematology->a_desc}}" autocomplete="off"> 
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">INR.</label>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="inr_desc" class="form-control inr_desc" value="{{$Hematology->inr_desc}}" autocomplete="off"> 
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->cellindice == 'Yes')
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="cellindices" name="cellindices" checked="" value="Yes"> <b>CELL INDICES</b></label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: left;"><input type="checkbox" class="cellindices" name="cellindices" value="Yes"> <b>CELL INDICES</b></label>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">MCV</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="mcv_desc" class="form-control mcv_desc" value="{{$Hematology->mcv_desc}}" autocomplete="off"> 
+                                                                    </label> 80 - 90
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->retic == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="retic" name="retic" checked="" value="Yes"> RETIC</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="retic" name="retic" value="Yes"> RETIC</label>
+                                                                    @endif
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="retic_desc" class="form-control retic_desc" value="{{$Hematology->retic_desc}}" autocomplete="off">
+                                                                    </label> %0.5 - 1.5
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">INDICES MCH</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="indices_mch_desc" class="form-control indices_mch_desc" value="{{$Hematology->mch_desc}}" autocomplete="off"> 
+                                                                    </label> 21 - 31 pg
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    @if($Hematology->rbc == 'Yes')
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="rbc" name="rbc" checked="" value="Yes"> RBC&nbsp;&nbsp;&nbsp;</label>
+                                                                    @else
+                                                                        <label class="control-label" style="text-align: right;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="rbc" name="rbc" value="Yes"> RBC&nbsp;&nbsp;&nbsp;</label>
+                                                                    @endif
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="rbc_desc" class="form-control rbc_desc" value="{{$Hematology->rbc_desc}}" autocomplete="off">
+                                                                    </label> MIL/mm4<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;F 4 - 5.5 &nbsp;&nbsp;&nbsp;&nbsp;M 4.5 - 6.0
+                                                                </div>
+                                                            </div>
+                                                            <div class="row"> 
+                                                                <div class="col-sm-1" style="text-align: right;">
+                                                                    <label class="control-label">MCHC</label>
+                                                                </div>
+                                                                <div class="col-sm-5">
+                                                                    <label class="control-label">
+                                                                        <input type="text" name="mchc_desc" class="form-control mchc_desc" value="{{$Hematology->mchc_desc}}" autocomplete="off"> 
+                                                                    </label> 33 - 38 %
+                                                                </div>
+                                                            </div>
+                                                        </div><br><br>
+
+                                                        <div class=" divxrayinfo">
+                                                            <div class="row"> 
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    ________________________________________, RMT
+                                                                </div>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <label for="inputEmail3" class="control-label"></label>
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-xs btn-primary" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                            </div>
+                                                        </div>
+                                            </form>
+                                        @endif
                                         </div>
                                 </div>
                                 </div>
@@ -4369,6 +5037,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var bbaa = aa.replace(/,/g , '');
             $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
         })
+
+        if ('{{$patient->status}}' == 'Done') {
+            $('button').attr("disabled", "disabled");
+            $('.genrx').attr("onclick","return false;")
+        }
     })
 
     $(".xraydate").datepicker({

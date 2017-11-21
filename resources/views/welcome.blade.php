@@ -12,10 +12,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/">NFHSI</a>
+        <img src="{{ asset('/img/greenfav.png') }}"><br>
+        <a href="/">Negros Family Health Services, Inc.</a>
     </div>
-    
-  <div class="login-box-body">
+</div>
+  
+  <center> 
+  <div class="login-box-body" style="margin-top: -5%;">
     <form role="form" method="POST" action="/">
     {!! csrf_field() !!}
       <div class="form-group has-feedback ">
@@ -27,14 +30,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                  </div>
       <div class="row">
-        <div class="col-xs-8">
+        <div class="col-xs-8" style="text-align: left;">
             <a href="/NFHSI">Enter as Receptionist</a>
         </div>
         <div class="col-xs-4">
           <button type="submit" class="btn btn-primary btn-xs btn-block btn-flat">Sign In</button>
         </div>
       </div>
-    </form></div>
+    </form>
+  </div>
+  </center>
 
 </div>
 

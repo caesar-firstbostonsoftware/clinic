@@ -18,7 +18,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <aside class="main-sidebar">
     <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
-        @if(Session::get('position') == "Doctor")
+        @if(Session::get('position') == "Doctor" && Session::get('user') == 1)
         <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
         @endif
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
@@ -29,19 +29,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-            @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+            @if(Session::get('position') == "Doctor")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             @endif
             </ul>
         </li>
 
         @if(Session::get('user') == 1)
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         <li><a href="/NFHSI/users"><img src="{{ asset('/img/2012.png') }}" height="20" width="20"> <span>Users</span></a></li>
         <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>

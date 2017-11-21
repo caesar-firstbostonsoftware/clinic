@@ -18,7 +18,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <aside class="main-sidebar">
      <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
-        @if(Session::get('position') == "Doctor")
+        @if(Session::get('position') == "Doctor" && Session::get('user') == 1)
         <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
         @endif
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
@@ -29,19 +29,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul style="display: block;" class="treeview-menu menu-open">
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
                 <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
-            @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+            @if(Session::get('position') == "Doctor")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
             @endif
             </ul>
         </li>
 
         @if(Session::get('user') == 1)
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         <li><a href="/NFHSI/users"><img src="{{ asset('/img/2012.png') }}" height="20" width="20"> <span>Users</span></a></li>
         <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
+        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
@@ -143,6 +147,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <th>Order</th>
                                         <th>Date</th>
                                         <th>Purpose of Visit</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -163,53 +168,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
-                        <h4 class="modal-title" id="myModalLabel">Services</h4>
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal posteditvisit" id="posteditvisit" method="post" action="/NFHSI/editvisit">
                         {!! csrf_field() !!}
                         <input type="text" name="editvisit_p_id" class="editvisit_p_id" style="display: none;">
                         <input type="text" name="editvisit_v_id" class="editvisit_v_id" style="display: none;">
-                        <!-- @foreach($adminpanelcat as $cat)
-                            <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
-                                @foreach($adminpanel as $panel)
-                                    @if($cat->id == $panel->admin_panel_cat_id)
-                                        <div class="row">
-                                            <label class="col-sm-1 control-label"></label>
-                                            <div class="col-sm-6">
-                                                <label>
-                                                    <input type="checkbox" class="{{$panel->id}} cate cateservices" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b>
-                                                </label>
-                                            </div>
-                                            <div class="col-sm-2" style="text-align: right;">
-                                                @if($panel->price == 0)
-                                                <label><b></b></label>
-                                                @else
-                                                <?php $price = number_format($panel->price,2); ?>
-                                                <label class="priceprice"><b> {{$price}}</b></label>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        @foreach($sub as $panelsub)
-                                            @if($panel->id == $panelsub->admin_panel_id)
-                                                <div class="row">
-                                                    <label class="col-sm-1 control-label"></label>
-                                                    <div class="col-sm-6">
-                                                        <label>
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}} cateservices" name="services[]" value="{{$panelsub->admin_panel_id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b>
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-sm-2" style="text-align: right;">
-                                                        <?php $price = number_format($panelsub->price,2); ?>
-                                                        <label class="priceprice"><b> {{$price}}</b></label>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                            @endforeach -->
 
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><i><b>Purpose of Visit</b></i></label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
+                            </div>
+                        </div>
+
+                        <h3 class="modal-title" id="myModalLabel">Services</h3>
                             @foreach($adminpanelcat as $cat)
                                 <div class="col-sm-12 {{$cat->id}}">
                                     <div class="row">
@@ -295,13 +268,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label class="col-sm-2 control-label">Purpose of Visit</label>
                                     <div class="col-sm-10">
                                         <input type="text" name="patient_visit_id" class="patient_visit_id" style="display: none;">
                                         <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <!-- <h3>Services</h3>
                                 @foreach($adminpanelcat as $cat)
@@ -367,6 +340,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </div>
     <!-- /.content-wrapper -->
 
+    <!-- MODALS -->
+        <div class="modal fade" id="modal_visit_date" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header v_list_head">
+                        <button type="button" class="close close_add" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <span>Visit ID # : </span>&nbsp;&nbsp;<span class="visit_id_no" style="font-weight: bold;"></span>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="frm_setend" method="Post" action="/NFHSI/editvisitdate">
+                            <input type="text" name="vid" class="vid" style="display: none;">
+                            {!! csrf_field() !!}
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <b>Set Date :</b> 
+                                    <input class="form-control vdate" id="datepicker321" name="vdate" type="text" placeholder="YYYY-MM-DD" readonly="">
+                                    <input class="form-control vdate_check" type="text" style="display: none;">
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button type="submit" form="frm_setend" name="submit" class="btn btn-xs btn-primary submitsubmit">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- END -->
+
     @include('adminlte::layouts.partials.controlsidebar')
 
     <footer class="main-footer">
@@ -380,6 +384,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 @section('scripts')
     @include('adminlte::layouts.partials.scripts')
     <script type="text/javascript">
+
+    function pad (str, max) {
+        str = str.toString();
+         return str.length < max ? pad("0" + str, max) : str;
+    }
+
     $(document).ready(function(){
         $('#myTable').dataTable();
     });
@@ -398,6 +408,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     }
     });
 
+    $(".vdate").datepicker({
+                dateFormat: "yy-mm-dd",
+                yearRange: "1950:2050",
+                changeYear: true,
+                changeMonth: true,
+            });
+
     $('.viewvisit').on( 'click', function(e){
         var p_id = $(this).data('id');
         var ses_id = "{{Session::get('user')}}";
@@ -407,32 +424,147 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $.get('api/modalavisit?p_id=' + p_id, function(data){
             if (!ses_id) {
                 $.each(data, function(index, visit){
-                $('.visitlist_modal').append('<tr>\
+                if (visit.status == 'Pending') {
+                    $('.visitlist_modal').append('<tr>\
                     <td>'+visit.visitid+'</td>\
-                    <td>'+visit.visit_date+'</td>\
+                    <td>\
+                        <a href="#" class="visit_date" data-id="'+visit.id+'" data-datedate="'+visit.visit_date+'" data-toggle="modal" data-target="#modal_visit_date" data-backdrop="static">'+visit.visit_date+'</a>\
+                    </td>\
                     <td>'+visit.purpose_visit+'</td>\
+                    <td style="color:red;"><b>'+visit.status+'</b></td>\
                     <td>\
                         <button class="btn btn-xs btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="#" class="btn btn-xs btn-success donevisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Done</a>\
+                        <a href="#" class="btn btn-xs btn-danger cancelvisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Cancel</a>\
                     </td>\
-                </tr>');
+                    </tr>');
+                }
+                else if (visit.status == 'Done') {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="color:green;"><b>'+visit.status+'</b></td>\
+                    <td>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                    </td>\
+                    </tr>');
+                }
+                else {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="color:gold;"><b>'+visit.status+'</b></td>\
+                    <td></td>\
+                    </tr>');
+                }     
                 })
             }
             else {
                 $.each(data, function(index, visit){
-                $('.visitlist_modal').append('<tr>\
+                if (visit.status == 'Pending') {
+                    $('.visitlist_modal').append('<tr>\
                     <td>'+visit.visitid+'</td>\
                     <td>'+visit.visit_date+'</td>\
                     <td>'+visit.purpose_visit+'</td>\
+                    <td style="color:red;"><b>'+visit.status+'</b></td>\
                     <td>\
                         <button class="btn btn-xs btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
                         <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
                         <a href="/patientreceipt/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print Receipt</a>\
                     </td>\
-                </tr>');
+                    </tr>');
+                }
+                else if (visit.status == 'Done') {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="color:green;"><b>'+visit.status+'</b></td>\
+                    <td>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
+                        <a href="/patientreceipt/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print Receipt</a>\
+                    </td>\
+                    </tr>');
+                }
+                else {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="color:gold;"><b>'+visit.status+'</b></td>\
+                    <td></td>\
+                    </tr>');
+                }
                 })
             }
+
+            $('.visit_date').on('click',function() {
+                var id = $(this).data('id');
+                var datedate = $(this).data('datedate');
+                
+                $('.visit_id_no').empty();
+                $('.visit_id_no').text(pad(id,4));
+                $('.vid').val(id);
+                $('.vdate').val(datedate);
+                $('.vdate_check').val(datedate);
+            })
+
+            $('.vdate').on('change',function() {
+                var now = new Date($(this).val());
+                var year = now.getFullYear();
+                var month = now.getMonth()+1;
+                var day = now.getDate();
+                var completedate = year+'/'+month+'/'+day;
+
+                var datedate = $('.vdate_check').val();
+                var aa = new Date(datedate);
+                var year1 = aa.getFullYear();
+                var month1= aa.getMonth()+1;
+                var day1 = aa.getDate();
+                var datedate1 = year1+'/'+month1+'/'+day1;
+                
+                if (datedate1 > completedate) {
+                    alert('Invalid Date.');
+                    $('.vdate').val(datedate);
+                }
+            })
+
+            $('.donevisit').on('click',function() {
+                var patient_id = $(this).data('patient_id');
+                var visit_id = $(this).data('visit_id');
+                var r = confirm("Done this Visit?");
+                    if (r == true) {
+                        $.getJSON('/api/donevisit?patient_id=' + patient_id + '&visit_id=' + visit_id, function(data){
+                            window.location.reload();
+                        })
+                    } 
+                    else {
+                        return false;
+                    }
+                return false;
+            })
+
+            $('.cancelvisit').on('click',function() {
+                var patient_id = $(this).data('patient_id');
+                var visit_id = $(this).data('visit_id');
+                var r = confirm("Cancel this Visit?");
+                    if (r == true) {
+                        $.getJSON('/api/cancelvisit?patient_id=' + patient_id + '&visit_id=' + visit_id, function(data){
+                            window.location.reload();
+                        })
+                    } 
+                    else {
+                        return false;
+                    }
+                return false;
+            })
+
+
 
             $('.cateservices').click(function() {
                 if ($(this).is(':checked')) {
@@ -482,13 +614,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.totaltotal').empty();
                 $('.totalprice').empty();
                 $('.wawsee').remove();
+                $('.purpose_visit').empty();
                 $.get('api/modalaeditpatient?p_id=' + p_id + '&v_id=' + v_id, function(data){
                     var aa = data.patient.totalbill;
                     var bbaa = aa.replace(/,/g , '');
                     var cc = bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
                     $('.totaltotal').append(''+cc+'');
                     $('.totalprice').val(data.patient.totalbill);
-
+                    $('.purpose_visit').text(data.patient.purpose_visit)
                 // $.each(data.adminpanel, function(index, panel){
                 //     $('.'+panel.admin_panel_id+'').attr('checked','checked')
                 //     $('.subsub'+panel.admin_panel_id+''+panel.admin_panel_sub_id+'').removeAttr('disabled','disabled')
@@ -572,7 +705,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 })
             })
             });
-
         })
     });
 

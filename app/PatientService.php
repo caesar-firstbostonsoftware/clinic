@@ -16,4 +16,9 @@ class PatientService extends Model
     	 return $this->belongsTo('App\AdminPanelSub','admin_panel_sub_id');
     }
 
+    public function patient()
+    {
+    	 return $this->belongsTo('App\Patient','patient_id');
+    }
+
 }

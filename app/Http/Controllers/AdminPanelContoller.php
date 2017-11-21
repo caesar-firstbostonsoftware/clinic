@@ -47,17 +47,34 @@ class AdminPanelContoller extends Controller
                     patients.address AS address,patients.gender AS gender,patients.age AS age
                     FROM patient_visits
                     INNER JOIN patients ON patient_visits.patient_id = patients.id
-                    WHERE patient_visits.visit_date >= '$maindate1' AND patient_visits.visit_date <= '$maindate2'
+                    WHERE patient_visits.visit_date >= '$maindate1' AND patient_visits.visit_date <= '$maindate2' AND patient_visits.status != 'Canceled'
                     GROUP BY patient_visits.patient_id,patients.f_name,patients.m_name,patients.l_name,patients.address,patients.gender,patients.age");
             $count = count($pv);
 
-            $pv2 = PatientVisit::where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->with('patient')->get();
+            $pv2 = PatientVisit::where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->where('status','!=','Canceled')->with('patient')->get();
             $income = DB::table('patient_visits')->where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->sum('totalbill');
             $Patientxray = Patientxray::where('status','New')->with('patient')->orderBy('id','asc')->orderBy('status','asc')->get();
 
+            $day1 = $datenow_Y.'-'.$datenow_m.'-01';
+            $day7 = $datenow_Y.'-'.$datenow_m.'-07';
+            $day08 = $datenow_Y.'-'.$datenow_m.'-08';
+            $day14 = $datenow_Y.'-'.$datenow_m.'-14';
+            $day15 = $datenow_Y.'-'.$datenow_m.'-15';
+            $day21 = $datenow_Y.'-'.$datenow_m.'-21';
+            $day22 = $datenow_Y.'-'.$datenow_m.'-22';
+            $day28 = $datenow_Y.'-'.$datenow_m.'-28';
+            $day29 = $datenow_Y.'-'.$datenow_m.'-29';
+            $day31 = $datenow_Y.'-'.$datenow_m.'-31';
+
+            $week1 = PatientVisit::where('visit_date','>=',$day1)->where('visit_date','<=',$day7)->where('status','!=','Canceled')->count();
+            $week2 = PatientVisit::where('visit_date','>=',$day08)->where('visit_date','<=',$day14)->where('status','!=','Canceled')->count();
+            $week3 = PatientVisit::where('visit_date','>=',$day15)->where('visit_date','<=',$day21)->where('status','!=','Canceled')->count();
+            $week4 = PatientVisit::where('visit_date','>=',$day22)->where('visit_date','<=',$day28)->where('status','!=','Canceled')->count();
+            $week5 = PatientVisit::where('visit_date','>=',$day29)->where('visit_date','<=',$day31)->where('status','!=','Canceled')->count();
+
             //return Response::json($pv, 200, array(), JSON_PRETTY_PRINT);
 
-            return view('dashboard',compact('info','user','pv','count','pv2','income','Patientxray'));
+            return view('dashboard',compact('info','user','pv','count','pv2','income','Patientxray','week1','week2','week3','week4','week5'));
         }
         else {
             return redirect()->action('Auth@checklogin');

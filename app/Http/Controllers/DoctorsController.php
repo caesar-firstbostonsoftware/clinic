@@ -513,7 +513,7 @@ class DoctorsController extends Controller
                     WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
                     GROUP BY patientxrays.physician_id");
                     $counter = 0;
-                    $xrayprice = AdminPanel::where('id','=','36')->first();
+                    $xrayprice = AdminPanel::where('id','=','35')->first();
                     
             }
             else {
@@ -523,7 +523,7 @@ class DoctorsController extends Controller
                     WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id'
                     GROUP BY patientxrays.xray_date");
                 $counter = 0;
-                $xrayprice = AdminPanel::where('id','=','36')->first();
+                $xrayprice = AdminPanel::where('id','=','35')->first();
                 
             }
 
@@ -576,7 +576,7 @@ class DoctorsController extends Controller
                     WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
                     GROUP BY patientxrays.physician_id");
                     $counter = 0;
-                    $xrayprice = AdminPanel::where('id','=','36')->first();
+                    $xrayprice = AdminPanel::where('id','=','35')->first();
                 }
                 else {
                     $Doctor = 0;
@@ -585,7 +585,7 @@ class DoctorsController extends Controller
                         WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id'
                         GROUP BY patientxrays.xray_date");
                     $counter = 0;
-                    $xrayprice = AdminPanel::where('id','=','36')->first();
+                    $xrayprice = AdminPanel::where('id','=','35')->first();
                 }
 
             $pdf->writeHTML(view('printxrayreport',compact('Doctor','Patientxray','counter','xrayprice','id','datefrom','dateto'))->render());

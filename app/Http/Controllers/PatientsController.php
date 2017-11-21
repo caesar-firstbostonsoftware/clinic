@@ -32,6 +32,8 @@ use DB;
 use App\Medication;
 use App\Fecalyses;
 use App\Chemistry;
+use App\Ogtt;
+use App\Hematology;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -127,6 +129,7 @@ class PatientsController extends Controller
                     $service->admin_panel_sub_id = 0;
                     $service->visit_id = 1;
                     $service->department = $department;
+                    $service->date_reg = $datenow;
                     $service->save();
                 }
 
@@ -154,6 +157,7 @@ class PatientsController extends Controller
                     $service->admin_panel_sub_id = 0;
                     $service->visit_id = $check_p_v->visitid + 1;
                     $service->department = $department;
+                    $service->date_reg = $datenow;
                     $service->save();
                 }
             }
@@ -164,7 +168,7 @@ class PatientsController extends Controller
             $purpose_visit = $request->input('purpose_visit');
             $totalprice = $request->input('totalprice');
 
-            $services = $request->input('services');
+            $service_name = $request->input('service_name');
 
             $check_p_v = PatientVisit::where('patient_id',$patient_id)->orderBy('id', 'desc')->first();
             if (!$check_p_v) {
@@ -177,16 +181,20 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = $totalprice;
                 $patientvisit->save();
 
-                foreach ($services as $key) {
-                    $explode = explode('-', $key);
-                    $fisrt = $explode[0];
-                    $second = $explode[1];
-
+                foreach ($service_name as $key) {
+                    if ($key == 35) {
+                        $department = 'xray';
+                    }
+                    else {
+                        $department = 'labtest';
+                    }
                     $service = new PatientService;
                     $service->patient_id = $patient_id;
-                    $service->admin_panel_id = $fisrt;
-                    $service->admin_panel_sub_id = $second;
+                    $service->admin_panel_id = $key;
+                    $service->admin_panel_sub_id = 0;
                     $service->visit_id = 1;
+                    $service->department = $department;
+                    $service->date_reg = $datenow;
                     $service->save();
                 }
 
@@ -201,16 +209,20 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = $totalprice;
                 $patientvisit->save();
 
-                foreach ($services as $key) {
-                    $explode = explode('-', $key);
-                    $fisrt = $explode[0];
-                    $second = $explode[1];
-
+                foreach ($service_name as $key) {
+                    if ($key == 35) {
+                        $department = 'xray';
+                    }
+                    else {
+                        $department = 'labtest';
+                    }
                     $service = new PatientService;
                     $service->patient_id = $patient_id;
-                    $service->admin_panel_id = $fisrt;
-                    $service->admin_panel_sub_id = $second;
+                    $service->admin_panel_id = $key;
+                    $service->admin_panel_sub_id = 0;
                     $service->visit_id = $check_p_v->visitid + 1;
+                    $service->department = $department;
+                    $service->date_reg = $datenow;
                     $service->save();
                 }
             }
@@ -316,7 +328,7 @@ class PatientsController extends Controller
         $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
             ->where('patient_visits.patient_id',$id)
             ->where('patient_visits.visitid',$vid)
-            ->select('patients.*','patient_visits.purpose_visit')
+            ->select('patients.*','patient_visits.purpose_visit','patient_visits.status')
             ->first();
     	//$doctor = Doctor::with('user')->get();
         $doctor = Doctor::join('users','doctors.id','=','users.doc_id')->where('users.position','Doctor')->select('doctors.*')->get();
@@ -338,8 +350,10 @@ class PatientsController extends Controller
         $Urinalyses = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Fecalyses = Fecalyses::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Chemistry = Chemistry::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $Ogtt = Ogtt::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $Hematology = Hematology::where('patient_id',$id)->where('visit_id',$vid)->first();
         //return Response::json($PatientService1003, 200, array(), JSON_PRETTY_PRINT);
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry'));
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -387,7 +401,7 @@ class PatientsController extends Controller
     public function modalavisit(Request $request)
     {	
     	$p_id = $request->input('p_id');
-    	$patientvisit = PatientVisit::where('patient_id',$p_id)->orderBy('visitid','desc')->get();
+    	$patientvisit = PatientVisit::where('patient_id',$p_id)->orderBy('status','asc')->orderBy('visitid','asc')->get();
     	return Response::json($patientvisit, 200, array(), JSON_PRETTY_PRINT);
     }
 
@@ -428,7 +442,6 @@ class PatientsController extends Controller
             $totalprice = $request->input('totalprice');
 
             $services = $request->input('services');
-            //return $fname.' *** '.$mname.' *** '.$lname.' *** '.$address.' *** '.$gender.' *** '.$dob.' *** '.$age;
             $patient = Patient::where('id',$p_id)->first();
             $patient->f_name = $fname;
             $patient->m_name = $mname;
@@ -439,28 +452,9 @@ class PatientsController extends Controller
             $patient->address = $address;
             $patient->save();
 
-            // $delete = PatientService::where('patient_id',$p_id)->get();
-            //     foreach ($delete as $del) {
-            //        $deldel = PatientService::where('id',$del->id)->first();
-            //        $deldel->delete();
-            //     }
-
-            // foreach ($services as $key) {
-            //     $explode = explode('-', $key);
-            //     $fisrt = $explode[0];
-            //     $second = $explode[1];
-
-            //     $service = new PatientService;
-            //     $service->patient_id = $patient->id;
-            //     $service->admin_panel_id = $fisrt;
-            //     $service->admin_panel_sub_id = $second;
-            //     $service->save();
-            // }
-
-            $patientvisit = PatientVisit::where('id',$patient_visit_id)->first();
-            $patientvisit->purpose_visit = $purpose_visit;
-            //$patientvisit->totalbill = $totalprice;
-            $patientvisit->save(); 
+            // $patientvisit = PatientVisit::where('id',$patient_visit_id)->first();
+            // $patientvisit->purpose_visit = $purpose_visit;
+            // $patientvisit->save();
 
             return redirect()->action('PatientsController@patientlist');
         }
@@ -1226,7 +1220,7 @@ class PatientsController extends Controller
         $totalprice = $request->input('totalprice');
 
         $service_name = $request->input('service_name');
-
+        $now = date("Y-m-d");
         $delete = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
             foreach ($delete as $del) {
                 $deldel = PatientService::where('id',$del->id)->first();
@@ -1246,11 +1240,14 @@ class PatientsController extends Controller
             $service->admin_panel_sub_id = 0;
             $service->visit_id = $v_id;
             $service->department = $department;
+            $service->date_reg = $now;
             $service->save();
         }
 
         $patientvisit = PatientVisit::where('patient_id',$p_id)->where('visitid',$v_id)->first();
         $patientvisit->totalbill = $totalprice;
+        $patientvisit->visit_date = $now;
+        $patientvisit->purpose_visit = $request->input('purpose_visit');
         $patientvisit->save(); 
 
         return redirect()->action('PatientsController@patientlist');
@@ -1893,5 +1890,458 @@ class PatientsController extends Controller
         }
     }
 
+    public function newogtt(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $uri_id = $request->input('uri_id');
+            $physician = $request->input('physician');
+            $orno = $request->input('orno');
+            $now = date("Y-m-d");
+
+            // 1st
+            $fif_gram = $request->input('50_grams');
+            if ($fif_gram == "Yes") {
+                $fgram = $fif_gram;
+            }
+            else {
+                $fgram = "No";
+            }
+            $firsthour = $request->input('firsthour');
+            if ($firsthour == "Yes") {
+                $firsthour1002 = $firsthour;
+            }
+            else {
+                $firsthour1002 = "No";
+            }
+            // 2nd
+            $sevfi_gram = $request->input('75_grams');
+            if ($sevfi_gram == "Yes") {
+                $sv_gram = $sevfi_gram;
+            }
+            else {
+                $sv_gram = "No";
+            }
+            $fasting_oggt = $request->input('fasting_oggt');
+            if ($fasting_oggt == "Yes") {
+                $fasting_oggt1002 = $fasting_oggt;
+            }
+            else {
+                $fasting_oggt1002 = "No";
+            }
+            $firshour_oggt = $request->input('firshour_oggt');
+            if ($firshour_oggt == "Yes") {
+                $firshour_oggt1002 = $firshour_oggt;
+            }
+            else {
+                $firshour_oggt1002 = "No";
+            }
+            $secondhour_oggt = $request->input('secondhour_oggt');
+            if ($secondhour_oggt == "Yes") {
+                $secondhour_oggt1002 = $secondhour_oggt;
+            }
+            else {
+                $secondhour_oggt1002 = "No";
+            }
+            // 3rd
+            $onhu_gram = $request->input('100_grams');
+            if ($onhu_gram == "Yes") {
+                $oh_gram = $onhu_gram;
+            }
+            else {
+                $oh_gram = "No";
+            }
+            $fasting_oggt_grams = $request->input('fasting_oggt_grams');
+            if ($fasting_oggt_grams == "Yes") {
+                $fasting_oggt_grams1002 = $fasting_oggt_grams;
+            }
+            else {
+                $fasting_oggt_grams1002 = "No";
+            }
+            $firshour_oggt_grams = $request->input('firshour_oggt_grams');
+            if ($firshour_oggt_grams == "Yes") {
+                $firshour_oggt_grams1002 = $firshour_oggt_grams;
+            }
+            else {
+                $firshour_oggt_grams1002 = "No";
+            }
+            $secondhour_oggt_grams = $request->input('secondhour_oggt_grams');
+            if ($secondhour_oggt_grams == "Yes") {
+                $secondhour_oggt_grams1002 = $secondhour_oggt_grams;
+            }
+            else {
+                $secondhour_oggt_grams1002 = "No";
+            }
+            $thirdhour_oggt_grams = $request->input('thirdhour_oggt_grams');
+            if ($thirdhour_oggt_grams == "Yes") {
+                $thirdhour_oggt_grams1002 = $thirdhour_oggt_grams;
+            }
+            else {
+                $thirdhour_oggt_grams1002 = "No";
+            }
+            
+            if(!$uri_id) {
+                $Ogtt = new Ogtt;
+                $Ogtt->patient_id = $id;
+                $Ogtt->visit_id = $vid;
+                $Ogtt->doc_id = $physician;
+                $Ogtt->date_reg = $now;
+                $Ogtt->or_no = $orno;
+
+                $Ogtt->fifty_gram = $fgram;
+                $Ogtt->first_hour = $firsthour1002;
+                $Ogtt->first_hour_result = $request->input('firsthour_result');
+
+                $Ogtt->seventy_five_gram = $sv_gram;
+                $Ogtt->fasting = $fasting_oggt1002;
+                $Ogtt->fasting_result = $request->input('fasting_oggt_result');
+                $Ogtt->sv_first_hour = $firshour_oggt1002;
+                $Ogtt->sv_first_hour_result = $request->input('firshour_oggt_result');
+                $Ogtt->sv_second_hour = $secondhour_oggt1002;
+                $Ogtt->sv_second_hour_result = $request->input('secondhour_oggt_result');
+
+                $Ogtt->one_hundred_gram = $oh_gram;
+                $Ogtt->oh_fasting = $fasting_oggt_grams1002;
+                $Ogtt->oh_fasting_result = $request->input('fasting_oggt_grams_result');
+                $Ogtt->oh_first_hour = $firshour_oggt_grams1002;
+                $Ogtt->oh_first_hour_result = $request->input('firshour_oggt_grams_result');
+                $Ogtt->oh_second_hour = $secondhour_oggt_grams1002;
+                $Ogtt->oh_second_hour_result = $request->input('secondhour_oggt_grams_result');
+                $Ogtt->oh_third_hour = $thirdhour_oggt_grams1002;
+                $Ogtt->oh_third_hour_result = $request->input('thirdhour_oggt_grams_result');
+
+                $Ogtt->save();
+            }
+            else {
+                $Ogtt = Ogtt::where('id',$uri_id)->first();
+                $Ogtt->doc_id = $physician;
+                $Ogtt->or_no = $orno;
+
+                $Ogtt->fifty_gram = $fgram;
+                $Ogtt->first_hour = $firsthour1002;
+                $Ogtt->first_hour_result = $request->input('firsthour_result');
+
+                $Ogtt->seventy_five_gram = $sv_gram;
+                $Ogtt->fasting = $fasting_oggt1002;
+                $Ogtt->fasting_result = $request->input('fasting_oggt_result');
+                $Ogtt->sv_first_hour = $firshour_oggt1002;
+                $Ogtt->sv_first_hour_result = $request->input('firshour_oggt_result');
+                $Ogtt->sv_second_hour = $secondhour_oggt1002;
+                $Ogtt->sv_second_hour_result = $request->input('secondhour_oggt_result');
+
+                $Ogtt->one_hundred_gram = $oh_gram;
+                $Ogtt->oh_fasting = $fasting_oggt_grams1002;
+                $Ogtt->oh_fasting_result = $request->input('fasting_oggt_grams_result');
+                $Ogtt->oh_first_hour = $firshour_oggt_grams1002;
+                $Ogtt->oh_first_hour_result = $request->input('firshour_oggt_grams_result');
+                $Ogtt->oh_second_hour = $secondhour_oggt_grams1002;
+                $Ogtt->oh_second_hour_result = $request->input('secondhour_oggt_grams_result');
+                $Ogtt->oh_third_hour = $thirdhour_oggt_grams1002;
+                $Ogtt->oh_third_hour_result = $request->input('thirdhour_oggt_grams_result');
+
+                $Ogtt->save();
+            }
     
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newhematology(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $uri_id = $request->input('uri_id');
+            $physician = $request->input('physician');
+            $orno = $request->input('orno');
+            $now = date("Y-m-d");
+
+            // 1st
+            $cbc = $request->input('cbc');
+            if ($cbc == "Yes") {
+                $cbc1002 = $cbc;
+            }
+            else {
+                $cbc1002 = "No";
+            }
+            $hematocrit = $request->input('hematocrit');
+            if ($hematocrit == "Yes") {
+                $hematocrit1002 = $hematocrit;
+            }
+            else {
+                $hematocrit1002 = "No";
+            }
+            $hemoglobin = $request->input('hemoglobin');
+            if ($hemoglobin == "Yes") {
+                $hemoglobin1002 = $hemoglobin;
+            }
+            else {
+                $hemoglobin1002 = "No";
+            }
+            $wbc = $request->input('wbc');
+            if ($wbc == "Yes") {
+                $wbc1002 = $wbc;
+            }
+            else {
+                $wbc1002 = "No";
+            }
+            // 2nd
+            $protime = $request->input('protime');
+            if ($protime == "Yes") {
+                $protime1002 = $protime;
+            }
+            else {
+                $protime1002 = "No";
+            }
+            // 3rd
+            $cellindices = $request->input('cellindices');
+            if ($cellindices == "Yes") {
+                $cellindices1002 = $cellindices;
+            }
+            else {
+                $cellindices1002 = "No";
+            }
+            // 4th
+            $clotting_lw = $request->input('clotting_lw');
+            if ($clotting_lw == "Yes") {
+                $clotting_lw1002 = $clotting_lw;
+            }
+            else {
+                $clotting_lw1002 = "No";
+            }
+            $clotting = $request->input('clotting');
+            if ($clotting == "Yes") {
+                $clotting1002 = $clotting;
+            }
+            else {
+                $clotting1002 = "No";
+            }
+            $bleeding = $request->input('bleeding');
+            if ($bleeding == "Yes") {
+                $bleeding1002 = $bleeding;
+            }
+            else {
+                $bleeding1002 = "No";
+            }
+            $clot = $request->input('clot');
+            if ($clot == "Yes") {
+                $clot1002 = $clot;
+            }
+            else {
+                $clot1002 = "No";
+            }
+            $platelet = $request->input('platelet');
+            if ($platelet == "Yes") {
+                $platelet1002 = $platelet;
+            }
+            else {
+                $platelet1002 = "No";
+            }
+            $esr = $request->input('esr');
+            if ($esr == "Yes") {
+                $esr1002 = $esr;
+            }
+            else {
+                $esr1002 = "No";
+            }
+            $grp = $request->input('grp');
+            if ($grp == "Yes") {
+                $grp1002 = $grp;
+            }
+            else {
+                $grp1002 = "No";
+            }
+            $smp = $request->input('smp');
+            if ($smp == "Yes") {
+                $smp1002 = $smp;
+            }
+            else {
+                $smp1002 = "No";
+            }
+            $retic = $request->input('retic');
+            if ($retic == "Yes") {
+                $retic1002 = $retic;
+            }
+            else {
+                $retic1002 = "No";
+            }
+            $rbc = $request->input('rbc');
+            if ($rbc == "Yes") {
+                $rbc1002 = $rbc;
+            }
+            else {
+                $rbc1002 = "No";
+            }
+            
+            if(!$uri_id) {
+                $Hematology = new Hematology;
+                $Hematology->patient_id = $id;
+                $Hematology->visit_id = $vid;
+                $Hematology->doc_id = $physician;
+                $Hematology->date_reg = $now;
+                $Hematology->or_no = $orno;
+
+                $Hematology->cbc = $cbc1002;
+                $Hematology->hematocrit = $hematocrit1002;
+                $Hematology->hematocrit_desc = $request->input('hematocrit_desc');
+                $Hematology->hemoglobin = $hemoglobin1002;
+                $Hematology->hemoglobin_desc = $request->input('hemoglobin_desc');
+                $Hematology->wbc = $wbc1002;
+                $Hematology->wbc_desc = $request->input('wbc_desc');
+
+                $Hematology->dc_band = $request->input('band');
+                $Hematology->dc_pmn = $request->input('pmn');
+                $Hematology->dc_baso = $request->input('baso');
+                $Hematology->dc_eos = $request->input('eos');
+                $Hematology->dc_mono = $request->input('mono');
+                $Hematology->dc_lymph = $request->input('lymphs');
+
+                $Hematology->protime = $protime1002;
+                $Hematology->control_desc = $request->input('control_desc');
+                $Hematology->patient_desc = $request->input('patient_desc');
+                $Hematology->a_desc = $request->input('a_desc');
+                $Hematology->inr_desc = $request->input('inr_desc');
+
+                $Hematology->cellindice = $cellindices1002;
+                $Hematology->mcv_desc = $request->input('mcv_desc');
+                $Hematology->mch_desc = $request->input('indices_mch_desc');
+                $Hematology->mchc_desc = $request->input('mchc_desc');
+
+                $Hematology->clottinglw = $clotting_lw1002;
+                $Hematology->clottinglw_time = $request->input('clotting_lw_desc');
+                $Hematology->clotting = $clotting1002;
+                $Hematology->clotting_time = $request->input('clotting_desc');
+                $Hematology->bleedingdm = $bleeding1002;
+                $Hematology->bleedingdm_time = $request->input('bleeding_desc');
+                $Hematology->clot = $clot1002;
+                $Hematology->clot_retraction = $request->input('clot_desc');
+                $Hematology->platelet = $platelet1002;
+                $Hematology->platelet_count = $request->input('platelet_desc');
+                $Hematology->esr = $esr1002;
+                $Hematology->esr_desc = $request->input('esr_desc');
+                $Hematology->grp = $grp1002;
+                $Hematology->grp_desc = $request->input('grp_desc');
+                $Hematology->rh_desc = $request->input('rh_desc');
+                $Hematology->smp = $smp1002;
+                $Hematology->smp_desc = $request->input('smp_desc');
+                $Hematology->retic = $retic1002;
+                $Hematology->retic_desc = $request->input('retic_desc');
+                $Hematology->rbc = $rbc1002;
+                $Hematology->rbc_desc = $request->input('rbc_desc');
+
+                $Hematology->save();
+            }
+            else {
+                $Hematology = Hematology::where('id',$uri_id)->first();
+                $Hematology->doc_id = $physician;
+                $Hematology->or_no = $orno;
+
+                $Hematology->cbc = $cbc1002;
+                $Hematology->hematocrit = $hematocrit1002;
+                $Hematology->hematocrit_desc = $request->input('hematocrit_desc');
+                $Hematology->hemoglobin = $hemoglobin1002;
+                $Hematology->hemoglobin_desc = $request->input('hemoglobin_desc');
+                $Hematology->wbc = $wbc1002;
+                $Hematology->wbc_desc = $request->input('wbc_desc');
+
+                $Hematology->dc_band = $request->input('band');
+                $Hematology->dc_pmn = $request->input('pmn');
+                $Hematology->dc_baso = $request->input('baso');
+                $Hematology->dc_eos = $request->input('eos');
+                $Hematology->dc_mono = $request->input('mono');
+                $Hematology->dc_lymph = $request->input('lymphs');
+
+                $Hematology->protime = $protime1002;
+                $Hematology->control_desc = $request->input('control_desc');
+                $Hematology->patient_desc = $request->input('patient_desc');
+                $Hematology->a_desc = $request->input('a_desc');
+                $Hematology->inr_desc = $request->input('inr_desc');
+
+                $Hematology->cellindice = $cellindices1002;
+                $Hematology->mcv_desc = $request->input('mcv_desc');
+                $Hematology->mch_desc = $request->input('indices_mch_desc');
+                $Hematology->mchc_desc = $request->input('mchc_desc');
+
+                $Hematology->clottinglw = $clotting_lw1002;
+                $Hematology->clottinglw_time = $request->input('clotting_lw_desc');
+                $Hematology->clotting = $clotting1002;
+                $Hematology->clotting_time = $request->input('clotting_desc');
+                $Hematology->bleedingdm = $bleeding1002;
+                $Hematology->bleedingdm_time = $request->input('bleeding_desc');
+                $Hematology->clot = $clot1002;
+                $Hematology->clot_retraction = $request->input('clot_desc');
+                $Hematology->platelet = $platelet1002;
+                $Hematology->platelet_count = $request->input('platelet_desc');
+                $Hematology->esr = $esr1002;
+                $Hematology->esr_desc = $request->input('esr_desc');
+                $Hematology->grp = $grp1002;
+                $Hematology->grp_desc = $request->input('grp_desc');
+                $Hematology->rh_desc = $request->input('rh_desc');
+                $Hematology->smp = $smp1002;
+                $Hematology->smp_desc = $request->input('smp_desc');
+                $Hematology->retic = $retic1002;
+                $Hematology->retic_desc = $request->input('retic_desc');
+                $Hematology->rbc = $rbc1002;
+                $Hematology->rbc_desc = $request->input('rbc_desc');
+
+                $Hematology->save();
+            }
+    
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function editvisitdate(Request $request)
+    {   
+        $PatientVisit = PatientVisit::where('id',$request->input('vid'))->first();
+        $PatientVisit->visit_date = $request->input('vdate');
+        $PatientVisit->save();
+
+        $PatientService = PatientService::where('patient_id',$PatientVisit->patient_id)->where('visit_id',$PatientVisit->visitid)->get();
+        foreach ($PatientService as $key) {
+            $service = PatientService::where('id',$key->id)->first();
+            $service->date_reg = $request->input('vdate');
+            $service->save();
+        }
+
+        return redirect()->action('PatientsController@patientlist');
+    }
+
+    public function donevisit(Request $request)
+    {   
+        $id = $request->input('patient_id');
+        $vid = $request->input('visit_id');
+        $PatientVisit = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
+        $PatientVisit->status = 'Done';
+        $PatientVisit->save();
+
+        $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
+        foreach ($PatientService as $key) {
+            $service = PatientService::where('id',$key->id)->first();
+            $service->status = 'Done';
+            $service->save();
+        }
+        return Response::json($PatientVisit, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function cancelvisit(Request $request)
+    {   
+        $id = $request->input('patient_id');
+        $vid = $request->input('visit_id');
+        $PatientVisit = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
+        $PatientVisit->status = 'Canceled';
+        $PatientVisit->save();
+
+        $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
+        foreach ($PatientService as $key) {
+            $service = PatientService::where('id',$key->id)->first();
+            $service->status = 'Canceled';
+            $service->save();
+        }
+        return Response::json($PatientVisit, 200, array(), JSON_PRETTY_PRINT);
+    }
+
 }

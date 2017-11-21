@@ -57,7 +57,10 @@ class Auth extends Controller
 				
 				$user_id = Session::get('user');
 				$user = User::where('doc_id',$user_id)->first();
-				if ($user->position == "Doctor") {
+				if ($user->id == 1 ) {
+					return redirect('/dashboard');
+				}
+				elseif ($user->position == "Doctor") {
 					return redirect('/myinfo');
 				}
 				elseif ($user->position == "Xray") {
