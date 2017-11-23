@@ -34,6 +34,7 @@ use App\Fecalyses;
 use App\Chemistry;
 use App\Ogtt;
 use App\Hematology;
+use App\ReceiptNumber;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -87,22 +88,54 @@ class PatientsController extends Controller
             $mname = $request->input('mname');
             $lname = $request->input('lname');
             $address = $request->input('address');
+            if (!$address) {
+                $add = "N/A";
+            }
+            else {
+                $add = $request->input('address');
+            }
             $gender = $request->input('gender');
             $dob = $request->input('dob');
+            if (!$dob) {
+                $bday = $request->input('dob');
+            }
+            else {
+                $bday = $request->input('dob');
+            }
             $age = $request->input('age');
+            if (!$age) {
+                $age0 = 0;
+            }
+            else {
+                $age0 = $request->input('age');
+            }
             $purpose_visit = $request->input('purpose_visit');
+            if (!$purpose_visit) {
+                $purvis = "N/A";
+            }
+            else {
+                $purvis = $request->input('purpose_visit');
+            }
             $totalprice = $request->input('totalprice');
+            $mainservice = count($request->input('mainservice'));
 
-            $service_name = $request->input('service_name');
+            $senciz_id = $request->input('senciz_id');
+            $pwd_id = $request->input('pwd_id');
+            $discount = str_replace('.', '', $request->input('discount'));
+            $aa = '.'.$discount;
+            $discounted_price = $totalprice * $aa;
+            $discounted_total = $totalprice - $discounted_price;
 
             $patient = new Patient;
             $patient->f_name = $fname;
             $patient->m_name = $mname;
             $patient->l_name = $lname;
             $patient->gender = $gender;
-            $patient->dob = $dob;
-            $patient->age = $age;
-            $patient->address = $address;
+            $patient->dob = $bday;
+            $patient->age = $age0;
+            $patient->address = $add;
+            $patient->senior_id_no = $senciz_id;
+            $patient->pwd_id_no = $pwd_id;
             $patient->save();
 
             $check_p_v = PatientVisit::where('patient_id',$patient->id)->orderBy('id', 'desc')->first();
@@ -112,21 +145,25 @@ class PatientsController extends Controller
                 $datenow = date("Y-m-d");
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = 1;
-                $patientvisit->purpose_visit = $purpose_visit;
-                $patientvisit->totalbill = $totalprice;
+                $patientvisit->purpose_visit = $purvis;
+                $patientvisit->discount = $request->input('discount');
+                $patientvisit->totalbill = round($totalprice);
+                $patientvisit->discounted_price = round($discounted_price);
+                $patientvisit->discounted_total = round($discounted_total);
                 $patientvisit->save();
 
-                foreach ($service_name as $key) {
-                    if ($key == 35) {
+                for ($i=0; $i < $mainservice; $i++) { 
+                    if ($request->input('mainservice')[$i] == 5) {
                         $department = 'xray';
                     }
                     else {
                         $department = 'labtest';
                     }
+
                     $service = new PatientService;
                     $service->patient_id = $patient->id;
-                    $service->admin_panel_id = $key;
-                    $service->admin_panel_sub_id = 0;
+                    $service->admin_panel_id = $request->input('mainservice')[$i];
+                    $service->admin_panel_sub_id = $request->input('service_name')[$i];
                     $service->visit_id = 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
@@ -140,21 +177,25 @@ class PatientsController extends Controller
                 $datenow = date("Y-m-d");
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = $check_p_v->visitid + 1;
-                $patientvisit->purpose_visit = $purpose_visit;
-                $patientvisit->totalbill = $totalprice;
+                $patientvisit->purpose_visit = $purvis;
+                $patientvisit->discount = $request->input('discount');
+                $patientvisit->totalbill = round($totalprice);
+                $patientvisit->discounted_price = round($discounted_price);
+                $patientvisit->discounted_total = round($discounted_total);
                 $patientvisit->save();
 
-                foreach ($service_name as $key) {
-                    if ($key == 35) {
+                for ($i=0; $i < $mainservice; $i++) { 
+                    if ($request->input('mainservice')[$i] == 5) {
                         $department = 'xray';
                     }
                     else {
                         $department = 'labtest';
                     }
+
                     $service = new PatientService;
                     $service->patient_id = $patient->id;
-                    $service->admin_panel_id = $key;
-                    $service->admin_panel_sub_id = 0;
+                    $service->admin_panel_id = $request->input('mainservice')[$i];
+                    $service->admin_panel_sub_id = $request->input('service_name')[$i];
                     $service->visit_id = $check_p_v->visitid + 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
@@ -166,9 +207,24 @@ class PatientsController extends Controller
         }
         else {
             $purpose_visit = $request->input('purpose_visit');
+            if (!$purpose_visit) {
+                $purvis = "N/A";
+            }
+            else {
+                $purvis = $request->input('purpose_visit');
+            }
             $totalprice = $request->input('totalprice');
 
-            $service_name = $request->input('service_name');
+            // $service_name = $request->input('service_name');
+            $mainservice = count($request->input('mainservice'));
+
+            $senciz_id = $request->input('senciz_id');
+            $pwd_id = $request->input('pwd_id');
+            $discount = str_replace('.', '', $request->input('discount'));
+            $aa = '.'.$discount;
+            $discounted_price = $totalprice * $aa;
+            $discounted_total = $totalprice - $discounted_price;
+
 
             $check_p_v = PatientVisit::where('patient_id',$patient_id)->orderBy('id', 'desc')->first();
             if (!$check_p_v) {
@@ -177,21 +233,25 @@ class PatientsController extends Controller
                 $datenow = date("Y-m-d");
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = 1;
-                $patientvisit->purpose_visit = $purpose_visit;
-                $patientvisit->totalbill = $totalprice;
+                $patientvisit->purpose_visit = $purvis;
+                $patientvisit->discount = $request->input('discount');
+                $patientvisit->totalbill = round($totalprice);
+                $patientvisit->discounted_price = round($discounted_price);
+                $patientvisit->discounted_total = round($discounted_total);
                 $patientvisit->save();
 
-                foreach ($service_name as $key) {
-                    if ($key == 35) {
+                for ($i=0; $i < $mainservice; $i++) { 
+                    if ($request->input('mainservice')[$i] == 5) {
                         $department = 'xray';
                     }
                     else {
                         $department = 'labtest';
                     }
+
                     $service = new PatientService;
                     $service->patient_id = $patient_id;
-                    $service->admin_panel_id = $key;
-                    $service->admin_panel_sub_id = 0;
+                    $service->admin_panel_id = $request->input('mainservice')[$i];
+                    $service->admin_panel_sub_id = $request->input('service_name')[$i];
                     $service->visit_id = 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
@@ -205,21 +265,25 @@ class PatientsController extends Controller
                 $datenow = date("Y-m-d");
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = $check_p_v->visitid + 1;
-                $patientvisit->purpose_visit = $purpose_visit;
-                $patientvisit->totalbill = $totalprice;
+                $patientvisit->purpose_visit = $purvis;
+                $patientvisit->discount = $request->input('discount');
+                $patientvisit->totalbill = round($totalprice);
+                $patientvisit->discounted_price = round($discounted_price);
+                $patientvisit->discounted_total = round($discounted_total);
                 $patientvisit->save();
 
-                foreach ($service_name as $key) {
-                    if ($key == 35) {
+                for ($i=0; $i < $mainservice; $i++) { 
+                    if ($request->input('mainservice')[$i] == 5) {
                         $department = 'xray';
                     }
                     else {
                         $department = 'labtest';
                     }
+
                     $service = new PatientService;
                     $service->patient_id = $patient_id;
-                    $service->admin_panel_id = $key;
-                    $service->admin_panel_sub_id = 0;
+                    $service->admin_panel_id = $request->input('mainservice')[$i];
+                    $service->admin_panel_sub_id = $request->input('service_name')[$i];
                     $service->visit_id = $check_p_v->visitid + 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
@@ -339,7 +403,7 @@ class PatientsController extends Controller
         ->where('visit_id',$vid)
         ->groupBy('department')
         ->get();
-        $PatientService1003 = PatientService::join('admin_panels','patient_services.admin_panel_id','=','admin_panels.id')
+        $PatientService1003 = PatientService::join('admin_panels','patient_services.admin_panel_sub_id','=','admin_panels.id')
         ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','admin_panel_categories.id')
         ->select('admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
         ->where('patient_services.patient_id',$id)
@@ -412,11 +476,11 @@ class PatientsController extends Controller
 
         $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
         ->where('patients.id',$p_id)
-        ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill')
+        ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill','patient_visits.discount')
         ->first();
         //$adminpanel = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->with('adminPanels')->get();
 
-        $adminpanel = PatientService::join('admin_panels','patient_services.admin_panel_id','=','admin_panels.id')
+        $adminpanel = PatientService::join('admin_panels','patient_services.admin_panel_sub_id','=','admin_panels.id')
         ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','=','admin_panel_categories.id')
         ->where('patient_services.patient_id',$p_id)
         ->where('patient_services.visit_id',$v_id)
@@ -426,41 +490,49 @@ class PatientsController extends Controller
     }
 
     public function editpatient(Request $request)
-    {   
-        if(Session::has('user')){
-            $p_id = $request->input('p_id');
-            $fname = $request->input('fname');
-            $mname = $request->input('mname');
-            $lname = $request->input('lname');
-            $address = $request->input('address');
-            $gender = $request->input('gender');
-            $dob = $request->input('dob');
-            $age = $request->input('age');
-
-            $patient_visit_id = $request->input('patient_visit_id');
-            $purpose_visit = $request->input('purpose_visit');
-            $totalprice = $request->input('totalprice');
-
-            $services = $request->input('services');
-            $patient = Patient::where('id',$p_id)->first();
-            $patient->f_name = $fname;
-            $patient->m_name = $mname;
-            $patient->l_name = $lname;
-            $patient->gender = $gender;
-            $patient->dob = $dob;
-            $patient->age = $age;
-            $patient->address = $address;
-            $patient->save();
-
-            // $patientvisit = PatientVisit::where('id',$patient_visit_id)->first();
-            // $patientvisit->purpose_visit = $purpose_visit;
-            // $patientvisit->save();
-
-            return redirect()->action('PatientsController@patientlist');
+    {
+        $p_id = $request->input('p_id');
+        $fname = $request->input('fname');
+        $mname = $request->input('mname');
+        $lname = $request->input('lname');
+        $address = $request->input('address');
+        if (!$address) {
+            $add = "N/A";
         }
         else {
-            return redirect()->action('Auth@checklogin');
+            $add = $request->input('address');
         }
+        $gender = $request->input('gender');
+        $dob = $request->input('dob');
+        if (!$dob) {
+            $bday = $request->input('dob');
+        }
+        else {
+            $bday = $request->input('dob');
+        }
+        $age = $request->input('age');
+        if (!$age) {
+            $age0 = 0;
+        }
+        else {
+            $age0 = $request->input('age');
+        }
+        $senciz_id = $request->input('senciz_id');
+        $pwd_id = $request->input('pwd_id');
+
+        $patient = Patient::where('id',$p_id)->first();
+        $patient->f_name = $fname;
+        $patient->m_name = $mname;
+        $patient->l_name = $lname;
+        $patient->gender = $gender;
+        $patient->dob = $bday;
+        $patient->age = $age0;
+        $patient->address = $add;
+        $patient->senior_id_no = $senciz_id;
+        $patient->pwd_id_no = $pwd_id;
+        $patient->save();
+
+        return redirect()->action('PatientsController@patientlist');
     }
 
     public function modalxrayedit(Request $request)
@@ -1157,60 +1229,52 @@ class PatientsController extends Controller
     }
 
     public function patientprintreport(Request $request,$id,$vid)
-    {   
-        if(Session::has('user')){
+    {
+        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('NFHSI Patient PDF');
 
-            $pdf->SetCreator(PDF_CREATOR);
-            $pdf->SetTitle('NFHSI Patient PDF');
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
-            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
-            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->SetMargins(10, 36, 10, true);
+        $pdf->SetHeaderMargin(12);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-            $pdf->SetMargins(10, 36, 10, true);
-            $pdf->SetHeaderMargin(12);
-            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-                require_once(dirname(__FILE__).'/lang/eng.php');
-                $pdf->setLanguageArray($l);
-            }
-
-            $pdf->SetFont('Courier', '', 12);
-            $pdf->AddPage();
-
-            $patient = Patient::where('id',$id)->first();
-            $reason = ReasonForConsulation::where('patient_id',$id)->where('visit_id',$vid)->first();
-            $past = PastMedicalHistory::where('patient_id',$id)->where('visit_id',$vid)->with('surgery1001','hospitalization','disease','vaccination1001')->first();
-            $social = SocialHistory::where('patient_id',$id)->where('visit_id',$vid)->first();
-            $PE = PhysicalExam::where('patient_id',$id)->where('visit_id',$vid)->first();
-            $diagnosis = Diagnoses::where('patient_id',$id)->where('visit_id',$vid)->first();
-            $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
-            $p_xray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->with('doctor','patient','xraydate')->first();
-            $uriuri = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('phy')->first();
-            $income = DB::table('patient_visits')->where('patient_id',$id)->where('visitid',$vid)->sum('totalbill');
-            $med = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
-
-            //return Response::json($p_xray, 200, array(), JSON_PRETTY_PRINT);
-
-            $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri','income','med'))->render());
-            ob_end_clean();
-            $pdf->Output('PatientReport.pdf','I');
-
+        if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+            require_once(dirname(__FILE__).'/lang/eng.php');
+            $pdf->setLanguageArray($l);
         }
-        else {
-            return redirect()->action('Auth@checklogin');
-        }
-        
+
+        $pdf->SetFont('Courier', '', 12);
+        $pdf->AddPage();
+
+        $patient = Patient::where('id',$id)->first();
+        $reason = ReasonForConsulation::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $past = PastMedicalHistory::where('patient_id',$id)->where('visit_id',$vid)->with('surgery1001','hospitalization','disease','vaccination1001')->first();
+        $social = SocialHistory::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $PE = PhysicalExam::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $diagnosis = Diagnoses::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $p_xray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->with('doctor','patient','xraydate')->first();
+        $uriuri = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('phy')->first();
+        $income = DB::table('patient_visits')->where('patient_id',$id)->where('visitid',$vid)->sum('totalbill');
+        $med = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
+
+        //return Response::json($p_xray, 200, array(), JSON_PRETTY_PRINT);
+
+        $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri','income','med'))->render());
+        ob_end_clean();
+        $pdf->Output('PatientReport.pdf','I');
     }
 
     public function editvisit(Request $request)
@@ -1219,7 +1283,7 @@ class PatientsController extends Controller
         $v_id = $request->input('editvisit_v_id');
         $totalprice = $request->input('totalprice');
 
-        $service_name = $request->input('service_name');
+        $mainservice = count($request->input('mainservice'));
         $now = date("Y-m-d");
         $delete = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
             foreach ($delete as $del) {
@@ -1227,8 +1291,8 @@ class PatientsController extends Controller
                 $deldel->delete();
             }
 
-        foreach ($service_name as $key) {
-            if ($key == 35) {
+        for ($i=0; $i < $mainservice; $i++) { 
+            if ($request->input('mainservice')[$i] == 5) {
                 $department = 'xray';
             }
             else {
@@ -1236,8 +1300,8 @@ class PatientsController extends Controller
             }
             $service = new PatientService;
             $service->patient_id = $p_id;
-            $service->admin_panel_id = $key;
-            $service->admin_panel_sub_id = 0;
+            $service->admin_panel_id = $request->input('mainservice')[$i];
+            $service->admin_panel_sub_id = $request->input('service_name')[$i];
             $service->visit_id = $v_id;
             $service->department = $department;
             $service->date_reg = $now;
@@ -1315,54 +1379,66 @@ class PatientsController extends Controller
         }
     }
 
-    public function patientreceipt(Request $request,$id,$vid)
+    public function patientreceipt(Request $request,$id,$vid,$recno)
     {   
-        if(Session::has('user')){
+        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('NFHSI Patient PDF');
 
-            $pdf->SetCreator(PDF_CREATOR);
-            $pdf->SetTitle('NFHSI Patient PDF');
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
-            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
-            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
 
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->SetMargins(10, 10, 10, true);
+        $pdf->SetHeaderMargin(12);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-            $pdf->SetMargins(10, 10, 10, true);
-            $pdf->SetHeaderMargin(12);
-            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+            require_once(dirname(__FILE__).'/lang/eng.php');
+            $pdf->setLanguageArray($l);
+        }
 
-            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-                require_once(dirname(__FILE__).'/lang/eng.php');
-                $pdf->setLanguageArray($l);
-            }
+        $pdf->SetFont('Courier', '', 12);
+        $pdf->AddPage();
 
-            $pdf->SetFont('Courier', '', 12);
-            $pdf->AddPage();
-
-
-            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->with('adminP','adminsubP')->get();
-            $totalbill = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
-            $info = Patient::where('id',$id)->first();
-            $pdf->writeHTML(view('patientreceipt',compact('PatientService','totalbill','info'))->render());
-            ob_end_clean();
-            $pdf->Output('PatientReceiptReport.pdf','I');
-
+        $datenow = date("Y-m-d");
+        $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->with('adminP','adminsubP')->get();
+        $totalbill = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
+        $info = Patient::where('id',$id)->first();
+        
+        $check = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+        if (!$check) {
+            $ReceiptNumber = new ReceiptNumber;
+            $ReceiptNumber->patient_id = $id;
+            $ReceiptNumber->visit_id = $vid;
+            $ReceiptNumber->receipt_number = $recno;
+            $ReceiptNumber->date_reg = $datenow;
+            $ReceiptNumber->save();
         }
         else {
-            return redirect()->action('Auth@checklogin');
+            $check->receipt_number = $recno;
+            $check->date_reg = $datenow;
+            $check->save();
         }
-        
+
+        $PatientVisit = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
+        $PatientVisit->status = "Paid";
+        $PatientVisit->save();
+
+        $pdf->writeHTML(view('patientreceipt',compact('PatientService','totalbill','info','recno'))->render());
+        ob_end_clean();
+        $pdf->Output('PatientReceiptReport.pdf','I');        
     }
 
     public function printpatientrx(Request $request,$id,$vid)
@@ -2342,6 +2418,40 @@ class PatientsController extends Controller
             $service->save();
         }
         return Response::json($PatientVisit, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function patientvisitxraydone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $datenow = date("Y-m-d");
+            $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->first();
+            $patientxray->status = "Old";
+            $patientxray->save();
+
+            $logs = new PatientXrayLog;
+            $logs->xray_id = $patientxray->id;
+            $logs->user_id = Session::get('user');
+            $logs->date = $datenow;
+            $logs->action = "Done";
+            $logs->save();
+
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->where('admin_panel_id',35)->first();
+            $PatientService->status = "Done";
+            $PatientService->save();
+    
+           return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function checkreceipt(Request $request)
+    {   
+        $patient_id = $request->input('patient_id');
+        $visit_id = $request->input('visit_id');
+        $ReceiptNumber = ReceiptNumber::where('patient_id',$patient_id)->where('visit_id',$visit_id)->first();
+        return Response::json($ReceiptNumber, 200, array(), JSON_PRETTY_PRINT);
     }
 
 }

@@ -24,16 +24,18 @@
                 <tr>
                     <th style="text-align: left;">
                         <span style="font-size: 7pt;"><br>
-                            <b>Name :</b> &nbsp;&nbsp;{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}<br>
-                            <b>Gender :</b> {{$info->gender}}<br>
-                            <b>Age :</b> &nbsp;&nbsp;&nbsp;{{$info->age}}
+                            <b>Receipt # :</b> &nbsp;{{$recno}}<br>
+                            <b>Name :</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}<br>
+                            <b>Gender :</b> &nbsp;&nbsp;&nbsp;&nbsp;{{$info->gender}}<br>
+                            <b>Age :</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$info->age}}
                         </span>
                     </th>
                     <th style="text-align: left;">
                         <span style="font-size: 7pt;"><br>
-                            <b>Name :</b> &nbsp;&nbsp;{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}<br>
-                            <b>Gender :</b> {{$info->gender}}<br>
-                            <b>Age :</b> &nbsp;&nbsp;&nbsp;{{$info->age}}
+                            <b>Receipt # :</b> &nbsp;{{$recno}}<br>
+                            <b>Name :</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}<br>
+                            <b>Gender :</b> &nbsp;&nbsp;&nbsp;&nbsp;{{$info->gender}}<br>
+                            <b>Age :</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$info->age}}
                         </span>
                     </th>
                 </tr>
@@ -104,22 +106,62 @@
             </thead>
         </table>
 
+        <table style="width:100%;">
+        <?php $discounted_price =  number_format($totalbill->discounted_price, 2);?>
+            <thead>
+                <tr>
+                    <th style="text-align: left;">
+                        <b style="font-size:9pt;">DISCOUNT</b>
+                    </th>
+                    <th style="text-align: right;">
+                        <b style="font-size:9pt;">Php. {{$discounted_price}}</b>
+                    </th>
+
+                    <th style="text-align: left;">
+                        <b style="font-size:9pt;">DISCOUNT</b>
+                    </th>
+                    <th style="text-align: right;">
+                        <b style="font-size:9pt;">Php. {{$discounted_price}}</b>
+                    </th>
+                </tr>
+            </thead>
+        </table>
         <table style="width:100%;">
         <?php $total =  number_format($totalbill->totalbill, 2);?>
             <thead>
                 <tr>
                     <th style="text-align: left;">
+                        <b style="font-size:9pt;">TOTAL w/o DISCOUNT</b>
+                    </th>
+                    <th style="text-align: right;">
+                        <b style="font-size:9pt;"><u>Php. {{$total}}</u></b>
+                    </th>
+
+                    <th style="text-align: left;">
+                        <b style="font-size:9pt;">TOTAL w/o DISCOUNT</b>
+                    </th>
+                    <th style="text-align: right;">
+                        <b style="font-size:9pt;"><u>Php. {{$total}}</u></b>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <table style="width:100%;">
+        <?php $discounted_total =  number_format($totalbill->discounted_total, 2);?>
+            <thead>
+                <tr>
+                    <th style="text-align: left;">
                         <b style="font-size:9pt;">TOTAL</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:9pt;">Php. {{$total}}</b>
+                        <b style="font-size:11pt;">Php. {{$discounted_total}}</b>
                     </th>
 
                     <th style="text-align: left;">
                         <b style="font-size:9pt;">TOTAL</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:9pt;">Php. {{$total}}</b>
+                        <b style="font-size:11pt;">Php. {{$discounted_total}}</b>
                     </th>
                 </tr>
             </thead>

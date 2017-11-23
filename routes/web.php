@@ -74,7 +74,7 @@ Route::get('/NFHSI/queueing', 'QueController@queueing');
 // --- PDF ---
 Route::get('/pdf/view/{id}/{datefrom}/{dateto}', 'DoctorsController@printreport');
 Route::get('/patient/pdf/view/{id}/{vid}', 'PatientsController@patientprintreport');
-Route::get('/patientreceipt/pdf/view/{id}/{vid}', 'PatientsController@patientreceipt');
+Route::get('/patientreceipt/pdf/view/{id}/{vid}/{recno}', 'PatientsController@patientreceipt');
 Route::get('/pdf/view2/{id}/{datefrom}/{dateto}', 'DoctorsController@printxrayreport');
 Route::get('/print/rx/{id}/{vid}', 'PatientsController@printpatientrx');
 
@@ -82,6 +82,8 @@ Route::get('/NFHSI/doctors', 'DoctorsController@doctoruserpage');
 
 Route::get('/xray/pdf/view/{id}', 'PatientsController@xraypdfview');
 Route::get('/urinalysis/pdf/view/{id}', 'PatientsController@urinalysispdfview');
+
+Route::get('/visit/{id}/{vid}/xraydone', 'PatientsController@patientvisitxraydone');
 
 
 //----API---
@@ -123,4 +125,6 @@ Route::get('api/submainservices','PatientsController@submainservices');
 
 Route::get('api/donevisit','PatientsController@donevisit');
 Route::get('api/cancelvisit','PatientsController@cancelvisit');
+
+Route::get('api/checkreceipt','PatientsController@checkreceipt');
 

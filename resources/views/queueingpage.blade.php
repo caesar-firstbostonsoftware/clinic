@@ -56,10 +56,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
         <!-- <li><a href="#" data-toggle="modal" data-target="#modal_editvisit"><img src="{{ asset('/img/2018.png') }}" height="20" width="20"> <span>Queued X-ray</span></a></li> -->
-        <li class="active"><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
+        <!-- <li class="active"><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li> -->
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
-        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
+        <li class="active"><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
@@ -77,8 +77,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li class="active"><a href="/NFHSI/queueing"><b>Queueing</b></a></li>
         </ol>
     </section>
-    
-    <section class="content col-md-2">
+    @if($User->position == "Xray")
+    <section class="content col-md-4">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
@@ -95,7 +95,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         $id = $counter++;
                                         $zero_id = sprintf("%03d", $id);
                                     ?>
-                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b> {{$patientxray->patient->l_name}}, {{$patientxray->patient->f_name}}<br>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientxray->patient_id}}/{{$patientxray->visit_id}}" target="_blank"> {{$patientxray->l_name}}, {{$patientxray->f_name}}</a> --
+                                        <b>Services:</b>
+                                        @foreach($xrayservice as $xrayser)
+                                        {{$xrayser->xrayservice1001->name}},
+                                        @endforeach
+                                        <br>
                                     @endforeach
                                 </div>
                             </div>
@@ -105,6 +110,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
         </div>
     </section>
+    @endif
+    @if($User->position == "Labtest")
     <section class="content col-md-2">
         <div class="row">
             <div class="col-md-12">
@@ -122,7 +129,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         $id = $counter++;
                                         $zero_id = sprintf("%03d", $id);
                                     ?>
-                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b> {{$patienturinalysis->patient->l_name}}, {{$patienturinalysis->patient->f_name}}<br>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patienturinalysis->patient->id}}/{{$patienturinalysis->visit_id}}"> {{$patienturinalysis->patient->l_name}}, {{$patienturinalysis->patient->f_name}}</a><br>
 
                                     @endforeach
                                 </div>
@@ -133,126 +140,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
         </div>
     </section>
-    <section class="content col-md-2">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><b>Fecalysis</b></h3>
-                    </div>
-                    <div class="box-body">
-                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <?php $counter = 1;?>
-                                    @foreach($fecalysis as $patientfecalysis)
-                                    @if($patientfecalysis->admin_panel_id == 2 || $patientfecalysis->admin_panel_id == 3)
-                                    <?php
-                                        $id = $counter++;
-                                        $zero_id = sprintf("%03d", $id);
-                                    ?>
-                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b> {{$patientfecalysis->l_name}}, {{$patientfecalysis->f_name}}<br>
-
-                                    @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="content col-md-2">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><b>Chemistry II</b></h3>
-                    </div>
-                    <div class="box-body">
-                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <?php $counter = 1;?>
-                                    @foreach($chemistryii as $patientchemistryii)
-                                    @if($patientchemistryii->admin_panel_id == 4 || $patientchemistryii->admin_panel_id == 5 || $patientchemistryii->admin_panel_id == 9 || $patientchemistryii->admin_panel_id == 10 || $patientchemistryii->admin_panel_id == 11 || $patientchemistryii->admin_panel_id == 12 || $patientchemistryii->admin_panel_id == 13 || $patientchemistryii->admin_panel_id == 14 || $patientchemistryii->admin_panel_id == 15 || $patientchemistryii->admin_panel_id == 16 || $patientchemistryii->admin_panel_id == 17 || $patientchemistryii->admin_panel_id == 18 || $patientchemistryii->admin_panel_id == 19 || $patientchemistryii->admin_panel_id == 20 || $patientchemistryii->admin_panel_id == 21 || $patientchemistryii->admin_panel_id == 22 || $patientchemistryii->admin_panel_id == 23 || $patientchemistryii->admin_panel_id == 24)
-                                    <?php
-                                        $id = $counter++;
-                                        $zero_id = sprintf("%03d", $id);
-                                    ?>
-                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b> {{$patientchemistryii->l_name}}, {{$patientchemistryii->f_name}}<br>
-
-                                    @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="content col-md-2">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><b>OGTT</b></h3>
-                    </div>
-                    <div class="box-body">
-                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <?php $counter = 1;?>
-                                    @foreach($ogtt as $patientogtt)
-                                    @if($patientogtt->admin_panel_id == 6 || $patientogtt->admin_panel_id == 7 || $patientogtt->admin_panel_id == 8)
-                                    <?php
-                                        $id = $counter++;
-                                        $zero_id = sprintf("%03d", $id);
-                                    ?>
-                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b> {{$patientogtt->l_name}}, {{$patientogtt->f_name}}<br>
-
-                                    @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="content col-md-2">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><b>Hematology</b></h3>
-                    </div>
-                    <div class="box-body">
-                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <?php $counter = 1;?>
-                                    @foreach($hematology as $patienthematology)
-                                    @if($patienthematology->admin_panel_id == 25 || $patienthematology->admin_panel_id == 26 || $patienthematology->admin_panel_id == 27 || $patienthematology->admin_panel_id == 28)
-                                    <?php
-                                        $id = $counter++;
-                                        $zero_id = sprintf("%03d", $id);
-                                    ?>
-                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b> {{$patienthematology->l_name}}, {{$patienthematology->f_name}}<br>
-
-                                    @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @endif
     </div>
 
     @include('adminlte::layouts.partials.controlsidebar')

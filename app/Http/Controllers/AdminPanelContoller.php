@@ -137,11 +137,17 @@ class AdminPanelContoller extends Controller
             $sub_mainedit_id = $request->input('sub_mainedit_id');
             $subname = $request->input('subname');
             $price_service = $request->input('price_service');
+            if (!$price_service) {
+                $price = 0;
+            }
+            else {
+                $price = $request->input('price_service');
+            }
 
             $AdminPanel = new AdminPanel;
             $AdminPanel->admin_panel_cat_id = $sub_mainedit_id;
             $AdminPanel->name = $subname;
-            $AdminPanel->price = $price_service;
+            $AdminPanel->price = $price;
             $AdminPanel->save();
 
             return redirect()->action('AdminPanelContoller@services');

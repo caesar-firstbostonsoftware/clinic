@@ -42,7 +42,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
-        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
+        <!-- <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li> -->
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
@@ -122,7 +122,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-1 control-label">Address</label>
                                     <div class="col-sm-5">
                                         @if(!$patient)
-                                            <input class="form-control" id="address" name="address" placeholder="Address" required="" type="text" autocomplete="off" tabindex="4">
+                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" autocomplete="off" tabindex="4">
                                         @else
                                             <input class="form-control" id="address" name="address" placeholder="Address" type="text" readonly="" value="{{$patient->address}}">
                                         @endif
@@ -158,18 +158,43 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-1 control-label">Age</label>
                                     <div class="col-sm-1">
                                         @if(!$patient)
-                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" required="" type="text" tabindex="-1">
+                                            <input class="form-control age" id="age" name="age" placeholder="" type="number" min="0" tabindex="7" autocomplete="off">
                                         @else
-                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" type="text" value="{{$patient->age}}">
+                                            <input class="form-control age" id="age" name="age" placeholder="" readonly="" type="number" min="0" value="{{$patient->age}}" tabindex="7" autocomplete="off">
                                         @endif
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">Purpose of Visit</label>
                                     <div class="col-sm-5">
-                                        <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required="" tabindex="7"></textarea>
+                                        <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" tabindex="8"></textarea>
                                     </div>
-                                </div><br>
+                                </div>
+                                @if(!$patient)
+                                <div class="form-group">
+                                    <div class="checkbox col-sm-2">
+                                        <label><input type="checkbox" class="check_senciz_id" value="Yes">Senior Citizen ID #</label>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input class="form-control senciz_id" id="senciz_id" name="senciz_id" placeholder="Senior Citizen ID #" type="type" autocomplete="off" readonly="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox col-sm-2">
+                                        <label><input type="checkbox" class="check_pwd_id" value="Yes">PWD ID #</label>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input class="form-control pwd_id" id="pwd_id" name="pwd_id" placeholder="PWD ID #" type="type" autocomplete="off" readonly="">
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="form-group ">
+                                    <label class="col-sm-1 control-label">Discount %</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control discount" id="discount" name="discount" type="number" min="1" autocomplete="off" tabindex="4">
+                                    </div>
+                                </div>
+                                <br>
 
                                 <h3>Services</h3>
                                 <!-- @foreach($adminpanelcat as $cat)
@@ -219,7 +244,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                                 <div class="form-group">
                                     <div class="col-sm-1">
-                                        <button class="btn btn-primary btn-xs" id="btn-submit-personal_info" type="submit">Submit</button>
+                                        <button class="btn btn-primary btn-xs submitsubmit" id="btn-submit-personal_info" type="submit">Submit</button>
                                     </div>
                                 </div>
                             </form>
@@ -276,41 +301,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
     });
 
-    $('.cateservices').click(function() {
-        if ($(this).is(':checked')) {
-            var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
-            var totaltotal = parseFloat($('.totaltotal').html());
-            if (!priceprice) {
-                var price2price = 0.00;
-            }
-            else {
-                var price2price = priceprice;
-            }
-            var totals = price2price + totaltotal;
-            var finaltotal = totals.toFixed(2);
-            $('.totaltotal').empty();
-            $('.totaltotal').append(''+finaltotal+'');
-            $('.totalprice').empty();
-            $('.totalprice').val(finaltotal);
+    // $('.cateservices').click(function() {
+    //     if ($(this).is(':checked')) {
+    //         var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
+    //         var totaltotal = parseFloat($('.totaltotal').html());
+    //         if (!priceprice) {
+    //             var price2price = 0.00;
+    //         }
+    //         else {
+    //             var price2price = priceprice;
+    //         }
+    //         var totals = price2price + totaltotal;
+    //         var finaltotal = totals.toFixed(2);
+    //         $('.totaltotal').empty();
+    //         $('.totaltotal').append(''+finaltotal+'');
+    //         $('.totalprice').empty();
+    //         $('.totalprice').val(finaltotal);
             
-        }
-        else {
-            var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
-            var totaltotal = parseFloat($('.totaltotal').html());
-            if (!priceprice) {
-                var price2price = 0.00;
-            }
-            else {
-                var price2price = priceprice;
-            }
-            var totals = totaltotal - price2price;
-            var finaltotal = totals.toFixed(2);
-            $('.totaltotal').empty();
-            $('.totaltotal').append(''+finaltotal+'');
-            $('.totalprice').empty();
-            $('.totalprice').val(finaltotal);
-        }
-    });
+    //     }
+    //     else {
+    //         var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
+    //         var totaltotal = parseFloat($('.totaltotal').html());
+    //         if (!priceprice) {
+    //             var price2price = 0.00;
+    //         }
+    //         else {
+    //             var price2price = priceprice;
+    //         }
+    //         var totals = totaltotal - price2price;
+    //         var finaltotal = totals.toFixed(2);
+    //         $('.totaltotal').empty();
+    //         $('.totaltotal').append(''+finaltotal+'');
+    //         $('.totalprice').empty();
+    //         $('.totalprice').val(finaltotal);
+    //     }
+    // });
 
     $('.appendservice').on('click',function() {
             var main_id = $(this).data('mainid');
@@ -321,6 +346,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
                                         </select>\
                                         <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off" style="margin-top:-11%;margin-left:105%;width:50%;">\
+                                        <input class="form-control" name="mainservice[]" value="'+main_id+'" type="text" style="display:none;">\
                                     </div>\
                                     <div class="col-sm-2">\
                                     </div>\
@@ -387,6 +413,45 @@ scratch. This page gets rid of all links and provides the needed markup only.
             })
 
     });
+
+    $('.check_senciz_id').on('click',function() {
+        if ($('.check_senciz_id').is(':checked')) {
+            $('.pwd_id').val("");
+            $('.pwd_id').attr('readonly','readonly');
+            $('.senciz_id').removeAttr('readonly');
+            $('.check_pwd_id').prop('checked',false);
+        }
+        else {
+            $('.senciz_id').val("");
+            $('.senciz_id').attr('readonly','readonly');
+            $('.check_senciz_id').prop('checked',false);
+        }
+    })
+
+    $('.check_pwd_id').on('click',function() {
+        if ($('.check_pwd_id').is(':checked')) {
+            $('.senciz_id').val("");
+            $('.senciz_id').attr('readonly','readonly');
+            $('.pwd_id').removeAttr('readonly');
+            $('.check_senciz_id').prop('checked',false);
+        }
+        else {
+            $('.pwd_id').val("");
+            $('.pwd_id').attr('readonly','readonly');
+            $('.check_pwd_id').prop('checked',false);
+        }
+    })
+
+    // $('.submitsubmit').on('click',function() {
+    //     var datedate = $('.dob').val();
+    //     if (!datedate) {
+    //         alert('Please Fill Up Birth Date.');
+    //         return false;
+    //     }
+    //     else {
+    //         return true;
+    //     }
+    // })
     
 
 </script>

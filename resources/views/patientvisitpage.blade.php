@@ -51,7 +51,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
-        <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
+        <!-- <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li> -->
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
@@ -1483,6 +1483,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <button type="button" class="btn btn-xs btn-primary btn-xs editpatientxray" data-toggle="modal" data-target="#modal_xraynew_edit" data-backdrop="static" data-id="{{$xray->id}}">Edit</button>
                                                     <a href="/xray/pdf/view/{{$xray->id}}" target="_blank" class="btn btn-xs btn-success">Print</a>
                                                     <button type="button" class="btn btn-xs btn-warning patientxraylog" data-toggle="modal" data-target="#modal_patientxraylog" data-backdrop="static" data-id="{{$xray->id}}">Logs</button>
+                                                    @if($xray->status == 'New')
+                                                    <a href="/visit/{{$xray->patient_id}}/{{$xray->visitid}}/xraydone" class="btn btn-xs btn-default">Done</a>
+                                                    @endif
                                                 @endif
                                                 </td>
                                             </tr>
@@ -1749,7 +1752,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 8pt;">{{$service->cat_name}} <span class="caret"></span></a>
                                                     <ul class="dropdown-menu">
                                                         @foreach($PatientService1002 as $service1002)
-                                                            @if($service1002->admin_panel_id == 1)
+                                                            @if($service1002->admin_panel_id == 1 && $service1002->admin_panel_sub_id == 1)
                                                                 <li role="presentation">
                                                                     <a href="#Urinalysis" role="tab" data-toggle="tab" style="font-size: 8pt;">Urinalysis</a>
                                                                 </li>

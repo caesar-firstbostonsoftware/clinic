@@ -21,4 +21,9 @@ class PatientService extends Model
     	 return $this->belongsTo('App\Patient','patient_id');
     }
 
+    public function xrayservice1001()
+    {
+         return $this->belongsTo('App\AdminPanel','admin_panel_sub_id');
+    }
+
 }
