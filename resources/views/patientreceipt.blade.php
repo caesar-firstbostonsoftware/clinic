@@ -114,14 +114,14 @@
                         <b style="font-size:9pt;">AMOUNT</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:9pt;">Php. {{$total}}</b>
+                        <b style="font-size:9pt;">{{$total}}</b>
                     </th>
 
                     <th style="text-align: left;">
-                        <b style="font-size:9pt;">TOTAL w/o DISCOUNT</b>
+                        <b style="font-size:9pt;">AMOUNT</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:9pt;">Php. {{$total}}</b>
+                        <b style="font-size:9pt;">{{$total}}</b>
                     </th>
                 </tr>
             </thead>
@@ -134,14 +134,32 @@
                         <b style="font-size:9pt;">LESS DISCOUNT</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:9pt;"><u>Php. {{$discounted_price}}</u></b>
+                        <b style="font-size:9pt;">{{$discounted_price}}</b>
                     </th>
 
                     <th style="text-align: left;">
-                        <b style="font-size:9pt;">DISCOUNT</b>
+                        <b style="font-size:9pt;">LESS DISCOUNT</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:9pt;"><u>Php. {{$discounted_price}}</u></b>
+                        <b style="font-size:9pt;">{{$discounted_price}}</b>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">
+                    </th>
+                    <th style="text-align: right;">
+                        <b style="font-size:9pt;">---------------</b>
+                    </th>
+
+                    <th style="text-align: left;">
+                    </th>
+                    <th style="text-align: right;">
+                        <b style="font-size:9pt;">---------------</b>
                     </th>
                 </tr>
             </thead>
@@ -155,14 +173,14 @@
                         <b style="font-size:9pt;">TOTAL</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:11pt;">Php. {{$discounted_total}}</b>
+                        <b style="font-size:9pt;">Php. {{$discounted_total}}</b>
                     </th>
 
                     <th style="text-align: left;">
                         <b style="font-size:9pt;">TOTAL</b>
                     </th>
                     <th style="text-align: right;">
-                        <b style="font-size:11pt;">Php. {{$discounted_total}}</b>
+                        <b style="font-size:9pt;">Php. {{$discounted_total}}</b>
                     </th>
                 </tr>
             </thead>

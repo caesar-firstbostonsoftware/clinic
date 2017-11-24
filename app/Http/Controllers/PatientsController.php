@@ -209,7 +209,8 @@ class PatientsController extends Controller
                 }
             }
             Session::flash('alert-success', 'Personal Info Created.');
-            return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
+            // return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
+            return redirect()->action('PatientsController@patientlist');
         }
         else {
             $purpose_visit = $request->input('purpose_visit');
@@ -303,7 +304,8 @@ class PatientsController extends Controller
                 }
             }
             Session::flash('alert-success', 'Personal Info Created.');
-            return redirect()->action('PatientsController@patientvisitpage',['id' => $patient_id, 'vid' => $patientvisit->visitid]);
+            // return redirect()->action('PatientsController@patientvisitpage',['id' => $patient_id, 'vid' => $patientvisit->visitid]);
+            return redirect()->action('PatientsController@patientlist');
         }
     }
 
@@ -324,15 +326,18 @@ class PatientsController extends Controller
                 ->where('doctors.id',$doctor_id)
                 ->select('patients.*')
                 ->get();
+                $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
             }
             else if($doctor_id == 1 ) {
                 $patientlist = Patient::all();
+                $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
             }
             else {
                 $patientlist = Patient::all();
+                $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
             }
-            //return Response::json($patientlist, 200, array(), JSON_PRETTY_PRINT);
-            return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub'));
+            // return Response::json($latsvisit, 200, array(), JSON_PRETTY_PRINT);
+            return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub','latsvisit'));
             
         }
         else {
@@ -340,7 +345,8 @@ class PatientsController extends Controller
             $adminpanel = AdminPanel::all();
             $sub = AdminPanelSub::all();
             $patientlist = Patient::all();
-            return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub'));
+            $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
+            return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub','latsvisit'));
         }
     }
 

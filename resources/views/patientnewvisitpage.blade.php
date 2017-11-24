@@ -124,7 +124,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @if(!$patient)
                                             <input class="form-control" id="address" name="address" placeholder="Address" type="text" autocomplete="off" tabindex="4">
                                         @else
-                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" readonly="" value="{{$patient->address}}">
+                                            <input class="form-control" id="address" name="address" placeholder="Address" type="text" readonly="" value="{{$patient->address}}" tabindex="4">
                                         @endif
                                     </div>
                                 </div>
@@ -138,7 +138,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <option value="Female">Female</option>
                                             </select>
                                         @else
-                                            <select id="gender" name="gender" class="form-control" disabled=""> 
+                                            <select id="gender" name="gender" class="form-control" disabled="" tabindex="5"> 
                                                 <option value="{{$patient->gender}}">{{$patient->gender}}</option>
                                             </select>
                                         @endif
@@ -150,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @if(!$patient)
                                             <input type="text" id="datepicker" name="dob" class="form-control dob" required="" placeholder="YYYY-MM-DD" readonly="" tabindex="6">
                                         @else
-                                            <input type="text" id="datepicker" name="dob" class="form-control dob" placeholder="YYYY-MM-DD" disabled="" value="{{$patient->dob}}" readonly="">
+                                            <input type="text" id="datepicker" name="dob" class="form-control dob" placeholder="YYYY-MM-DD" disabled="" value="{{$patient->dob}}" readonly="" tabindex="6">
                                         @endif
                                     </div>
                                 </div>
@@ -191,7 +191,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group ">
                                     <label class="col-sm-1 control-label">Discount %</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control discount" id="discount" name="discount" type="number" min="1" autocomplete="off" tabindex="4">
+                                        <input class="form-control discount" id="discount" name="discount" type="number" min="1" autocomplete="off" tabindex="9">
                                     </div>
                                 </div>
                                 <br>

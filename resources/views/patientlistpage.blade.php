@@ -74,6 +74,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">List of Patients <a href="/newvisit" class="btn btn-primary btn-xs">Add New</a></h3>
+                        <div class="flash-message top-message topmessage">
+                                @foreach (['danger', 'warning', 'success', 'info'] as $message)
+                                    @if(Session::has('alert-' . $message))
+                                        <p class="alert alert-{{ $message }}" style="padding:.5px;height:22px; width:40.5%; margin-top: 2.1%">{{ Session::get('alert-' . $message) }}</p>
+                                    @endif
+                                @endforeach
+                            </div>
                     </div>
                         <div class="box-body">
                             <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
@@ -100,7 +107,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <td>{{$zero_id}}</td>
                                                     <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
                                                     <td>{{$patient->gender}}</td>
-                                                    <td>{{$patient->dob}}</td>
+                                                    <td>
+                                                        @foreach($latsvisit as $visitdate)
+                                                            @if($patient->id == $visitdate->patient_id)
+                                                                {{$visitdate->visit_date}}
+                                                            @endif
+                                                        @endforeach
+                                                    </td>
                                                     <td>
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
@@ -455,6 +468,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $(document).ready(function(){
         $('#myTable').dataTable();
+        setTimeout(function(){ 
+            $('.topmessage').hide();
+        }, 2000);
     });
 
     $(".dob").datepicker({
@@ -503,7 +519,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
                         <a href="#" class="btn btn-xs btn-danger cancelvisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Cancel</a>\
                         <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
-                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static">Print Receipt</button>\
+                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
                     </td>\
                     </tr>');
                 }
@@ -519,7 +535,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
                         <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
-                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static">Print Receipt</button>\
+                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
                     </td>\
                     </tr>');
                 }
@@ -538,6 +554,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 $('.receipt_no').on('change',function() {
                     var receipt_no = $(this).val();
+                    var patient_id = $(this).data('p_id');
+                    var visit_id = $(this).data('v_id');
                     if (!receipt_no) {
                         $('.finalprint').removeAttr('href');
                         $('.finalprint').attr('onclick','return false;');
@@ -545,13 +563,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     else {
                         $('.finalprint').removeAttr('href');
                         $('.finalprint').removeAttr('onclick');
-                        $('.finalprint').attr('href','/patientreceipt/pdf/view/'+visit.patient_id+'/'+visit.visitid+'/'+receipt_no+'');
+                        $('.finalprint').attr('href','/patientreceipt/pdf/view/'+patient_id+'/'+visit_id+'/'+receipt_no+'');
                     }
                 })
 
                 $('.addreceipt').on('click',function() {
-                    var patient_id = visit.patient_id;
-                    var visit_id = visit.visitid;
+                    var patient_id = $(this).data('p_id');
+                    var visit_id = $(this).data('v_id');
+                    $('.receipt_no').removeAttr('data-p_id');
+                    $('.receipt_no').removeAttr('data-v_id');
+                    $('.receipt_no').attr('data-p_id',patient_id);
+                    $('.receipt_no').attr('data-v_id',visit_id);
                     $.get('api/checkreceipt?patient_id=' + patient_id +'&visit_id=' + visit_id, function(data){
                         if (!data.id) {
                             $('.finalprint').removeAttr('href');
