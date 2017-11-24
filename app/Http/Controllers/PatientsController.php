@@ -121,7 +121,13 @@ class PatientsController extends Controller
 
             $senciz_id = $request->input('senciz_id');
             $pwd_id = $request->input('pwd_id');
-            $discount = str_replace('.', '', $request->input('discount'));
+            if (!$request->input('discount')) {
+                $asd = 0;
+            }
+            else {
+                $asd = $request->input('discount');
+            }
+            $discount = str_replace('.', '', $asd);
             $aa = '.'.$discount;
             $discounted_price = $totalprice * $aa;
             $discounted_total = $totalprice - $discounted_price;
@@ -146,7 +152,7 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $request->input('discount');
+                $patientvisit->discount = $asd;
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
@@ -178,7 +184,7 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = $check_p_v->visitid + 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $request->input('discount');
+                $patientvisit->discount = $asd;
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
@@ -220,7 +226,13 @@ class PatientsController extends Controller
 
             $senciz_id = $request->input('senciz_id');
             $pwd_id = $request->input('pwd_id');
-            $discount = str_replace('.', '', $request->input('discount'));
+            if (!$request->input('discount')) {
+                $asd = 0;
+            }
+            else {
+                $asd = $request->input('discount');
+            }
+            $discount = str_replace('.', '', $asd);
             $aa = '.'.$discount;
             $discounted_price = $totalprice * $aa;
             $discounted_total = $totalprice - $discounted_price;
@@ -234,7 +246,7 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $request->input('discount');
+                $patientvisit->discount = $asd;
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
@@ -266,7 +278,7 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = $check_p_v->visitid + 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $request->input('discount');
+                $patientvisit->discount = $asd;
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
