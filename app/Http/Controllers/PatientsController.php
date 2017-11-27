@@ -68,6 +68,17 @@ class MYPDF extends TCPDF {
                 }
             }
 
+class MYPDFreceipt extends TCPDF {
+                public function Header() {
+
+                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $this->Image($image_file, 7, 10, 15, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $this->Image($image_file, 7, 99, 15, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                }
+            }
+
 class PatientsController extends Controller
 {
 
@@ -1301,6 +1312,17 @@ class PatientsController extends Controller
         $v_id = $request->input('editvisit_v_id');
         $totalprice = $request->input('totalprice');
 
+        if (!$request->input('discount')) {
+            $asd = 0;
+        }
+        else {
+            $asd = $request->input('discount');
+        }
+        $discount = str_replace('.', '', $asd);
+        $aa = '.'.$discount;
+        $discounted_price = $totalprice * $aa;
+        $discounted_total = $totalprice - $discounted_price;
+
         $mainservice = count($request->input('mainservice'));
         $now = date("Y-m-d");
         $delete = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
@@ -1327,7 +1349,10 @@ class PatientsController extends Controller
         }
 
         $patientvisit = PatientVisit::where('patient_id',$p_id)->where('visitid',$v_id)->first();
-        $patientvisit->totalbill = $totalprice;
+        $patientvisit->discount = $asd;
+        $patientvisit->totalbill = round($totalprice);
+        $patientvisit->discounted_price = round($discounted_price);
+        $patientvisit->discounted_total = round($discounted_total);
         $patientvisit->visit_date = $now;
         $patientvisit->purpose_visit = $request->input('purpose_visit');
         $patientvisit->save(); 
@@ -1399,7 +1424,7 @@ class PatientsController extends Controller
 
     public function patientreceipt(Request $request,$id,$vid,$recno)
     {   
-        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new MYPDFreceipt(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetTitle('NFHSI Patient PDF');
@@ -1409,12 +1434,12 @@ class PatientsController extends Controller
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
-        $pdf->setPrintHeader(false);
+        // $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
 
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-        $pdf->SetMargins(10, 10, 10, true);
+        $pdf->SetMargins(0, 10, 10, true);
         $pdf->SetHeaderMargin(12);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 

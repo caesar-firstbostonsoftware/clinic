@@ -39,7 +39,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
+            @if(Session::get('user') == 1)
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+            @endif
+            @if(!Session::get('user'))
+                <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+            @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
             @if(Session::get('position') == "Doctor")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
@@ -78,7 +83,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </ol>
     </section>
     @if($User->position == "Xray")
-    <section class="content col-md-4">
+    <section class="content">
+        <div class="row">
+            <div class="col-md-4">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>X-Ray</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($xray as $patientxray)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientxray->patient_id}}/{{$patientxray->visit_id}}" target="_blank"> {{$patientxray->l_name}}, {{$patientxray->f_name}}</a> --
+                            <b>Services:</b>
+                            @foreach($xrayservice as $xrayser)
+                                @if($patientxray->patient_id == $xrayser->patient_id)
+                                    {{$xrayser->xrayservice1001->name}},
+                                @endif
+                            @endforeach
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!-- <section class="content col-md-4">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
@@ -98,7 +133,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientxray->patient_id}}/{{$patientxray->visit_id}}" target="_blank"> {{$patientxray->l_name}}, {{$patientxray->f_name}}</a> --
                                         <b>Services:</b>
                                         @foreach($xrayservice as $xrayser)
-                                        {{$xrayser->xrayservice1001->name}},
+                                            @if($patientxray->patient_id == $xrayser->patient_id)
+                                                {{$xrayser->xrayservice1001->name}},
+                                            @endif
                                         @endforeach
                                         <br>
                                     @endforeach
@@ -109,10 +146,214 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     @endif
     @if($User->position == "Labtest")
-    <section class="content col-md-2">
+    <section class="content">
+        <div class="row">
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Urinalysis</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($urinalysis as $patienturinalysis)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patienturinalysis->patient->id}}/{{$patienturinalysis->visit_id}}" target="_blank"> {{$patienturinalysis->patient->l_name}}, {{$patienturinalysis->patient->f_name}}</a>
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Pregnancy Test</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($pregnancy as $patientpregnancy)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientpregnancy->patient->id}}/{{$patientpregnancy->visit_id}}" target="_blank"> {{$patientpregnancy->patient->l_name}}, {{$patientpregnancy->patient->f_name}}</a>
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Fecalysis</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($fecalysis as $patientfecalysis)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientfecalysis->patient->id}}/{{$patientfecalysis->visit_id}}" target="_blank"> {{$patientfecalysis->patient->l_name}}, {{$patientfecalysis->patient->f_name}}</a>
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Amoeba</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($amoeba as $patientamoeba)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientamoeba->patient->id}}/{{$patientamoeba->visit_id}}" target="_blank"> {{$patientamoeba->patient->l_name}}, {{$patientamoeba->patient->f_name}}</a>
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Hematology</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($hematology as $patienthematology)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patienthematology->patient->id}}/{{$patienthematology->visit_id}}" target="_blank"> {{$patienthematology->patient->l_name}}, {{$patienthematology->patient->f_name}}</a> --
+                            <b>Services:</b>
+                            @foreach($hematologyservice as $hemaser)
+                                @if($patienthematology->patient_id == $hemaser->patient_id)
+                                    {{$hemaser->xrayservice1001->name}},
+                                @endif
+                            @endforeach
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Serology</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($serology as $patientserology)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientserology->patient->id}}/{{$patientserology->visit_id}}" target="_blank"> {{$patientserology->patient->l_name}}, {{$patientserology->patient->f_name}}</a> --
+                            <b>Services:</b>
+                            @foreach($serologyservice as $seroser)
+                                @if($patientserology->patient_id == $seroser->patient_id)
+                                    {{$seroser->xrayservice1001->name}},
+                                @endif
+                            @endforeach
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Electrocardiographic</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($ecg as $patientecg)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientecg->patient->id}}/{{$patientecg->visit_id}}" target="_blank"> {{$patientecg->patient->l_name}}, {{$patientecg->patient->f_name}}</a>
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Chemistry I</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($chemistryi as $patientchemistryi)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientchemistryi->patient_id}}/{{$patientchemistryi->visit_id}}" target="_blank"> {{$patientchemistryi->l_name}}, {{$patientchemistryi->f_name}}</a>
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        </div>
+
+        <div class="row">
+        <div class="col-md-3">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Chemistry II</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($chemistryii as $patientchemistryii)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientchemistryii->patient_id}}/{{$patientchemistryii->visit_id}}" target="_blank"> {{$patientchemistryii->l_name}}, {{$patientchemistryii->f_name}}</a>
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+
+    <!-- <section class="content col-md-3">
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
@@ -129,8 +370,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         $id = $counter++;
                                         $zero_id = sprintf("%03d", $id);
                                     ?>
-                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patienturinalysis->patient->id}}/{{$patienturinalysis->visit_id}}"> {{$patienturinalysis->patient->l_name}}, {{$patienturinalysis->patient->f_name}}</a><br>
-
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patienturinalysis->patient->id}}/{{$patienturinalysis->visit_id}}"> {{$patienturinalysis->patient->l_name}}, {{$patienturinalysis->patient->f_name}}</a>
+                                        <br>
                                     @endforeach
                                 </div>
                             </div>
@@ -139,7 +380,216 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
+    <!-- <section class="content col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>Pregnancy Test</b></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?php $counter = 1;?>
+                                    @foreach($pregnancy as $patientpregnancy)
+                                    <?php
+                                        $id = $counter++;
+                                        $zero_id = sprintf("%03d", $id);
+                                    ?>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientpregnancy->patient->id}}/{{$patientpregnancy->visit_id}}"> {{$patientpregnancy->patient->l_name}}, {{$patientpregnancy->patient->f_name}}</a>
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!-- <section class="content col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>Fecalysis</b></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?php $counter = 1;?>
+                                    @foreach($fecalysis as $patientfecalysis)
+                                    <?php
+                                        $id = $counter++;
+                                        $zero_id = sprintf("%03d", $id);
+                                    ?>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientfecalysis->patient->id}}/{{$patientfecalysis->visit_id}}"> {{$patientfecalysis->patient->l_name}}, {{$patientfecalysis->patient->f_name}}</a>
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!-- <section class="content col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>Amoeba</b></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?php $counter = 1;?>
+                                    @foreach($amoeba as $patientamoeba)
+                                    <?php
+                                        $id = $counter++;
+                                        $zero_id = sprintf("%03d", $id);
+                                    ?>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientamoeba->patient->id}}/{{$patientamoeba->visit_id}}"> {{$patientamoeba->patient->l_name}}, {{$patientamoeba->patient->f_name}}</a>
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!-- <section class="content col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>Hematology</b></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?php $counter = 1;?>
+                                    @foreach($hematology as $patienthematology)
+                                    <?php
+                                        $id = $counter++;
+                                        $zero_id = sprintf("%03d", $id);
+                                    ?>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patienthematology->patient->id}}/{{$patienthematology->visit_id}}"> {{$patienthematology->patient->l_name}}, {{$patienthematology->patient->f_name}}</a> --
+                                        <b>Services:</b>
+                                        @foreach($hematologyservice as $hemaser)
+                                            @if($patienthematology->patient_id == $hemaser->patient_id)
+                                                {{$hemaser->xrayservice1001->name}},
+                                            @endif
+                                        @endforeach
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!-- <section class="content col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>Serology</b></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?php $counter = 1;?>
+                                    @foreach($serology as $patientserology)
+                                    <?php
+                                        $id = $counter++;
+                                        $zero_id = sprintf("%03d", $id);
+                                    ?>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientserology->patient->id}}/{{$patientserology->visit_id}}"> {{$patientserology->patient->l_name}}, {{$patientserology->patient->f_name}}</a> --
+                                        <b>Services:</b>
+                                        @foreach($serologyservice as $seroser)
+                                            @if($patientserology->patient_id == $seroser->patient_id)
+                                                {{$seroser->xrayservice1001->name}},
+                                            @endif
+                                        @endforeach
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!-- <section class="content col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>Electrocardiographic</b></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?php $counter = 1;?>
+                                    @foreach($ecg as $patientecg)
+                                    <?php
+                                        $id = $counter++;
+                                        $zero_id = sprintf("%03d", $id);
+                                    ?>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientecg->patient->id}}/{{$patientecg->visit_id}}"> {{$patientecg->patient->l_name}}, {{$patientecg->patient->f_name}}</a>
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!-- <section class="content col-md-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><b>Chemistry II</b></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer" id="users-table_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?php $counter = 1;?>
+                                    @foreach($chemistryii as $patientchemistryii)
+                                    <?php
+                                        $id = $counter++;
+                                        $zero_id = sprintf("%03d", $id);
+                                    ?>
+                                        <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientchemistryii->patient_id}}/{{$patientchemistryii->visit_id}}"> {{$patientchemistryii->l_name}}, {{$patientchemistryii->f_name}}</a>
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    
     @endif
     </div>
 

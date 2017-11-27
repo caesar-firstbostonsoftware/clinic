@@ -12,7 +12,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <img src="{{ asset('/img/greenfav.png') }}"><br>
+        <img src="{{ asset('/img/nfhsi_logo.png') }}" height="450" width="450"><br>
         <a href="/">Negros Family Health Services, Inc.</a>
     </div>
 </div>

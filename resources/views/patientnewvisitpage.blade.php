@@ -27,7 +27,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
+            @if(Session::get('user') == 1)
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+            @endif
+            @if(!Session::get('user'))
+                <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+            @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
             @if(Session::get('position') == "Doctor")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
@@ -156,7 +161,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <div class="form-group ">
                                     <label class="col-sm-1 control-label">Age</label>
-                                    <div class="col-sm-1">
+                                    <div class="col-sm-2">
                                         @if(!$patient)
                                             <input class="form-control age" id="age" name="age" placeholder="" type="number" min="0" tabindex="7" autocomplete="off">
                                         @else
@@ -173,7 +178,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 @if(!$patient)
                                 <div class="form-group">
                                     <div class="checkbox col-sm-2">
-                                        <label><input type="checkbox" class="check_senciz_id" value="Yes">Senior Citizen ID #</label>
+                                        <label><input type="checkbox" class="check_senciz_id" value="Yes">Senior Citizen ID #</label>
                                     </div>
                                     <div class="col-sm-3">
                                         <input class="form-control senciz_id" id="senciz_id" name="senciz_id" placeholder="Senior Citizen ID #" type="type" autocomplete="off" readonly="">
@@ -181,7 +186,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <div class="form-group">
                                     <div class="checkbox col-sm-2">
-                                        <label><input type="checkbox" class="check_pwd_id" value="Yes">PWD ID #</label>
+                                        <label><input type="checkbox" class="check_pwd_id" value="Yes">PWD ID #</label>
                                     </div>
                                     <div class="col-sm-3">
                                         <input class="form-control pwd_id" id="pwd_id" name="pwd_id" placeholder="PWD ID #" type="type" autocomplete="off" readonly="">
@@ -191,36 +196,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group ">
                                     <label class="col-sm-1 control-label">Discount %</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control discount" id="discount" name="discount" type="number" min="1" autocomplete="off" tabindex="9">
+                                        <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="9">
                                     </div>
                                 </div>
                                 <br>
 
                                 <h3>Services</h3>
-                                <!-- @foreach($adminpanelcat as $cat)
-                                <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
-                                    @foreach($adminpanel as $panel)
-                                        @if($cat->id == $panel->admin_panel_cat_id)
-                                            <div class="form-group ">
-                                                <label class="col-sm-1 control-label"></label>
-                                                <div class="col-sm-6">
-                                                    <label><input type="checkbox" class="{{$panel->id}} cate cateservices" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b></label>
-                                                </div>
-                                                <div class="col-sm-2" style="text-align: right;">
-                                                    @if($panel->price == 0)
-                                                    <label><b></b></label>
-                                                    @else
-                                                    <?php $price = number_format($panel->price,2); ?>
-                                                    <label class="priceprice"><b> {{$price}}</b></label>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                @endforeach -->
-
                                 @foreach($adminpanelcat as $cat)
-                                <div class="col-sm-12 {{$cat->id}}">
+                                <div class="col-sm-12 {{$cat->id}}" style="border:1px solid black;">
                                     <div class="row">
                                         <div class="col-sm-2" style="margin-left: 3%;">
                                             <h5>
@@ -343,7 +326,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.'+main_id+'').append('<div class="row">\
                                     <div class="col-sm-1"></div>\
                                     <div class="col-sm-4">\
-                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
+                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="" style="margin-top:-2%;">\
                                         </select>\
                                         <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off" style="margin-top:-11%;margin-left:105%;width:50%;">\
                                         <input class="form-control" name="mainservice[]" value="'+main_id+'" type="text" style="display:none;">\

@@ -27,7 +27,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
+            @if(Session::get('user') == 1)
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+            @endif
+            @if(!Session::get('user'))
+                <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
+            @endif
                 <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
             @if(Session::get('position') == "Doctor")
                 <li><a href="/generate/medcert"><i class="fa fa-circle-o"></i> Create Medical Certificate</a></li>
@@ -213,7 +218,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="form-group ">
                             <label class="col-sm-3 control-label" style="text-align: left;">Discount %</label>
                             <div class="col-sm-3">
-                                <input class="form-control discount" id="discount" name="discount" type="number" min="1" autocomplete="off" tabindex="4">
+                                <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="4">
                             </div>
                         </div>
 

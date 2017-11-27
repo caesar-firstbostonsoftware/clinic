@@ -4,9 +4,9 @@
     <!-- Logo -->
     <a href="#" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><img src="{{ asset('/img/greenfav.png') }}" height="35" width="45"></span>
+        <span class="logo-mini"><img src="{{ asset('/img/nfhsi_logo.png') }}" height="50" width="50"></span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><img src="{{ asset('/img/greenfav.png') }}" height="35" width="45">&nbsp;<b>NFHSI</b></span>
+        <span class="logo-lg" style="text-align: left;"><img src="{{ asset('/img/nfhsi_logo.png') }}" height="50" width="50">&nbsp;<b>NFHSI</b></span>
     </a>
 
     <!-- Header Navbar -->
