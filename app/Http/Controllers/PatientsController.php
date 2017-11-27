@@ -1434,7 +1434,7 @@ class PatientsController extends Controller
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
-        // $pdf->setPrintHeader(false);
+        $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
 
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
