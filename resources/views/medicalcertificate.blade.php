@@ -52,6 +52,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
+        
+        @if(!Session::get('user'))
+        <li><a href="/reports/0"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
 </aside>

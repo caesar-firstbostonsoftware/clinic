@@ -66,6 +66,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
+        
+        @if(!Session::get('user'))
+        <li><a href="/reports/0"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
 </aside>
@@ -155,7 +159,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <td width="30%">{{$income->patient->f_name}} {{$income->patient->m_name}} {{$income->patient->l_name}}</td>
                                             <td width="10%">{{$income->visit_date}}</td>
                                             <td width="40%" style="text-align: center;">{{$income->purpose_visit}}</td>
-                                            <td width="20%" style="text-align: right;">{{$income->totalbill}}</td>
+                                            <td width="20%" style="text-align: right;">{{$income->discounted_total}}</td>
                                             <td width="1%"></td>
                                         </tr>
                                     @endforeach

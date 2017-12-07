@@ -31,7 +31,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                  </div>
       <div class="row">
         <div class="col-xs-8" style="text-align: left;">
-            <a href="/NFHSI">Enter as Receptionist</a>
+            <!-- <a href="/NFHSI">Enter as Receptionist</a> -->
         </div>
         <div class="col-xs-4">
           <button type="submit" class="btn btn-primary btn-xs btn-block btn-flat">Sign In</button>

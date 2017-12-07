@@ -21,16 +21,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" && Session::get('user') == 1)
         <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
         @endif
-        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1)
-                <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-            @endif
-            @if(!Session::get('user'))
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -46,10 +43,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
-        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
-        <!-- <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li> -->
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor" || Session::get('position') == "Cashier")
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
-        @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
@@ -63,10 +59,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <h1><img src="{{ asset('/img/2010.png') }}" height="30" width="30"> Patients</h1>
         <ol class="breadcrumb">
             
-            @if(Session::get('position') == "Doctor")
+            @if(Session::get('user') == 1)
             <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/myinfo">My Info</a></li>
             @endif
+            <li><a href="/myinfo">My Info</a></li>
             <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
         </ol>
     </section>
@@ -203,7 +199,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                                 <h3>Services</h3>
                                 @foreach($adminpanelcat as $cat)
-                                <div class="col-sm-12 {{$cat->id}}" style="border:1px solid black;">
+                                <div class="col-sm-12 {{$cat->id}}" style="border:2px solid black;">
                                     <div class="row">
                                         <div class="col-sm-2" style="margin-left: 3%;">
                                             <h5>
@@ -258,7 +254,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script type="text/javascript">
     $(".dob").datepicker({
         dateFormat: "yy-mm-dd",
-        yearRange: "1950:2050",
+        yearRange: "1900:2050",
         changeYear: true,
         changeMonth: true,
         onSelect: function() {
@@ -324,9 +320,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var main_id = $(this).data('mainid');
             $(this).attr('disabled','disabled');     
             $('.'+main_id+'').append('<div class="row">\
-                                    <div class="col-sm-1"></div>\
+                                    <div class="col-sm-2"></div>\
                                     <div class="col-sm-4">\
-                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="" style="margin-top:-2%;">\
+                                        <input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1" style=margin-left:-45%;width:40%;">\
+                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="" style="margin-top:-11%;">\
                                         </select>\
                                         <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off" style="margin-top:-11%;margin-left:105%;width:50%;">\
                                         <input class="form-control" name="mainservice[]" value="'+main_id+'" type="text" style="display:none;">\
@@ -342,7 +339,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.service_name'+main_id+':last').empty();
                 $('.service_name'+main_id+':last').append('<option value="">--Select One--</option>');
                 $.each(data,function(index,subsub) {
-                    $('.service_name'+main_id+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'">'+subsub.name+'</option>');
+                    $('.service_name'+main_id+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price123.price+'">'+subsub.name+'</option>');
                 })
                 $('.appendservice').removeAttr('disabled');
             });
@@ -351,14 +348,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 var serserval = $('option:selected',this).data('price');
                 $(this).next('input').val(serserval);
 
-                var aa = $(this).val();
-                var bbaa = aa.replace(/,/g , '');
-                $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
+                // var aa = $(this).val();
+                // var bbaa = aa.replace(/,/g , '');
+                // $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
 
                 var sum = 0;
                 $('.services').each(function() {
+                    var qty = $(this).parent().parent().find('.ser_qty').val();
                     var others = $(this).val();
-                    var others2 = others.replace(/,/g , '');
+                    var qty_others = parseFloat(qty) * parseFloat(others);
+                    var others2 = qty_others;
                         if (others2 == '') {
                             var oth = 0;
                         }
@@ -371,15 +370,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
                     $('.totalprice').val(cc);
                     $('.totaltotal').text(dd);
+            })
 
+            $('.ser_qty').on('change',function() {
+                var sum = 0;
+                $('.services').each(function() {
+                    var qty = $(this).parent().parent().find('.ser_qty').val();
+                    var others = $(this).val();
+                    var qty_others = parseFloat(qty) * parseFloat(others);
+                    var others2 = qty_others;
+                        if (others2 == '') {
+                            var oth = 0;
+                        }
+                        else {
+                            var oth = others2;
+                        }
+                            sum += parseFloat(oth);
+                })
+                    var cc = sum.toString();
+                    var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    $('.totalprice').val(cc);
+                    $('.totaltotal').text(dd);
             })
 
             $('.removeservice').on('click',function() {
                 $(this).parent().parent().remove();
                 var sum = 0;
                     $('.services').each(function() {
+                        var qty = $(this).parent().parent().find('.ser_qty').val();
                         var others = $(this).val();
-                        var others2 = others.replace(/,/g , '');
+                        var qty_others = parseFloat(qty) * parseFloat(others);
+                        var others2 = qty_others;
                             if (others2 == '') {
                                 var oth = 0;
                             }

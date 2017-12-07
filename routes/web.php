@@ -71,6 +71,21 @@ Route::post('/NFHSI/services/editmain', 'AdminPanelContoller@editmain');
 Route::post('/NFHSI/editvisitdate', 'PatientsController@editvisitdate');
 Route::get('/NFHSI/queueing', 'QueController@queueing');
 
+Route::get('/visit/{id}/{vid}/xraydone', 'PatientsController@patientvisitxraydone');
+Route::get('/visit/{id}/{vid}/urinalysisdone', 'PatientsController@urinalysisdone');
+Route::get('/visit/{id}/{vid}/fecalysisdone', 'PatientsController@fecalysisdone');
+Route::get('/visit/{id}/{vid}/chemistryidone', 'PatientsController@chemistryidone');
+Route::get('/visit/{id}/{vid}/ogttdone', 'PatientsController@ogttdone');
+Route::get('/visit/{id}/{vid}/hematologydone', 'PatientsController@hematologydone');
+Route::get('/visit/{id}/{vid}/serologydone', 'PatientsController@serologydone');
+Route::get('/visit/{id}/{vid}/chemistryiidone', 'PatientsController@chemistryiidone');
+Route::get('/visit/{id}/{vid}/ecgdone', 'PatientsController@ecgdone');
+
+
+Route::post('/visit/{id}/{vid}/serology', 'PatientsController@newserology');
+Route::post('/visit/{id}/{vid}/ecg', 'PatientsController@newecg');
+Route::post('/visit/{id}/{vid}/chemtwo', 'PatientsController@newchemtwo');
+
 // --- PDF ---
 Route::get('/pdf/view/{id}/{datefrom}/{dateto}', 'DoctorsController@printreport');
 Route::get('/patient/pdf/view/{id}/{vid}', 'PatientsController@patientprintreport');
@@ -83,8 +98,14 @@ Route::get('/NFHSI/doctors', 'DoctorsController@doctoruserpage');
 Route::get('/xray/pdf/view/{id}', 'PatientsController@xraypdfview');
 Route::get('/urinalysis/pdf/view/{id}', 'PatientsController@urinalysispdfview');
 
-Route::get('/visit/{id}/{vid}/xraydone', 'PatientsController@patientvisitxraydone');
-
+Route::get('/visit/{id}/{vid}/ecgdone/pdf', 'PatientsController@ecgdonepdf');
+Route::get('/visit/{id}/{vid}/chemistryiidone/pdf', 'PatientsController@chemistryiidonepdf');
+Route::get('/visit/{id}/{vid}/serologydone/pdf', 'PatientsController@serologydonepdf');
+Route::get('/visit/{id}/{vid}/hematologydone/pdf', 'PatientsController@hematologydonepdf');
+Route::get('/visit/{id}/{vid}/ogttdone/pdf', 'PatientsController@ogttdonepdf');
+Route::get('/visit/{id}/{vid}/chemistryidone/pdf', 'PatientsController@chemistryidonepdf');
+Route::get('/visit/{id}/{vid}/fecalysisdone/pdf', 'PatientsController@fecalysisdonepdf');
+Route::get('/visit/{id}/{vid}/urinalysisdone/pdf', 'PatientsController@urinalysisdonepdf');
 
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');

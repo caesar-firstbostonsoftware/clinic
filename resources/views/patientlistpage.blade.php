@@ -21,16 +21,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" && Session::get('user') == 1)
         <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
         @endif
-        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1)
-                <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-            @endif
-            @if(!Session::get('user'))
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -46,10 +43,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
-        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
-        <!-- <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li> -->
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor" || Session::get('position') == "Cashier")
         <li><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
-        @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
@@ -63,10 +59,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <h1><img src="{{ asset('/img/2010.png') }}" height="30" width="30"> Patients</h1>
         <ol class="breadcrumb">
             
-            @if(Session::get('position') == "Doctor")
+            @if(Session::get('user') == 1)
             <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/myinfo">My Info</a></li>
             @endif
+            <li><a href="/myinfo">My Info</a></li>
             <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
         </ol>
     </section>
@@ -78,7 +74,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <h3 class="box-title">List of Patients <a href="/newvisit" class="btn btn-primary btn-xs">Add New</a></h3>
+                        <h3 class="box-title">List of Patients 
+                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                            <a href="/newvisit" class="btn btn-primary btn-xs">Add New</a>
+                            @endif
+                        </h3>
                         <div class="flash-message top-message topmessage">
                                 @foreach (['danger', 'warning', 'success', 'info'] as $message)
                                     @if(Session::has('alert-' . $message))
@@ -93,14 +93,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-sm-12">
                                         <table id="myTable" class="table table-striped wawee">
                                             <thead>
+                                                @if(Session::get('user') > 1 && Session::get('position') == "Doctor")
                                                 <tr role="row">
                                                     <th style="width: 5%;">ID</th>
-                                                    <th style="width: 25%;">Name</th>
+                                                    <th style="width: 30%;">Name</th>
+                                                    <th style="width: 14%;">Address</th>
+                                                    <th style="width: 5%;">Gender</th>
+                                                    <th style="width: 5%;">Status</th>
+                                                    <th style="width: 40%;">Action</th>
+                                                </tr>
+                                                @else
+                                                <tr role="row">
+                                                    <th style="width: 5%;">ID</th>
+                                                    <th style="width: 30%;">Name</th>
                                                     <th style="width: 5%;">Gender</th>
                                                     <th style="width: 14%;">Last Visit Date</th>
                                                     <th style="width: 5%;">Status</th>
-                                                    <th style="width: 45%;">Action</th>
+                                                    <th style="width: 40%;">Action</th>
                                                 </tr>
+                                                @endif
                                             </thead>
                                             <tbody>
                                             @foreach ($patientlist as $patient)
@@ -108,32 +119,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 $id = $patient->id;
                                                 $zero_id = sprintf("%04d", $id);
                                             ?>
+                                            @if(Session::get('user') > 1 && Session::get('position') == "Doctor")
+                                                <tr>
+                                                    <td>{{$zero_id}}</td>
+                                                    <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
+                                                    <td>{{$patient->address}}</td>
+                                                    <td>{{$patient->gender}}</td>
+                                                    <td>
+                                                        <span class="label label-success">{{$patient->status}}</span>
+                                                    </td>
+                                                    <td>
+                                                        @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                                                        <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
+                                                        @endif
+                                                        <button id="viewvisit" class="btn btn-xs btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
+                                                    </td>
+                                                </tr>
+                                            @else
                                                 <tr>
                                                     <td>{{$zero_id}}</td>
                                                     <td>{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}</td>
                                                     <td>{{$patient->gender}}</td>
                                                     <td>
-                                                        @foreach($latsvisit as $visitdate)
-                                                            @if($patient->id == $visitdate->patient_id)
-                                                                {{$visitdate->visit_date}}
-                                                            @endif
-                                                        @endforeach
+                                                        @if(!$patient->lastvisit)
+                                                            0000-00-00 00:00:00
+                                                        @else
+                                                            {{$patient->lastvisit->created_at}}
+                                                        @endif
                                                     </td>
                                                     <td>
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
                                                     <td>
+                                                        @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
                                                         <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
+                                                        @endif
                                                         <button id="viewvisit" class="btn btn-xs btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
-                                                        <!-- <a href="#" class="btn btn-xs btn-success" target="_blank">Add Follow-up Visit</a>
-                                                        <a href="#" class="btn btn-xs btn-warning" target="_blank">Lab Flowsheet</a>
-                                                        <a href="#" class="btn btn-xs bg-purple" target="_blank">Medication</a> -->
                                                     </td>
                                                 </tr>
+                                            @endif
                                             @endforeach
                                             </tbody>
                                         </table>
-                                            <div style="display: none;" class="dataTables_processing" id="users-table_processing">Processing...</div>
                                     </div>
                                 </div>
                             </div>
@@ -152,7 +179,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
-                        <h4 class="modal-title" id="myModalLabel">Patient Visits <a href="#" class="btn btn-primary btn-xs addnewvisit">Add New Visit</a></h4>
+                        <h4 class="modal-title" id="myModalLabel">Patient Visits 
+                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                                <a href="#" class="btn btn-primary btn-xs addnewvisit">Add New Visit</a>
+                            @endif
+                        </h4>
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive">
@@ -224,7 +255,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                         <h3 class="modal-title" id="myModalLabel">Services</h3>
                             @foreach($adminpanelcat as $cat)
-                                <div class="col-sm-12 {{$cat->id}}">
+                                <div class="col-sm-12 {{$cat->id}}" style="border:3px solid black;">
                                     <div class="row">
                                         <div class="col-sm-3" style="margin-left: 3%;">
                                             <h5>
@@ -472,7 +503,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     }
 
     $(document).ready(function(){
-        $('#myTable').dataTable();
+        $('#myTable').dataTable({
+                "order": [[ 3, "desc" ]]
+            });
         setTimeout(function(){ 
             $('.topmessage').hide();
         }, 2000);
@@ -501,12 +534,107 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $('.viewvisit').on( 'click', function(e){
         var p_id = $(this).data('id');
+        var ses_pos = "{{Session::get('position')}}";
         var ses_id = "{{Session::get('user')}}";
         $('.visitlist_modal').empty();
         $('.addnewvisit').removeAttr('href','href');
         $('.addnewvisit').attr('href','/newvisit/'+p_id+'');
         $.get('api/modalavisit?p_id=' + p_id, function(data){
-            if (!ses_id) {
+            if (ses_pos == 'Cashier') {
+                $.each(data, function(index, visit){
+                if (visit.status == 'Pending') {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>\
+                        <a href="#" class="visit_date" data-id="'+visit.id+'" data-datedate="'+visit.visit_date+'" data-toggle="modal" data-target="#modal_visit_date" data-backdrop="static">'+visit.visit_date+'</a>\
+                    </td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="text-align:right;">'+visit.totalbill+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
+                    <td style="color:red;"><b>'+visit.status+'</b></td>\
+                    <td>\
+                        <button class="btn btn-xs btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="#" class="btn btn-xs btn-danger cancelvisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Cancel</a>\
+                        <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
+                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
+                    </td>\
+                    </tr>');
+                }
+                else if (visit.status == 'Paid') {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="text-align:right;">'+visit.totalbill+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
+                    <td style="color:green;"><b>'+visit.status+'</b></td>\
+                    <td>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
+                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
+                    </td>\
+                    </tr>');
+                }
+                else {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="text-align:right;">'+visit.totalbill+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
+                    <td style="color:gold;"><b>'+visit.status+'</b></td>\
+                    <td></td>\
+                    </tr>');
+                }
+
+                $('.receipt_no').on('change',function() {
+                    var receipt_no = $(this).val();
+                    var patient_id = $(this).data('p_id');
+                    var visit_id = $(this).data('v_id');
+                    if (!receipt_no) {
+                        $('.finalprint').removeAttr('href');
+                        $('.finalprint').attr('onclick','return false;');
+                    }
+                    else {
+                        $('.finalprint').removeAttr('href');
+                        $('.finalprint').removeAttr('onclick');
+                        $('.finalprint').attr('href','/patientreceipt/pdf/view/'+patient_id+'/'+visit_id+'/'+receipt_no+'');
+                    }
+                })
+
+                $('.addreceipt').on('click',function() {
+                    var patient_id = $(this).data('p_id');
+                    var visit_id = $(this).data('v_id');
+                    $('.receipt_no').removeAttr('data-p_id');
+                    $('.receipt_no').removeAttr('data-v_id');
+                    $('.receipt_no').attr('data-p_id',patient_id);
+                    $('.receipt_no').attr('data-v_id',visit_id);
+                    $.get('api/checkreceipt?patient_id=' + patient_id +'&visit_id=' + visit_id, function(data){
+                        if (!data.id) {
+                            $('.finalprint').removeAttr('href');
+                            $('.finalprint').attr('onclick','return false;');
+                            $('.receipt_no').removeAttr('value');
+                            $('.receipt_no').removeAttr('readonly');
+                            $('.receipt_no').val('');
+                        }
+                        else {
+                            $('.receipt_no').removeAttr('value');
+                            $('.receipt_no').val(data.receipt_number);
+                            $('.receipt_no').attr('readonly','readonly');
+                            $('.finalprint').removeAttr('href');
+                            $('.finalprint').removeAttr('onclick');
+                            $('.finalprint').attr('href','/patientreceipt/pdf/view/'+data.patient_id+'/'+data.visit_id+'/'+data.receipt_number+'');
+                        }
+                    });
+                })
+
+                })
+            }
+            else if (ses_id == 1) {
                 $.each(data, function(index, visit){
                 if (visit.status == 'Pending') {
                     $('.visitlist_modal').append('<tr>\
@@ -811,10 +939,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         $('.'+selser.APC_ID+'').append('<div class="row wawsee">\
                                         <div class="col-sm-2"></div>\
                                         <div class="col-sm-4">\
-                                            <select class="form-control serser_name service_name'+selser.APC_ID+'" name="service_name[]" required="">\
+                                            <input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="'+selser.SER_QTY+'" style=margin-left:-45%;width:40%;">\
+                                            <select class="form-control serser_name service_name'+selser.APC_ID+'" name="service_name[]" required="" style="margin-top:-14%;">\
                                             </select>\
                                             <input class="form-control services" type="text" placeholder="0.00" required="" value="'+selser.AP_PRICE+'" readonly="" autocomplete="off" style="margin-top:-14%;margin-left:105%;width:50%;">\
-                                            <input class="form-control" name="mainservice[]" value="'+selser.APC_ID+'" type="text" style="display:none;">\
+                                            <input class="form-control" name="mainservice[]" value="'+selser.PRICE_AMOUNT+'" type="text" style="display:none;">\
                                         </div>\
                                         <div class="col-sm-2">\
                                         </div>\
@@ -827,10 +956,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         $('.service_name'+selser.APC_ID+':last').append('<option value="">--Select One--</option>');
                             $.each(data,function(index,subsub) {
                                 if (selser.AP_ID == subsub.id) {
-                                    $('.service_name'+selser.APC_ID+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'" selected>'+subsub.name+'</option>');
+                                    $('.service_name'+selser.APC_ID+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price123.price+'" selected>'+subsub.name+'</option>');
                                 }
                                 else {
-                                    $('.service_name'+selser.APC_ID+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'">'+subsub.name+'</option>');
+                                    $('.service_name'+selser.APC_ID+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price123.price+'">'+subsub.name+'</option>');
                                 }
                             })
 
@@ -838,14 +967,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         var serserval = $('option:selected',this).data('price');
                         $(this).next('input').val(serserval);
 
-                        var aa = $(this).val();
-                        var bbaa = aa.replace(/,/g , '');
-                        $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
+                        // var aa = $(this).val();
+                        // var bbaa = aa.replace(/,/g , '');
+                        // $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
 
                         var sum = 0;
                         $('.services').each(function() {
+                            var qty = $(this).parent().parent().find('.ser_qty').val();
                             var others = $(this).val();
-                            var others2 = others.replace(/,/g , '');
+                            var qty_others = parseFloat(qty) * parseFloat(others);
+                            var others2 = qty_others;
                                 if (others2 == '') {
                                     var oth = 0;
                                 }
@@ -860,12 +991,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         $('.totaltotal').text(dd);
                     })
 
+                    $('.ser_qty').on('change',function() {
+                        var sum = 0;
+                            $('.services').each(function() {
+                                var qty = $(this).parent().parent().find('.ser_qty').val();
+                                var others = $(this).val();
+                                var qty_others = parseFloat(qty) * parseFloat(others);
+                                var others2 = qty_others;
+                                    if (others2 == '') {
+                                        var oth = 0;
+                                    }
+                                    else {
+                                        var oth = others2;
+                                    }
+                                        sum += parseFloat(oth);
+                            })
+                            var cc = sum.toString();
+                            var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                            $('.totalprice').val(cc);
+                            $('.totaltotal').text(dd);
+                    })
+
                     $('.removeservice').on('click',function() {
                         $(this).parent().parent().remove();
                         var sum = 0;
                             $('.services').each(function() {
+                                var qty = $(this).parent().parent().find('.ser_qty').val();
                                 var others = $(this).val();
-                                var others2 = others.replace(/,/g , '');
+                                var qty_others = parseFloat(qty) * parseFloat(others);
+                                var others2 = qty_others;
                                     if (others2 == '') {
                                         var oth = 0;
                                     }
@@ -998,7 +1152,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.'+main_id+'').append('<div class="row">\
                                     <div class="col-sm-2"></div>\
                                     <div class="col-sm-4">\
-                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
+                                        <input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1" style=margin-left:-45%;width:40%;">\
+                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="" style="margin-top:-14%;">\
                                         </select>\
                                         <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off" style="margin-top:-14%;margin-left:105%;width:50%;">\
                                         <input class="form-control" name="mainservice[]" value="'+main_id+'" type="text" style="display:none;">\
@@ -1014,7 +1169,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.service_name'+main_id+':last').empty();
                 $('.service_name'+main_id+':last').append('<option value="">--Select One--</option>');
                 $.each(data,function(index,subsub) {
-                    $('.service_name'+main_id+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price+'">'+subsub.name+'</option>');
+                    $('.service_name'+main_id+':last').append('<option value="'+subsub.id+'" data-price="'+subsub.price123.price+'">'+subsub.name+'</option>');
                 })
                 $('.appendservice').removeAttr('disabled');
             });
@@ -1023,14 +1178,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 var serserval = $('option:selected',this).data('price');
                 $(this).next('input').val(serserval);
 
-                var aa = $(this).val();
-                var bbaa = aa.replace(/,/g , '');
-                $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
+                // var aa = $(this).val();
+                // var bbaa = aa.replace(/,/g , '');
+                // $(this).val( bbaa.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
 
                 var sum = 0;
                 $('.services').each(function() {
+                    var qty = $(this).parent().parent().find('.ser_qty').val();
                     var others = $(this).val();
-                    var others2 = others.replace(/,/g , '');
+                    var qty_others = parseFloat(qty) * parseFloat(others);
+                    var others2 = qty_others;
                         if (others2 == '') {
                             var oth = 0;
                         }
@@ -1046,12 +1203,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             })
 
+            $('.ser_qty').on('change',function() {
+                var sum = 0;
+                $('.services').each(function() {
+                    var qty = $(this).parent().parent().find('.ser_qty').val();
+                    var others = $(this).val();
+                    var qty_others = parseFloat(qty) * parseFloat(others);
+                    var others2 = qty_others;
+                        if (others2 == '') {
+                            var oth = 0;
+                        }
+                        else {
+                            var oth = others2;
+                        }
+                            sum += parseFloat(oth);
+                })
+                    var cc = sum.toString();
+                    var dd = cc.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    $('.totalprice').val(cc);
+                    $('.totaltotal').text(dd);
+            })
+
             $('.removeservice').on('click',function() {
                 $(this).parent().parent().remove();
                 var sum = 0;
                     $('.services').each(function() {
+                        var qty = $(this).parent().parent().find('.ser_qty').val();
                         var others = $(this).val();
-                        var others2 = others.replace(/,/g , '');
+                        var qty_others = parseFloat(qty) * parseFloat(others);
+                        var others2 = qty_others;
                             if (others2 == '') {
                                 var oth = 0;
                             }

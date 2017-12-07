@@ -13,6 +13,7 @@ use App\User;
 use App\PatientVisit;
 use DB;
 use App\Patientxray;
+use App\ServicePrice;
 
 class AdminPanelContoller extends Controller
 {
@@ -24,8 +25,9 @@ class AdminPanelContoller extends Controller
     public function services()
     {
     	$adminpanelcat = AdminPanelCategory::all();
-    	$adminpanel = AdminPanel::all();
+    	$adminpanel = AdminPanel::with('price123')->get();
     	$sub = AdminPanelSub::all();
+        //return Response::json($adminpanel, 200, array(), JSON_PRETTY_PRINT);
     	return view('adminpanelservices',compact('adminpanelcat','adminpanel','sub'));
     }
 
@@ -52,7 +54,7 @@ class AdminPanelContoller extends Controller
             $count = count($pv);
 
             $pv2 = PatientVisit::where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->where('status','!=','Canceled')->with('patient')->get();
-            $income = DB::table('patient_visits')->where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->sum('totalbill');
+            $income = DB::table('patient_visits')->where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->sum('discounted_total');
             $Patientxray = Patientxray::where('status','New')->with('patient')->orderBy('id','asc')->orderBy('status','asc')->get();
 
             $day1 = $datenow_Y.'-'.$datenow_m.'-01';
@@ -98,6 +100,7 @@ class AdminPanelContoller extends Controller
     public function editservicepost(Request $request)
     {
         if(Session::has('user')){
+            $now = date("Y-m-d");
             $id_service = $request->input('id_service');
             $subid_service = $request->input('subid_service');
             $name_service = $request->input('name_service');
@@ -105,8 +108,14 @@ class AdminPanelContoller extends Controller
 
             $editadmin = AdminPanel::where('id',$id_service)->first();
             $editadmin->name = $name_service;
-            $editadmin->price = $price_service;
             $editadmin->save();
+
+            $ServicePrice = new ServicePrice;
+            $ServicePrice->admin_panel_id = $editadmin->admin_panel_cat_id;
+            $ServicePrice->admin_panel_sub_id = $editadmin->id;
+            $ServicePrice->price = $price_service;
+            $ServicePrice->date_reg = $now;
+            $ServicePrice->save();
 
             return redirect()->action('AdminPanelContoller@services');
         }
@@ -134,6 +143,7 @@ class AdminPanelContoller extends Controller
     public function subadd(Request $request)
     {
         if(Session::has('user')){
+            $now = date("Y-m-d");
             $sub_mainedit_id = $request->input('sub_mainedit_id');
             $subname = $request->input('subname');
             $price_service = $request->input('price_service');
@@ -149,6 +159,13 @@ class AdminPanelContoller extends Controller
             $AdminPanel->name = $subname;
             $AdminPanel->price = $price;
             $AdminPanel->save();
+
+            $ServicePrice = new ServicePrice;
+            $ServicePrice->admin_panel_id = $AdminPanel->admin_panel_cat_id;
+            $ServicePrice->admin_panel_sub_id = $AdminPanel->id;
+            $ServicePrice->price = $price;
+            $ServicePrice->date_reg = $now;
+            $ServicePrice->save();
 
             return redirect()->action('AdminPanelContoller@services');
         }

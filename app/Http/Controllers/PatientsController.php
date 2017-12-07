@@ -35,6 +35,9 @@ use App\Chemistry;
 use App\Ogtt;
 use App\Hematology;
 use App\ReceiptNumber;
+use App\Serology;
+use App\Electrocardiographic;
+use App\SecondChemistry;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -85,7 +88,7 @@ class PatientsController extends Controller
 	public function newvisit()
     {
         $adminpanelcat = AdminPanelCategory::all();
-        $adminpanel = AdminPanel::all();
+        $adminpanel = AdminPanel::with('price123')->get();
         $sub = AdminPanelSub::all();
         $patient = 0;
     	return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
@@ -167,6 +170,7 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
+                $patientvisit->cashier_id = Session::get('user');
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -184,6 +188,9 @@ class PatientsController extends Controller
                     $service->visit_id = 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
+                    $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                    $service->price_amount = $AdminPanel->price123->price;
+                    $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
                 }
 
@@ -199,6 +206,7 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
+                $patientvisit->cashier_id = Session::get('user');
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -216,6 +224,9 @@ class PatientsController extends Controller
                     $service->visit_id = $check_p_v->visitid + 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
+                    $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                    $service->price_amount = $AdminPanel->price123->price;
+                    $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
                 }
             }
@@ -262,6 +273,7 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
+                $patientvisit->cashier_id = Session::get('user');
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -279,6 +291,9 @@ class PatientsController extends Controller
                     $service->visit_id = 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
+                    $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                    $service->price_amount = $AdminPanel->price123->price;
+                    $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
                 }
 
@@ -294,6 +309,7 @@ class PatientsController extends Controller
                 $patientvisit->totalbill = round($totalprice);
                 $patientvisit->discounted_price = round($discounted_price);
                 $patientvisit->discounted_total = round($discounted_total);
+                $patientvisit->cashier_id = Session::get('user');
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -311,6 +327,9 @@ class PatientsController extends Controller
                     $service->visit_id = $check_p_v->visitid + 1;
                     $service->department = $department;
                     $service->date_reg = $datenow;
+                    $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                    $service->price_amount = $AdminPanel->price123->price;
+                    $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
                 }
             }
@@ -331,33 +350,36 @@ class PatientsController extends Controller
             $sub = AdminPanelSub::all();
 
             if ($doctor_id != 1 && $doctor_pos == "Doctor") {
+                // $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
+                // ->leftJoin('urinalyses','doctors.id','=','urinalyses.physician_id')
+                // ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
+                // ->where('doctors.id',$doctor_id)
+                // ->select('patients.*')
+                // ->get();
                 $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
-                ->leftJoin('urinalyses','doctors.id','=','urinalyses.physician_id')
                 ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
                 ->where('doctors.id',$doctor_id)
                 ->select('patients.*')
                 ->get();
-                $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
             }
             else if($doctor_id == 1 ) {
-                $patientlist = Patient::all();
-                $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
+                $adminpanelcat = AdminPanelCategory::all();
+                $adminpanel = AdminPanel::all();
+                $sub = AdminPanelSub::all();
+                $patientlist = Patient::with('lastvisit')->get();
             }
             else {
-                $patientlist = Patient::all();
-                $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
+                $adminpanelcat = AdminPanelCategory::all();
+                $adminpanel = AdminPanel::all();
+                $sub = AdminPanelSub::all();
+                $patientlist = Patient::with('lastvisit')->get();
             }
             // return Response::json($latsvisit, 200, array(), JSON_PRETTY_PRINT);
             return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub','latsvisit'));
             
         }
         else {
-            $adminpanelcat = AdminPanelCategory::all();
-            $adminpanel = AdminPanel::all();
-            $sub = AdminPanelSub::all();
-            $patientlist = Patient::all();
-            $latsvisit = PatientVisit::select('patient_id','visit_date')->orderBy('visitid','desc')->groupBy('patient_id','visit_date')->get();
-            return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub','latsvisit'));
+            return redirect()->action('Auth@checklogin');
         }
     }
 
@@ -434,19 +456,25 @@ class PatientsController extends Controller
         ->get();
         $PatientService1003 = PatientService::join('admin_panels','patient_services.admin_panel_sub_id','=','admin_panels.id')
         ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','admin_panel_categories.id')
-        ->select('admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
+        ->select('admin_panels.id','admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
         ->where('patient_services.patient_id',$id)
         ->where('patient_services.visit_id',$vid)
-        ->groupBy('admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
+        ->groupBy('admin_panels.id','admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
         ->get();
+        $Labtest = AdminPanelCategory::all();
         $Medication = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
         $Urinalyses = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Fecalyses = Fecalyses::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Chemistry = Chemistry::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Ogtt = Ogtt::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Hematology = Hematology::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $seroser = AdminPanel::where('admin_panel_cat_id',4)->where('id','!=',40)->get();
+        $patientserologyhead = Serology::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $patientserologybody = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('adminpanel')->get();
+        $ecg = Electrocardiographic::where('patient_id',$id)->where('visit_id',$vid)->first();
+        $SecondChemistry = SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->first();
         //return Response::json($PatientService1003, 200, array(), JSON_PRETTY_PRINT);
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology'));
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry'));
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
@@ -513,7 +541,7 @@ class PatientsController extends Controller
         ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','=','admin_panel_categories.id')
         ->where('patient_services.patient_id',$p_id)
         ->where('patient_services.visit_id',$v_id)
-        ->select('patient_services.*','admin_panels.id as AP_ID','admin_panels.name as AP_NAME','admin_panels.price as AP_PRICE','admin_panel_categories.id as APC_ID')
+        ->select('patient_services.*','admin_panels.id as AP_ID','admin_panels.name as AP_NAME','admin_panels.price as AP_PRICE','admin_panel_categories.id as APC_ID','patient_services.price_amount as PRICE_AMOUNT','patient_services.qty as SER_QTY')
         ->get();
         return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
     }
@@ -1366,7 +1394,6 @@ class PatientsController extends Controller
         $adminpanel = AdminPanel::all();
         $sub = AdminPanelSub::all();
         $patient = Patient::where('id',$id)->first();
-        //return Response::json($adminpanel, 200, array(), JSON_PRETTY_PRINT);
         return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
     }
 
@@ -1629,8 +1656,7 @@ class PatientsController extends Controller
     public function submainservices(Request $request)
     {      
         $main_id = $request->input('main_id');
-
-        $AdminPanel = AdminPanel::where('admin_panel_cat_id',$main_id)->get();
+        $AdminPanel = AdminPanel::where('admin_panel_cat_id',$main_id)->with('price123')->get();
         return Response::json($AdminPanel, 200, array(), JSON_PRETTY_PRINT);
     }
 
@@ -2478,9 +2504,12 @@ class PatientsController extends Controller
             $logs->action = "Done";
             $logs->save();
 
-            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->where('admin_panel_id',35)->first();
-            $PatientService->status = "Done";
-            $PatientService->save();
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->where('admin_panel_id',5)->get();
+            foreach ($PatientService as $key) {
+                $Xray = PatientService::where('id',$key->id)->first();
+                $Xray->status = "Done";
+                $Xray->save();
+            }
     
            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
         }
@@ -2495,6 +2524,706 @@ class PatientsController extends Controller
         $visit_id = $request->input('visit_id');
         $ReceiptNumber = ReceiptNumber::where('patient_id',$patient_id)->where('visit_id',$visit_id)->first();
         return Response::json($ReceiptNumber, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function newserology(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $serology_id = $request->input('serology_id');
+            $orno = $request->input('orno');
+            $physician = $request->input('physician');
+            $sero_date = $request->input('sero_date');
+            $now = date("Y-m-d");
+
+            $seroser_id = count($request->input('seroser_id'));
+            if (!$serology_id) {
+                for ($i=0; $i < $seroser_id; $i++) { 
+                    $Serology = new Serology;
+                    $Serology->patient_id = $id;
+                    $Serology->visit_id = $vid;
+                    $Serology->doctor_id = $physician;
+                    $Serology->or_no = $orno;
+                    $Serology->serology_date = $sero_date;
+                    $Serology->admin_panel_cat_id = $request->input('seroser_cat_id')[$i];
+                    $Serology->admin_panel_id = $request->input('seroser_id')[$i];
+                    $Serology->result = $request->input('hemaresult')[$i];
+                    $Serology->remark = $request->input('hemaremark')[$i];
+                    $Serology->save();
+                }
+            }
+            else {
+                $delsero = Serology::where('patient_id',$id)->where('visit_id',$vid)->get();
+                foreach ($delsero as $key) {
+                    $deldel = Serology::where('id',$key->id)->first();
+                    $deldel->delete();
+                }
+
+                for ($i=0; $i < $seroser_id; $i++) { 
+                    $Serology = new Serology;
+                    $Serology->patient_id = $id;
+                    $Serology->visit_id = $vid;
+                    $Serology->doctor_id = $physician;
+                    $Serology->or_no = $orno;
+                    $Serology->serology_date = $sero_date;
+                    $Serology->admin_panel_cat_id = $request->input('seroser_cat_id')[$i];
+                    $Serology->admin_panel_id = $request->input('seroser_id')[$i];
+                    $Serology->result = $request->input('hemaresult')[$i];
+                    $Serology->remark = $request->input('hemaremark')[$i];
+                    $Serology->save();
+                }
+            }
+
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newecg(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $ecg_id = $request->input('ecg_id');
+            $orno = $request->input('orno');
+            $req_doc = $request->input('req_doc');
+            $ecg_date = $request->input('ecg_date');
+            $ecg_diagnosis = $request->input('ecg_diagnosis');
+            $now = date("Y-m-d");
+
+            if (!$ecg_id) {
+                $Electrocardiographic = new Electrocardiographic;
+                $Electrocardiographic->patient_id = $id;
+                $Electrocardiographic->visit_id = $vid;
+                $Electrocardiographic->req_doc = $req_doc;
+                $Electrocardiographic->or_no = $orno;
+                $Electrocardiographic->ecg_date = $ecg_date;
+                $Electrocardiographic->diagnosis = $ecg_diagnosis;
+                $Electrocardiographic->auricular_rate = $request->input('AuricularRate');
+                $Electrocardiographic->venticular_rate = $request->input('VenticularRate');
+                $Electrocardiographic->rhythm = $request->input('Rhythm');
+                $Electrocardiographic->pr_interval = $request->input('PRInterval');
+                $Electrocardiographic->qrs_interval = $request->input('QRSInterval');
+                $Electrocardiographic->electrical_axis = $request->input('ElectricalAxis');
+                $Electrocardiographic->significant_finding = $request->input('sig_find');
+                $Electrocardiographic->interpretation = $request->input('interpretation');
+                $Electrocardiographic->save();
+            }
+            else {
+                $Electrocardiographic = Electrocardiographic::where('id',$ecg_id)->first();
+                $Electrocardiographic->patient_id = $id;
+                $Electrocardiographic->visit_id = $vid;
+                $Electrocardiographic->req_doc = $req_doc;
+                $Electrocardiographic->or_no = $orno;
+                $Electrocardiographic->ecg_date = $ecg_date;
+                $Electrocardiographic->diagnosis = $ecg_diagnosis;
+                $Electrocardiographic->auricular_rate = $request->input('AuricularRate');
+                $Electrocardiographic->venticular_rate = $request->input('VenticularRate');
+                $Electrocardiographic->rhythm = $request->input('Rhythm');
+                $Electrocardiographic->pr_interval = $request->input('PRInterval');
+                $Electrocardiographic->qrs_interval = $request->input('QRSInterval');
+                $Electrocardiographic->electrical_axis = $request->input('ElectricalAxis');
+                $Electrocardiographic->significant_finding = $request->input('sig_find');
+                $Electrocardiographic->interpretation = $request->input('interpretation');
+                $Electrocardiographic->save();
+            }
+
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newchemtwo(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $chemtwo_id = $request->input('chemtwo_id');
+            $orno = $request->input('orno');
+            $physician = $request->input('physician');
+            $chemtwo_date = $request->input('chemtwo_date');
+            $now = date("Y-m-d");
+
+            if (!$chemtwo_id) {
+                $SecondChemistry = new SecondChemistry;
+                $SecondChemistry->patient_id = $id;
+                $SecondChemistry->visit_id = $vid;
+                $SecondChemistry->doc_id = $physician;
+                $SecondChemistry->or_no = $orno;
+                $SecondChemistry->sec_chem_date = $chemtwo_date;
+                $SecondChemistry->tsh = $request->input('tsh');
+                $SecondChemistry->t3 = $request->input('t3');
+                $SecondChemistry->t4 = $request->input('t4');
+                $SecondChemistry->psa = $request->input('psa');
+                $SecondChemistry->bilirubin_total = $request->input('bilirubin_total');
+                $SecondChemistry->bilirubin_direct = $request->input('bilirubin_direct');
+                $SecondChemistry->bilirubin_indirect = $request->input('bilirubin_indirect');
+                $SecondChemistry->protien_total = $request->input('protien_total');
+                $SecondChemistry->protien_albumin = $request->input('protien_albumin');
+                $SecondChemistry->protien_globulin = $request->input('protien_globulin');
+                $SecondChemistry->protien_ag_ratio = $request->input('protien_ag_ratio');
+                $SecondChemistry->remark = $request->input('chemtwo_remark');
+                $SecondChemistry->save();
+            }
+            else {
+                $SecondChemistry = SecondChemistry::where('id',$chemtwo_id)->first();
+                $SecondChemistry->patient_id = $id;
+                $SecondChemistry->visit_id = $vid;
+                $SecondChemistry->doc_id = $physician;
+                $SecondChemistry->or_no = $orno;
+                $SecondChemistry->sec_chem_date = $chemtwo_date;
+                $SecondChemistry->tsh = $request->input('tsh');
+                $SecondChemistry->t3 = $request->input('t3');
+                $SecondChemistry->t4 = $request->input('t4');
+                $SecondChemistry->psa = $request->input('psa');
+                $SecondChemistry->bilirubin_total = $request->input('bilirubin_total');
+                $SecondChemistry->bilirubin_direct = $request->input('bilirubin_direct');
+                $SecondChemistry->bilirubin_indirect = $request->input('bilirubin_indirect');
+                $SecondChemistry->protien_total = $request->input('protien_total');
+                $SecondChemistry->protien_albumin = $request->input('protien_albumin');
+                $SecondChemistry->protien_globulin = $request->input('protien_globulin');
+                $SecondChemistry->protien_ag_ratio = $request->input('protien_ag_ratio');
+                $SecondChemistry->remark = $request->input('chemtwo_remark');
+                $SecondChemistry->save();
+            }
+
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function urinalysisdone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',1)->where('admin_panel_sub_id',1)
+            ->first();
+            if ($PatientService) {
+                $PatientService->status = "Done";
+                $PatientService->save();
+            }
+
+            $PatientService2 = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',4)->where('admin_panel_sub_id',40)
+            ->first();
+            if ($PatientService2) {
+                $PatientService2->status = "Done";
+                $PatientService2->save();
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function fecalysisdone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',1)->where('admin_panel_sub_id',2)
+            ->first();
+            if ($PatientService) {
+                $PatientService->status = "Done";
+                $PatientService->save();
+            }
+
+            $PatientService2 = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',1)->where('admin_panel_sub_id',3)
+            ->first();
+            if ($PatientService2) {
+                $PatientService2->status = "Done";
+                $PatientService2->save();
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function chemistryidone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id','!=',11)->where('admin_panel_sub_id','!=',12)->where('admin_panel_sub_id','!=',13)
+            ->get();
+            if ($PatientService) {
+                foreach ($PatientService as $key) {
+                    $ChemistryI = PatientService::where('id',$key->id)->first();
+                    $ChemistryI->status = "Done";
+                    $ChemistryI->save();
+                }
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function ogttdone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id',11)
+            ->first();
+            if ($PatientService) {
+                $PatientService->status = "Done";
+                $PatientService->save();
+            }
+
+            $PatientService2 = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id',12)
+            ->first();
+            if ($PatientService2) {
+                $PatientService2->status = "Done";
+                $PatientService2->save();
+            }
+
+            $PatientService2 = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id',13)
+            ->first();
+            if ($PatientService2) {
+                $PatientService2->status = "Done";
+                $PatientService2->save();
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function hematologydone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',3)
+            ->get();
+            if ($PatientService) {
+                foreach ($PatientService as $key) {
+                    $Hematology = PatientService::where('id',$key->id)->first();
+                    $Hematology->status = "Done";
+                    $Hematology->save();
+                }
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function serologydone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',4)->where('admin_panel_sub_id','!=',40)
+            ->get();
+            if ($PatientService) {
+                foreach ($PatientService as $key) {
+                    $Serology = PatientService::where('id',$key->id)->first();
+                    $Serology->status = "Done";
+                    $Serology->save();
+                }
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function chemistryiidone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',8)
+            ->get();
+            if ($PatientService) {
+                foreach ($PatientService as $key) {
+                    $ChemistryII = PatientService::where('id',$key->id)->first();
+                    $ChemistryII->status = "Done";
+                    $ChemistryII->save();
+                }
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function ecgdone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',7)->where('admin_panel_sub_id',92)
+            ->first();
+            if ($PatientService) {
+                $PatientService->status = "Done";
+                $PatientService->save();
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function ecgdonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI ECG');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $ecg =Electrocardiographic::where('patient_id',$id)->where('visit_id',$vid)->first();
+            $pdf->writeHTML(view('ecgdonepdf',compact('info','ecg'))->render());
+            ob_end_clean();
+            $pdf->Output('ECGPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function chemistryiidonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Chemistry II');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $SecondChemistry =SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $pdf->writeHTML(view('chemistryiidonepdf',compact('info','SecondChemistry'))->render());
+            ob_end_clean();
+            $pdf->Output('CHEMISTRYIIPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function serologydonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI SEROLOGY');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $Serology = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $serser = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('adminpanel')->get();
+            $pdf->writeHTML(view('serologydonepdf',compact('info','Serology','serser'))->render());
+            ob_end_clean();
+            $pdf->Output('SEROLOGYPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function hematologydonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI SEROLOGY');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $Hematology = Hematology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $pdf->writeHTML(view('hematologydonepdf',compact('info','Hematology'))->render());
+            ob_end_clean();
+            $pdf->Output('HEMATOLOGYPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function ogttdonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI ORAL GLUCOSE TOLERANCE TEST');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $Ogtt = Ogtt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $pdf->writeHTML(view('ogttdonepdf',compact('info','Ogtt'))->render());
+            ob_end_clean();
+            $pdf->Output('ORALGLUCOSETOLERANCETESTPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function chemistryidonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI CHEMISTRY I');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $Chemistry = Chemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $pdf->writeHTML(view('chemistryidonepdf',compact('info','Chemistry'))->render());
+            ob_end_clean();
+            $pdf->Output('CHEMISTRYIPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function fecalysisdonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI FECALYSIS');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $Fecalyses = Fecalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $pdf->writeHTML(view('fecalysisdonepdf',compact('info','Fecalyses'))->render());
+            ob_end_clean();
+            $pdf->Output('FECALYSISPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function urinalysisdonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI URINALYSIS');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $Urinalyses = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $pdf->writeHTML(view('urinalysisdonepdf',compact('info','Urinalyses'))->render());
+            ob_end_clean();
+            $pdf->Output('URINALYSISPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
 }

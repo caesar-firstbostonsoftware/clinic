@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Ogtt extends Model
+class SecondChemistry extends Model
 {
     public function doctor()
     {

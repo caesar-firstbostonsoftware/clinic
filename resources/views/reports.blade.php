@@ -21,16 +21,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" && Session::get('user') == 1)
         <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
         @endif
-        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
+        @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1)
-                <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-            @endif
-            @if(!Session::get('user'))
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -46,10 +43,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li><a href="/NFHSI/doctors"><img src="{{ asset('/img/2013.png') }}" height="20" width="20"> <span>Doctors</span></a></li>
         <li class="active"><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
         <li><a href="/NFHSI/services"><img src="{{ asset('/img/2015.png') }}" height="20" width="20"> <span>Services</span></a></li>
-        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
-        <!-- <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li> -->
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor" || Session::get('position') == "Cashier")
         <li class="active"><a href="/reports/{{Session::get('user')}}"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
-        @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
+        @elseif(Session::get('user') > 1 && Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
@@ -62,10 +58,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <section class="content-header">
         <h1><img src="{{ asset('/img/2014.png') }}" height="30" width="30"> Reports</h1>
         <ol class="breadcrumb">
+            @if(Session::get('user') == 1)
             <li><a href="/dashboard">Dashboard</a></li>
+            @endif
             <li><a href="/myinfo">My Info</a></li>
             <li><a href="/NFHSI">Patients</a></li>
+            @if(Session::get('user') == 1)
             <li><a href="/NFHSI/users">Users</a></li>
+            @endif
             <li class="active"><a href="/reports/{{Session::get('user')}}"><b>Reports</b></a></li>
         </ol>
     </section>
@@ -87,6 +87,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li role="presentation" class="active">
                         <a href="#xrareports" role="tab" data-toggle="tab" style="font-size: 8pt;">X-Ray Reports</a>
                     </li>
+                @elseif(Session::get('user') > 1 && Session::get('position') == "Cashier")
+                    <li role="presentation" class="active">
+                        <a href="#incomereports" role="tab" data-toggle="tab" style="font-size: 8pt;">Income Reports</a>
+                    </li>
                 @endif
                 </ul>
                 <div class="tab-content">
@@ -95,10 +99,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div role="tabpanel" class="tab-pane active" id="incomereports">
                     @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
                         <div role="tabpanel" class="tab-pane fade" id="incomereports">
+                    @elseif(Session::get('user') > 1 && Session::get('position') == "Cashier")
+                        <div role="tabpanel" class="tab-pane active" id="incomereports">
                     @endif
                             <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
                                 {!! csrf_field() !!}
                                 <input type="text" class="inc_user_id" value="{{$id}}" style="display: none;">
+
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Date From :</label>
                                     <div class="col-sm-3">
@@ -133,6 +140,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div role="tabpanel" class="tab-pane fade" id="xrareports">
                     @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
                         <div role="tabpanel" class="tab-pane active" id="xrareports">
+                    @elseif(Session::get('user') > 1 && Session::get('position') == "Cashier")
+                        <div role="tabpanel" class="tab-pane fade" id="xrareports">
                     @endif
                             <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
                                 {!! csrf_field() !!}
@@ -282,6 +291,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var id = $('.inc_user_id').val();
             var datefrom = $(".inc_datefrom").val();
             var dateto = $('.inc_dateto').val();
+            $('.inc_appendreports').empty();
+            $('.inc_Income').empty();
             $.get('../../api/reportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
                 var count = 0;
                 $('.inc_appendreports').append('<table class="table table-striped">\
@@ -309,65 +320,58 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var id = $('.xra_user_id').val();
             var datefrom = $(".xra_datefrom").val();
             var dateto = $('.xra_dateto').val();
-            if (id == 1) {
-                $.get('../../api/xrayreportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
-                var count = 0;
-                $('.xra_appendreports').append('<table class="table table-striped">\
-                    <thead>\
-                        <tr>\
-                            <th style="text-align: center;">Physician Name</th>\
-                            <th style="text-align: center;">Patient Count</th>\
-                            <th style="text-align: center;">Amount</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody class="xra_tbodyreports">\
-                    </tbody>\
-                </table>');
-                $.each(data.doctor, function(index, docreport){
-                $.each(data.patientxray, function(index, report){
-                    if (docreport.id == report.physician_id) {
-                        count += report.counter
-                        var amount = report.counter * data.xrayprice.price;
-                        $('.xra_tbodyreports').append('<tr>\
-                            <td style="text-align: center;">'+docreport.f_name+' '+docreport.m_name+' '+docreport.l_name+', '+docreport.credential+'</td>\
-                            <td style="text-align: center;">'+report.counter+'</td>\
-                            <td style="text-align: center;">'+amount+'</td>\
-                        </tr>'); 
-                    } 
-                })
-                })
-                var finalincome = ReplaceNumberWithCommas(count * data.xrayprice.price);
-                $('.xra_Income').append('<b>Income : Php. '+finalincome+'</b>');
-                })
-            }
-            else {
+            $('.xra_appendreports').empty();
+            $('.xra_Income').empty();
+            //if (id == 1) {
                 $.get('../../api/xrayreportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
                 var count = 0;
                 $('.xra_appendreports').append('<table class="table table-striped">\
                     <thead>\
                         <tr>\
                             <th style="text-align: center;">Date</th>\
-                            <th style="text-align: center;">Patient Count</th>\
-                            <th style="text-align: center;">Amount</th>\
+                            <th style="text-align: center;">Xray Count</th>\
                         </tr>\
                     </thead>\
                     <tbody class="xra_tbodyreports">\
                     </tbody>\
                 </table>');
                 $.each(data.patientxray, function(index, report){
-                        count += report.counter
-                        var amount = report.counter * data.xrayprice.price;
                         $('.xra_tbodyreports').append('<tr>\
-                            <td style="text-align: center;">'+report.xray_date+'</td>\
+                            <td style="text-align: center;">'+report.date_reg+'</td>\
                             <td style="text-align: center;">'+report.counter+'</td>\
-                            <td style="text-align: center;">'+amount+'</td>\
-                        </tr>'); 
+                        </tr>');   
+                })
+                $('.xra_Income').append('<b>TOTAL : Php. '+data.income+'</b>');
+                })
+            // }
+            // else {
+            //     $.get('../../api/xrayreportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
+            //     var count = 0;
+            //     $('.xra_appendreports').append('<table class="table table-striped">\
+            //         <thead>\
+            //             <tr>\
+            //                 <th style="text-align: center;">Date</th>\
+            //                 <th style="text-align: center;">Patient Count</th>\
+            //                 <th style="text-align: center;">Amount</th>\
+            //             </tr>\
+            //         </thead>\
+            //         <tbody class="xra_tbodyreports">\
+            //         </tbody>\
+            //     </table>');
+            //     $.each(data.patientxray, function(index, report){
+            //             count += report.counter
+            //             var amount = report.counter * data.xrayprice.price;
+            //             $('.xra_tbodyreports').append('<tr>\
+            //                 <td style="text-align: center;">'+report.xray_date+'</td>\
+            //                 <td style="text-align: center;">'+report.counter+'</td>\
+            //                 <td style="text-align: center;">'+amount+'</td>\
+            //             </tr>'); 
                     
-                })
-                var finalincome = ReplaceNumberWithCommas(count * data.xrayprice.price);
-                $('.xra_Income').append('<b>Income : Php. '+finalincome+'</b>');
-                })
-            } 
+            //     })
+            //     var finalincome = ReplaceNumberWithCommas(count * data.xrayprice.price);
+            //     $('.xra_Income').append('<b>Income : Php. '+finalincome+'</b>');
+            //     })
+            // } 
         })
 
         $('.inc_printrep').on('click',function() {

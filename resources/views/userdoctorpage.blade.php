@@ -52,6 +52,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
+
+        @if(!Session::get('user'))
+        <li><a href="/reports/0"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
 </aside>
@@ -146,6 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <option value="">-- Select One --</option>
                                             <option value="Xray">Xray</option>
                                             <option value="Labtest">Lab Test</option>
+                                            <option value="Cashier">Cashier</option>
                                         </select>
                                     </div>
                                 </div>
@@ -240,7 +245,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.position').empty();
                 $('.position').append('<option value="">-- Select One --</option>\
                                             <option value="Xray">Xray</option>\
-                                            <option value="Labtest">Lab Test</option>');
+                                            <option value="Labtest">Lab Test</option>\
+                                            <option value="Cashier">Cashier</option>');
         })
 
         $('.edituser').on('click',function() {
@@ -272,14 +278,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     $('.divspecialization').hide();
                     $('.position').append('<option value="">-- Select One --</option>\
                                             <option value="Xray" selected >Xray</option>\
-                                            <option value="Labtest">Lab Test</option>');
+                                            <option value="Labtest">Lab Test</option>\
+                                            <option value="Cashier">Cashier</option>');
                 }   
                 else if (data.user.position == "Labtest"){
                     $('.divcredential').hide();
                     $('.divspecialization').hide();
                     $('.position').append('<option value="">-- Select One --</option>\
                                             <option value="Xray">Xray</option>\
-                                            <option value="Labtest" selected >Lab Test</option>');
+                                            <option value="Labtest" selected >Lab Test</option>\
+                                            <option value="Cashier">Cashier</option>');
+                }
+                else if (data.user.position == "Labtest"){
+                    $('.divcredential').hide();
+                    $('.divspecialization').hide();
+                    $('.position').append('<option value="">-- Select One --</option>\
+                                            <option value="Xray">Xray</option>\
+                                            <option value="Labtest">Lab Test</option>\
+                                            <option value="Cashier" selected>Cashier</option>');
                 }
 
             })

@@ -20,4 +20,9 @@ class Urinalyses extends Model
     {
     	 return $this->belongsTo('App\Patient','patient_id');
     }
+
+    public function doctor()
+    {
+         return $this->belongsTo('App\Doctor','physician_id');
+    }
 }

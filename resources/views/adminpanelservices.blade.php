@@ -60,6 +60,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @elseif(Session::get('user') > 1 && Session::get('position') != "Doctor")
         <li><a href="/NFHSI/queueing"><img src="{{ asset('/img/queueing.png') }}" height="20" width="20"> <span>Queueing</span></a></li>
         @endif
+
+        @if(!Session::get('user'))
+        <li><a href="/reports/0"><img src="{{ asset('/img/2014.png') }}" height="20" width="20"> <span>Reports</span></a></li>
+        @endif
         <li><a href="/logout"><img src="{{ asset('/img/2016.png') }}" height="20" width="20"> <span>Sign out</span></a></li>
     </ul>
 </aside>
@@ -121,7 +125,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     @if($cat->id == $panel->admin_panel_cat_id)
                                                         <tr>
                                                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$panel->name}}</td>
-                                                            <td style="text-align: right;">{{$panel->price}}</td>
+                                                            <td style="text-align: right;">{{$panel->price123->price}}</td>
                                                             <td>
                                                                <a href="#" class="btn btn-xs editservice" data-id="{{$panel->id}}" data-subid="0" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
                                                             </td>

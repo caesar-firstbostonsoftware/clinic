@@ -20,22 +20,25 @@ class Auth extends Controller
 		if(Session::has('user')){
 			$user_id = Session::get('user');
 			$user = User::where('doc_id',$user_id)->first();
-			// if ($user->module1 == "Yes" && $user->status == "Active") {
-			// 	return redirect('/deskpad');
-			// }
-			// elseif ($user->module2 == "Yes" && $user->status2 == "Active") {
-			// 	return redirect('/operations');
-			// }
-			// elseif ($user->module3 == "Yes" && $user->status3 == "Active") {
-			// 	return redirect('/accounting');
-			// }
-			// elseif ($user->module6 == "Yes" && $user->status6 == "Active") {
-			// 	return redirect('/property');
-			// }
-			// else{
-			// 	Session::flush();
-			// 	return redirect()->action('Auth@checklogin');
-			// }
+			if ($user->id == 1 ) {
+				return redirect('/dashboard');
+			}
+			elseif ($user->position == "Doctor") {
+				return redirect('/myinfo');
+			}
+			elseif ($user->position == "Xray") {
+				return redirect('/NFHSI/queueing');
+			}
+			elseif ($user->position == "Labtest") {
+				return redirect('/NFHSI/queueing');
+			}
+			elseif ($user->position = "Cashier") {
+				return redirect('/NFHSI');
+			}
+			else{
+				Session::flush();
+				return redirect()->action('Auth@checklogin');
+			}
 			return redirect('/myinfo');
 		}
 		else{
@@ -64,12 +67,12 @@ class Auth extends Controller
 					return redirect('/myinfo');
 				}
 				elseif ($user->position == "Xray") {
-					return redirect('/myinfo');
+					return redirect('/NFHSI/queueing');
 				}
 				elseif ($user->position == "Labtest") {
-					return redirect('/myinfo');
+					return redirect('/NFHSI/queueing');
 				}
-				elseif ($user->position != "Doctor") {
+				elseif ($user->position == "Cashier") {
 					return redirect('/NFHSI');
 				}
 				else{
