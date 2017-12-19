@@ -593,7 +593,7 @@
                 </td>
             </tr>
 
-            <tr>
+            <!-- <tr>
                 <td>
                     <h3><i>X-Ray</i></h3>
                     <table>
@@ -1122,7 +1122,7 @@
                         </tbody>
                     </table>
                 </td>
-            </tr>
+            </tr> -->
 
             <!-- <tr>
             	<td>

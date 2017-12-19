@@ -38,6 +38,8 @@ use App\ReceiptNumber;
 use App\Serology;
 use App\Electrocardiographic;
 use App\SecondChemistry;
+use App\Patientultrasound;
+use App\UltrasoundLog;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -87,15 +89,24 @@ class PatientsController extends Controller
 
 	public function newvisit()
     {
+        if(Session::has('user')){
+
         $adminpanelcat = AdminPanelCategory::all();
         $adminpanel = AdminPanel::with('price123')->get();
         $sub = AdminPanelSub::all();
         $patient = 0;
-    	return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
+	    return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function addnewvisit(Request $request)
     {   
+        if(Session::has('user')){
+
         $patient_id = $request->input('patient_id');
         if ($patient_id == 0) {
             $fname = $request->input('fname');
@@ -231,7 +242,6 @@ class PatientsController extends Controller
                 }
             }
             Session::flash('alert-success', 'Personal Info Created.');
-            // return redirect()->action('PatientsController@patientvisitpage',['id' => $patient->id, 'vid' => $patientvisit->visitid]);
             return redirect()->action('PatientsController@patientlist');
         }
         else {
@@ -244,7 +254,6 @@ class PatientsController extends Controller
             }
             $totalprice = $request->input('totalprice');
 
-            // $service_name = $request->input('service_name');
             $mainservice = count($request->input('mainservice'));
 
             $senciz_id = $request->input('senciz_id');
@@ -334,14 +343,19 @@ class PatientsController extends Controller
                 }
             }
             Session::flash('alert-success', 'Personal Info Created.');
-            // return redirect()->action('PatientsController@patientvisitpage',['id' => $patient_id, 'vid' => $patientvisit->visitid]);
             return redirect()->action('PatientsController@patientlist');
+        }
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
         }
     }
 
 	public function patientlist()
     {
         if(Session::has('user')){
+
             $doctor_id = Session::get('user');
             $doctor_pos = Session::get('position');
 
@@ -350,12 +364,6 @@ class PatientsController extends Controller
             $sub = AdminPanelSub::all();
 
             if ($doctor_id != 1 && $doctor_pos == "Doctor") {
-                // $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
-                // ->leftJoin('urinalyses','doctors.id','=','urinalyses.physician_id')
-                // ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
-                // ->where('doctors.id',$doctor_id)
-                // ->select('patients.*')
-                // ->get();
                 $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
                 ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
                 ->where('doctors.id',$doctor_id)
@@ -374,7 +382,6 @@ class PatientsController extends Controller
                 $sub = AdminPanelSub::all();
                 $patientlist = Patient::with('lastvisit')->get();
             }
-            // return Response::json($latsvisit, 200, array(), JSON_PRETTY_PRINT);
             return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub','latsvisit'));
             
         }
@@ -385,6 +392,8 @@ class PatientsController extends Controller
 
 	public function patientvisitpage($id,$vid)
     {
+        if(Session::has('user')){
+
         $doctor_id = Session::get('user');
         $doctor_pos = Session::get('position');
         if (!$doctor_id) {
@@ -439,13 +448,11 @@ class PatientsController extends Controller
         $diagnosis = Diagnoses::where('patient_id',$id)->where('visit_id',$vid)->first();
         $plan = Plan::where('patient_id',$id)->where('visit_id',$vid)->first();
 
-        //return Response::json($PMH_hos, 200, array(), JSON_PRETTY_PRINT);
         $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
             ->where('patient_visits.patient_id',$id)
             ->where('patient_visits.visitid',$vid)
             ->select('patients.*','patient_visits.purpose_visit','patient_visits.status')
             ->first();
-    	//$doctor = Doctor::with('user')->get();
         $doctor = Doctor::join('users','doctors.id','=','users.doc_id')->where('users.position','Doctor')->select('doctors.*')->get();
         $adminpanel = AdminPanelCategory::with('adminpanel')->get();
         $PatientService1002 = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
@@ -473,46 +480,50 @@ class PatientsController extends Controller
         $patientserologybody = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('adminpanel')->get();
         $ecg = Electrocardiographic::where('patient_id',$id)->where('visit_id',$vid)->first();
         $SecondChemistry = SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->first();
-        //return Response::json($PatientService1003, 200, array(), JSON_PRETTY_PRINT);
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry'));
+        $Patientultrasound = Patientultrasound::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->get();
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry','Patientultrasound'));
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
 	public function newpatientxray(Request $request, $id, $vid)
     {	
         if(Session::has('user')){
-    	   $P_id = $request->input('P_id');
-    	   $P_name = $request->input('P_name');
-    	   $orno = $request->input('orno');
-    	   $address = $request->input('address');
-    	   $agesex = $request->input('agesex');
-    	   $physician = $request->input('physician');
-    	   // $broken = explode('-', $physician);
-    	   // $phyname = $broken[0];
-    	   // $phypos = $broken[1];
-    	   $xraydate = $request->input('xraydate');
-    	   $finding = $request->input('finding');
-    	   $comm = $request->input('comm');
-           $now = date("Y-m-d");
-     	
-     	  $patientxray = new Patientxray;
-     	  $patientxray->patient_id = $P_id;
-     	  $patientxray->or_no = $orno;
-     	  $patientxray->physician_id = $physician;
-     	  $patientxray->xray_date = $now;
-     	  $patientxray->finding = $finding;
-     	  $patientxray->finding_info = $comm;
-     	  $patientxray->visitid = $vid;
-          $patientxray->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
-     	  $patientxray->save();
 
-          $logs = new PatientXrayLog;
-          $logs->xray_id = $patientxray->id;
-          $logs->user_id = Session::get('user');
-          $logs->date = $patientxray->xray_date;
-          $logs->action = "Create";
-          $logs->save();
+            $P_id = $request->input('P_id');
+            $P_name = $request->input('P_name');
+            $orno = $request->input('orno');
+            $address = $request->input('address');
+            $agesex = $request->input('agesex');
+            $physician = $request->input('physician');
+            $xraydate = $request->input('xraydate');
+            $finding = $request->input('finding');
+            $comm = $request->input('comm');
+            $now = date("Y-m-d");
+     	
+            $patientxray = new Patientxray;
+            $patientxray->patient_id = $P_id;
+            $patientxray->or_no = $orno;
+            $patientxray->physician_id = $physician;
+            $patientxray->xray_date = $now;
+            $patientxray->finding = $finding;
+            $patientxray->finding_info = $comm;
+            $patientxray->visitid = $vid;
+            $patientxray->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
+            $patientxray->save();
+
+            $logs = new PatientXrayLog;
+            $logs->xray_id = $patientxray->id;
+            $logs->user_id = Session::get('user');
+            $logs->date = $patientxray->xray_date;
+            $logs->action = "Create";
+            $logs->save();
 	
-    	   return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -521,13 +532,22 @@ class PatientsController extends Controller
 
     public function modalavisit(Request $request)
     {	
+        if(Session::has('user')){
+
     	$p_id = $request->input('p_id');
     	$patientvisit = PatientVisit::where('patient_id',$p_id)->orderBy('status','asc')->orderBy('visitid','asc')->get();
     	return Response::json($patientvisit, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function modalaeditpatient(Request $request)
     {   
+        if(Session::has('user')){
+
         $p_id = $request->input('p_id');
         $v_id = $request->input('v_id');
 
@@ -535,7 +555,6 @@ class PatientsController extends Controller
         ->where('patients.id',$p_id)
         ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill','patient_visits.discount')
         ->first();
-        //$adminpanel = PatientService::where('patient_id',$p_id)->where('visit_id',$v_id)->with('adminPanels')->get();
 
         $adminpanel = PatientService::join('admin_panels','patient_services.admin_panel_sub_id','=','admin_panels.id')
         ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','=','admin_panel_categories.id')
@@ -544,10 +563,17 @@ class PatientsController extends Controller
         ->select('patient_services.*','admin_panels.id as AP_ID','admin_panels.name as AP_NAME','admin_panels.price as AP_PRICE','admin_panel_categories.id as APC_ID','patient_services.price_amount as PRICE_AMOUNT','patient_services.qty as SER_QTY')
         ->get();
         return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function editpatient(Request $request)
     {
+        if(Session::has('user')){
+
         $p_id = $request->input('p_id');
         $fname = $request->input('fname');
         $mname = $request->input('mname');
@@ -590,18 +616,24 @@ class PatientsController extends Controller
         $patient->save();
 
         return redirect()->action('PatientsController@patientlist');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function modalxrayedit(Request $request)
     {   
         if(Session::has('user')){
+
             $xray_id = $request->input('dataid');
-            //$patientxray = Patientxray::where('id',$xray_id)->first();
             $patientxray = Patientxray::join('doctors','patientxrays.physician_id','=','doctors.id')
             ->where('patientxrays.id',$xray_id)
             ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info','patientxrays.or_no as or_no','patientxrays.phy_fee')
             ->first();
             return Response::json($patientxray, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -611,6 +643,7 @@ class PatientsController extends Controller
     public function addreasonforconsulation(Request $request)
     {   
         if(Session::has('user')){
+
             $patient_id = $request->input('patient_id');
             $visit_id = $request->input('visit_id');
             $chief_complaint = $request->input('chief_complaint');
@@ -624,6 +657,7 @@ class PatientsController extends Controller
             $reasonforconsulation->save();
 
             return Response::json($reasonforconsulation, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -633,6 +667,7 @@ class PatientsController extends Controller
     public function editreasonforconsulation(Request $request)
     {   
         if(Session::has('user')){
+
             $RFC_id = $request->input('RFC_id');
             $chief_complaint = $request->input('chief_complaint');
             $history_illness = $request->input('history_illness');
@@ -643,6 +678,7 @@ class PatientsController extends Controller
             $reasonforconsulation->save();
 
             return Response::json($reasonforconsulation, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else{
             return redirect()->action('Auth@checklogin');
@@ -652,6 +688,7 @@ class PatientsController extends Controller
     public function addpastmedicalhistory(Request $request)
     {   
         if(Session::has('user')){
+
             $PMH_patient_id = $request->input('PMH_patient_id');
             $PMH_visit_id = $request->input('PMH_visit_id');
             $surgery = $request->input('surgery');
@@ -673,6 +710,7 @@ class PatientsController extends Controller
             $PMH->save();
 
             return Response::json($PMH, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -682,6 +720,7 @@ class PatientsController extends Controller
     public function addsurgery(Request $request)
     {   
         if(Session::has('user')){
+
             $PMH_id = $request->input('PMH_id');
             $sur_date = $request->input('sur_date');
             $operation = $request->input('operation');
@@ -712,6 +751,7 @@ class PatientsController extends Controller
             }
 
             return Response::json($Surgery, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -721,6 +761,7 @@ class PatientsController extends Controller
     public function addhospitalization(Request $request)
     {   
         if(Session::has('user')){
+
             $PMH_id = $request->input('PMH_id');
             $hos_date = $request->input('hos_date');
             $diagnosis = $request->input('diagnosis');
@@ -751,6 +792,7 @@ class PatientsController extends Controller
             }
 
             return Response::json($Hospitalization, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -762,6 +804,7 @@ class PatientsController extends Controller
     public function adddisease(Request $request)
     {  
         if(Session::has('user')){ 
+
             $PMH_id = $request->input('PMH_id');
             $dis_date = $request->input('dis_date');
             $disease = $request->input('disease');
@@ -792,6 +835,7 @@ class PatientsController extends Controller
             }
 
             return Response::json($Disease, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -801,6 +845,7 @@ class PatientsController extends Controller
     public function addvaccination(Request $request)
     {   
         if(Session::has('user')){
+
             $PMH_id = $request->input('PMH_id');
             $vac_date = $request->input('vac_date');
             $vaccination = $request->input('vaccination');
@@ -831,6 +876,7 @@ class PatientsController extends Controller
             }
 
             return Response::json($Vaccination, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -840,6 +886,7 @@ class PatientsController extends Controller
     public function editpastmedicalhistory(Request $request)
     {      
         if(Session::has('user')){
+
             $PMH_id = $request->input('PMH_id');
 
             $surgery = $request->input('surgery');
@@ -859,6 +906,7 @@ class PatientsController extends Controller
             $PMH->save();
 
             return Response::json($PMH, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -868,6 +916,7 @@ class PatientsController extends Controller
     public function addsocialhistory(Request $request)
     {    
         if(Session::has('user')){  
+
             $SH_id = $request->input('SH_id');
             $SH_patient_id = $request->input('SH_patient_id');
             $SH_visit_id = $request->input('SH_visit_id');
@@ -914,6 +963,7 @@ class PatientsController extends Controller
             }
 
             return Response::json($SocialHistory, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -923,6 +973,7 @@ class PatientsController extends Controller
     public function addphysicalexam(Request $request)
     {      
         if(Session::has('user')){  
+
             $PE_id = $request->input('PE_id');
             $PE_patient_id = $request->input('PE_patient_id');
             $PE_visit_id = $request->input('PE_visit_id');
@@ -999,6 +1050,7 @@ class PatientsController extends Controller
             }   
 
             return Response::json($PhysicalExam, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1008,6 +1060,7 @@ class PatientsController extends Controller
     public function adddiagnosis(Request $request)
     {    
         if(Session::has('user')){   
+
             $diag_id = $request->input('diag_id');
             $diag_patient_id = $request->input('diag_patient_id');
             $diag_visit_id = $request->input('diag_visit_id');
@@ -1035,6 +1088,7 @@ class PatientsController extends Controller
             }
 
             return Response::json($Diagnosis, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1044,6 +1098,7 @@ class PatientsController extends Controller
     public function addplan(Request $request)
     {      
         if(Session::has('user')){
+
             $plan_id = $request->input('plan_id');
             $plan_patient_id = $request->input('plan_patient_id');
             $plan_visit_id = $request->input('plan_visit_id');
@@ -1071,6 +1126,7 @@ class PatientsController extends Controller
             }
 
             return Response::json($Plan, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1080,6 +1136,7 @@ class PatientsController extends Controller
     public function editpatientxray(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $xray_id = $request->input('xray_id');
             $finding = $request->input('finding');
             $comm = $request->input('comm');
@@ -1099,6 +1156,7 @@ class PatientsController extends Controller
             $logs->save();
     
            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1108,9 +1166,11 @@ class PatientsController extends Controller
     public function xraylogs(Request $request)
     {      
         if(Session::has('user')){
+
             $dataid = $request->input('dataid');
             $PatientXrayLog = PatientXrayLog::where('xray_id',$dataid)->with('doctor')->get();
             return Response::json($PatientXrayLog, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1120,6 +1180,7 @@ class PatientsController extends Controller
     public function newurinalysis(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $uri_id = $request->input('uri_id');
             $physician_id = $request->input('physician');
             $orno = $request->input('orno');
@@ -1267,6 +1328,7 @@ class PatientsController extends Controller
             }
     
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1276,9 +1338,11 @@ class PatientsController extends Controller
     public function editurinalysis(Request $request)
     {      
         if(Session::has('user')){
+
             $uri_id = $request->input('uri_id');
             $Urinalysis = Urinalyses::where('id',$uri_id)->with('phy','user')->first();
             return Response::json($Urinalysis, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1287,6 +1351,8 @@ class PatientsController extends Controller
 
     public function patientprintreport(Request $request,$id,$vid)
     {
+        if(Session::has('user')){
+
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->SetCreator(PDF_CREATOR);
@@ -1327,15 +1393,20 @@ class PatientsController extends Controller
         $income = DB::table('patient_visits')->where('patient_id',$id)->where('visitid',$vid)->sum('totalbill');
         $med = Medication::where('patient_id',$id)->where('visit_id',$vid)->get();
 
-        //return Response::json($p_xray, 200, array(), JSON_PRETTY_PRINT);
-
         $pdf->writeHTML(view('patientprintreport',compact('patient','reason','past','social','PE','diagnosis','plan','p_xray','uriuri','income','med'))->render());
         ob_end_clean();
         $pdf->Output('PatientReport.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function editvisit(Request $request)
     {   
+        if(Session::has('user')){
+
         $p_id = $request->input('editvisit_p_id');
         $v_id = $request->input('editvisit_v_id');
         $totalprice = $request->input('totalprice');
@@ -1386,20 +1457,33 @@ class PatientsController extends Controller
         $patientvisit->save(); 
 
         return redirect()->action('PatientsController@patientlist');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function newvisit1002($id)
     {
+        if(Session::has('user')){
+
         $adminpanelcat = AdminPanelCategory::all();
         $adminpanel = AdminPanel::all();
         $sub = AdminPanelSub::all();
         $patient = Patient::where('id',$id)->first();
         return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function modalmedication(Request $request)
     {      
         if(Session::has('user')){
+
             $med_id = $request->input('med_id');
             $patient_id = $request->input('patient_id');
             $visit_id = $request->input('visit_id');
@@ -1430,6 +1514,7 @@ class PatientsController extends Controller
             }
             
             return Response::json($Medication, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1439,10 +1524,12 @@ class PatientsController extends Controller
     public function editmedication(Request $request)
     {      
         if(Session::has('user')){
+
             $med_id = $request->input('med_id');
 
             $Medication = Medication::where('id',$med_id)->first();
             return Response::json($Medication, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1451,6 +1538,8 @@ class PatientsController extends Controller
 
     public function patientreceipt(Request $request,$id,$vid,$recno)
     {   
+        if(Session::has('user')){
+
         $pdf = new MYPDFreceipt(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->SetCreator(PDF_CREATOR);
@@ -1508,7 +1597,12 @@ class PatientsController extends Controller
 
         $pdf->writeHTML(view('patientreceipt',compact('PatientService','totalbill','info','recno'))->render());
         ob_end_clean();
-        $pdf->Output('PatientReceiptReport.pdf','I');        
+        $pdf->Output('PatientReceiptReport.pdf','I');   
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }     
     }
 
     public function printpatientrx(Request $request,$id,$vid)
@@ -1655,14 +1749,22 @@ class PatientsController extends Controller
 
     public function submainservices(Request $request)
     {      
+        if(Session::has('user')){
+
         $main_id = $request->input('main_id');
         $AdminPanel = AdminPanel::where('admin_panel_cat_id',$main_id)->with('price123')->get();
         return Response::json($AdminPanel, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function newfecalysis(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $uri_id = $request->input('uri_id');
             $physician = $request->input('physician');
             $orno = $request->input('orno');
@@ -1734,6 +1836,7 @@ class PatientsController extends Controller
             }
     
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -1743,6 +1846,7 @@ class PatientsController extends Controller
     public function newchemistryii(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $uri_id = $request->input('uri_id');
             $physician = $request->input('physician');
             $orno = $request->input('orno');
@@ -2029,6 +2133,7 @@ class PatientsController extends Controller
             }
     
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2038,6 +2143,7 @@ class PatientsController extends Controller
     public function newogtt(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $uri_id = $request->input('uri_id');
             $physician = $request->input('physician');
             $orno = $request->input('orno');
@@ -2187,6 +2293,7 @@ class PatientsController extends Controller
             }
     
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2196,6 +2303,7 @@ class PatientsController extends Controller
     public function newhematology(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $uri_id = $request->input('uri_id');
             $physician = $request->input('physician');
             $orno = $request->input('orno');
@@ -2433,6 +2541,7 @@ class PatientsController extends Controller
             }
     
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2441,6 +2550,8 @@ class PatientsController extends Controller
 
     public function editvisitdate(Request $request)
     {   
+        if(Session::has('user')){
+
         $PatientVisit = PatientVisit::where('id',$request->input('vid'))->first();
         $PatientVisit->visit_date = $request->input('vdate');
         $PatientVisit->save();
@@ -2453,10 +2564,17 @@ class PatientsController extends Controller
         }
 
         return redirect()->action('PatientsController@patientlist');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function donevisit(Request $request)
     {   
+        if(Session::has('user')){
+
         $id = $request->input('patient_id');
         $vid = $request->input('visit_id');
         $PatientVisit = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
@@ -2470,10 +2588,17 @@ class PatientsController extends Controller
             $service->save();
         }
         return Response::json($PatientVisit, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function cancelvisit(Request $request)
     {   
+        if(Session::has('user')){
+
         $id = $request->input('patient_id');
         $vid = $request->input('visit_id');
         $PatientVisit = PatientVisit::where('patient_id',$id)->where('visitid',$vid)->first();
@@ -2487,22 +2612,32 @@ class PatientsController extends Controller
             $service->save();
         }
         return Response::json($PatientVisit, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function patientvisitxraydone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
-            $datenow = date("Y-m-d");
-            $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->first();
-            $patientxray->status = "Old";
-            $patientxray->save();
 
-            $logs = new PatientXrayLog;
-            $logs->xray_id = $patientxray->id;
-            $logs->user_id = Session::get('user');
-            $logs->date = $datenow;
-            $logs->action = "Done";
-            $logs->save();
+            $datenow = date("Y-m-d");
+            $patientxray = Patientxray::where('patient_id',$id)->where('visitid',$vid)->get();
+            foreach ($patientxray as $key) {
+                $stats = Patientxray::where('id',$key->id)->first();
+                $stats->status = "Old";
+                $stats->save();
+
+                $logs = new PatientXrayLog;
+                $logs->xray_id = $stats->id;
+                $logs->user_id = Session::get('user');
+                $logs->date = $datenow;
+                $logs->action = "Done";
+                $logs->save();
+            }
+            
 
             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->where('admin_panel_id',5)->get();
             foreach ($PatientService as $key) {
@@ -2512,6 +2647,7 @@ class PatientsController extends Controller
             }
     
            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2520,15 +2656,23 @@ class PatientsController extends Controller
 
     public function checkreceipt(Request $request)
     {   
+        if(Session::has('user')){
+
         $patient_id = $request->input('patient_id');
         $visit_id = $request->input('visit_id');
         $ReceiptNumber = ReceiptNumber::where('patient_id',$patient_id)->where('visit_id',$visit_id)->first();
         return Response::json($ReceiptNumber, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function newserology(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $serology_id = $request->input('serology_id');
             $orno = $request->input('orno');
             $physician = $request->input('physician');
@@ -2574,6 +2718,7 @@ class PatientsController extends Controller
             }
 
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2583,6 +2728,7 @@ class PatientsController extends Controller
     public function newecg(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $ecg_id = $request->input('ecg_id');
             $orno = $request->input('orno');
             $req_doc = $request->input('req_doc');
@@ -2628,6 +2774,7 @@ class PatientsController extends Controller
             }
 
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2637,6 +2784,7 @@ class PatientsController extends Controller
     public function newchemtwo(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $chemtwo_id = $request->input('chemtwo_id');
             $orno = $request->input('orno');
             $physician = $request->input('physician');
@@ -2687,6 +2835,7 @@ class PatientsController extends Controller
             }
 
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2696,6 +2845,7 @@ class PatientsController extends Controller
     public function urinalysisdone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',1)->where('admin_panel_sub_id',1)
             ->first();
@@ -2713,6 +2863,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2722,6 +2873,7 @@ class PatientsController extends Controller
     public function fecalysisdone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',1)->where('admin_panel_sub_id',2)
             ->first();
@@ -2739,6 +2891,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2748,6 +2901,7 @@ class PatientsController extends Controller
     public function chemistryidone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',2)->where('admin_panel_sub_id','!=',11)->where('admin_panel_sub_id','!=',12)->where('admin_panel_sub_id','!=',13)
             ->get();
@@ -2760,6 +2914,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2769,6 +2924,7 @@ class PatientsController extends Controller
     public function ogttdone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',2)->where('admin_panel_sub_id',11)
             ->first();
@@ -2794,6 +2950,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2803,6 +2960,7 @@ class PatientsController extends Controller
     public function hematologydone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
              $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',3)
             ->get();
@@ -2815,6 +2973,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2824,6 +2983,7 @@ class PatientsController extends Controller
     public function serologydone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
              $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',4)->where('admin_panel_sub_id','!=',40)
             ->get();
@@ -2836,6 +2996,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2845,6 +3006,7 @@ class PatientsController extends Controller
     public function chemistryiidone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
              $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',8)
             ->get();
@@ -2857,6 +3019,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2866,6 +3029,7 @@ class PatientsController extends Controller
     public function ecgdone(Request $request, $id, $vid)
     {   
         if(Session::has('user')){
+
              $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',7)->where('admin_panel_sub_id',92)
             ->first();
@@ -2875,6 +3039,7 @@ class PatientsController extends Controller
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -2884,6 +3049,7 @@ class PatientsController extends Controller
     public function ecgdonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -2927,6 +3093,7 @@ class PatientsController extends Controller
     public function chemistryiidonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -2970,6 +3137,7 @@ class PatientsController extends Controller
     public function serologydonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -3014,6 +3182,7 @@ class PatientsController extends Controller
     public function hematologydonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -3057,6 +3226,7 @@ class PatientsController extends Controller
     public function ogttdonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -3100,6 +3270,7 @@ class PatientsController extends Controller
     public function chemistryidonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -3143,6 +3314,7 @@ class PatientsController extends Controller
     public function fecalysisdonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -3186,6 +3358,7 @@ class PatientsController extends Controller
     public function urinalysisdonepdf(Request $request,$id,$vid)
     {   
         if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -3219,6 +3392,191 @@ class PatientsController extends Controller
             $pdf->writeHTML(view('urinalysisdonepdf',compact('info','Urinalyses'))->render());
             ob_end_clean();
             $pdf->Output('URINALYSISPDF.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newultrasound(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+
+           $P_id = $request->input('P_id');
+           $P_name = $request->input('P_name');
+           $orno = $request->input('orno');
+           $address = $request->input('address');
+           $agesex = $request->input('agesex');
+           $physician = $request->input('physician');
+           $ultrasounddate = $request->input('ultrasounddate');
+           $finding = $request->input('finding');
+           $comm = $request->input('comm');
+           $now = date("Y-m-d");
+        
+          $patientultrasound = new Patientultrasound;
+          $patientultrasound->patient_id = $P_id;
+          $patientultrasound->or_no = $orno;
+          $patientultrasound->physician_id = $physician;
+          $patientultrasound->ultrasound_date = $now;
+          $patientultrasound->finding = $finding;
+          $patientultrasound->finding_info = $comm;
+          $patientultrasound->visit_id = $vid;
+          $patientultrasound->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
+          $patientultrasound->save();
+
+          $logs = new UltrasoundLog;
+          $logs->ultrasound_id = $patientultrasound->id;
+          $logs->user_id = Session::get('user');
+          $logs->date = $patientultrasound->ultrasound_date;
+          $logs->action = "Create";
+          $logs->save();
+    
+           return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function ultrasoundedit(Request $request)
+    {   
+        if(Session::has('user')){
+
+        $dataid = $request->input('dataid');
+        $Patientultrasound = Patientultrasound::where('id',$dataid)->with('doctor')->first();
+        return Response::json($Patientultrasound, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newultrasoundedit(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+
+            $ultrasound_id = $request->input('ultrasound_id');
+            $finding = $request->input('finding');
+            $comm = $request->input('comm');
+            $now = date("Y-m-d");
+        
+            $patientultrasound = Patientultrasound::where('id',$ultrasound_id)->first();
+            $patientultrasound->finding = $finding;
+            $patientultrasound->finding_info = $comm;
+            $patientultrasound->ultrasound_date = $now;
+            $patientultrasound->save();
+
+            $logs = new UltrasoundLog;
+            $logs->ultrasound_id = $patientultrasound->id;
+            $logs->user_id = Session::get('user');
+            $logs->date = $now;
+            $logs->action = "Edited";
+            $logs->save();
+    
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function ultrasoundpdfview(Request $request,$id)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Patient Ultrasound');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage();
+
+            $now = date("Y-m-d");
+            $Patientultrasound = Patientultrasound::where('id',$id)->with('doctor','patient')->first();
+
+            $logs = new UltrasoundLog;
+            $logs->ultrasound_id = $Patientultrasound->id;
+            $logs->user_id = Session::get('user');
+            $logs->date = $now;
+            $logs->action = "Printed";
+            $logs->save();
+            
+            $pdf->writeHTML(view('ultrasoundpdfview',compact('Patientultrasound'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientUltrasound.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }   
+    }
+
+    public function ultrasoundlogs(Request $request)
+    {   
+        if(Session::has('user')){
+
+        $dataid = $request->input('dataid');
+        $UltrasoundLog = UltrasoundLog::where('ultrasound_id',$dataid)->with('doctor')->get();
+        return Response::json($UltrasoundLog, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function ultrasounddone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+
+            $datenow = date("Y-m-d");
+            $Patientultrasound = Patientultrasound::where('patient_id',$id)->where('visit_id',$vid)->get();
+            foreach ($Patientultrasound as $key) {
+                $stats = Patientultrasound::where('id',$key->id)->first();
+                $stats->status = "Old";
+                $stats->save();
+
+                $logs = new UltrasoundLog;
+                $logs->ultrasound_id = $stats->id;
+                $logs->user_id = Session::get('user');
+                $logs->date = $datenow;
+                $logs->action = "Done";
+                $logs->save();
+            }
+            
+
+            $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)->where('admin_panel_id',6)->get();
+            foreach ($PatientService as $key) {
+                $Xray = PatientService::where('id',$key->id)->first();
+                $Xray->status = "Done";
+                $Xray->save();
+            }
+    
+           return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
         }
         else {

@@ -131,6 +131,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li role="presentation">
                                     <a href="#labtest" role="tab" data-toggle="tab" style="font-size: 8pt;">Lab Test</a>
                                 </li>
+                                <li role="presentation">
+                                    <a href="#ecg" role="tab" data-toggle="tab" style="font-size: 8pt;">ECG</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#ultrasound" role="tab" data-toggle="tab" style="font-size: 8pt;">Ultrasound</a>
+                                </li>
                             @endif
                         @endforeach
                     
@@ -150,13 +156,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </li>
                             @endif
                         @endforeach
+                        <li role="presentation">
+                            <a href="#ecg" role="tab" data-toggle="tab" style="font-size: 8pt;">ECG</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#ultrasound" role="tab" data-toggle="tab" style="font-size: 8pt;">Ultrasound</a>
+                        </li>
                     @endif
-                    <li role="presentation">
-                        <a href="#ecg" role="tab" data-toggle="tab" style="font-size: 8pt;">ECG</a>
-                    </li>
-                    <!-- <li role="presentation">
-                        <a href="#ultrasound" role="tab" data-toggle="tab" style="font-size: 8pt;">Ultrasound</a>
-                    </li> -->
                     @endif
                 </ul>
                 
@@ -1450,12 +1456,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div role="tabpanel" class="tab-pane fade" id="xray">
                             <div class="col-md-12">
                                 <h3>X-ray
-                                @if(Session::get('position') == 'Xray')
+                                <!-- @if(Session::get('position') == 'Xray' || Session::get('user') == 1)
                                     @if($xraycount == 1)
                                     @else
                                     <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
                                     @endif
-                                @endif
+                                @endif -->
+                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
+                                <a href="/visit/{{$id}}/{{$vid}}/xraydone" class="btn btn-xs btn-default">Done</a>
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -1489,9 +1497,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <button type="button" class="btn btn-xs btn-primary btn-xs editpatientxray" data-toggle="modal" data-target="#modal_xraynew_edit" data-backdrop="static" data-id="{{$xray->id}}">Edit</button>
                                                     <a href="/xray/pdf/view/{{$xray->id}}" target="_blank" class="btn btn-xs btn-success">Print</a>
                                                     <button type="button" class="btn btn-xs btn-warning patientxraylog" data-toggle="modal" data-target="#modal_patientxraylog" data-backdrop="static" data-id="{{$xray->id}}">Logs</button>
-                                                    @if($xray->status == 'New')
+                                                    <!-- @if($xray->status == 'New')
                                                     <a href="/visit/{{$xray->patient_id}}/{{$xray->visitid}}/xraydone" class="btn btn-xs btn-default">Done</a>
-                                                    @endif
+                                                    @endif -->
                                                 @endif
                                                 </td>
                                             </tr>
@@ -6356,6 +6364,281 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </div>
                             </div>
                         </div>
+
+                        <!-- Ultrasound -->
+                        <div role="tabpanel" class="tab-pane fade" id="ultrasound">
+                            <div class="col-md-12">
+                                <h3> Ultrasound
+                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_ultrasoundnew" data-backdrop="static">Add New</button>
+                                <a href="/visit/{{$id}}/{{$vid}}/ultrasounddone" class="btn btn-xs btn-default">Done</a>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th class="text-center">Date</th>
+                                                <th class="text-center">Physician</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="medication_list">
+                                            @foreach($Patientultrasound as $ultrasound)
+                                                <tr>
+                                                    <td class="text-center">{{$ultrasound->id}}</td>
+                                                    <td class="text-center">{{$ultrasound->ultrasound_date}}</td>
+                                                    <td class="text-center">{{$ultrasound->doctor->f_name}} {{$ultrasound->doctor->m_name}} {{$ultrasound->doctor->l_name}}, {{$ultrasound->doctor->credential}}</td>
+                                                    <td class="text-center">{{$ultrasound->finding}}</td>
+                                                    <td class="text-center">{{$ultrasound->status}}</td>
+                                                    <td>
+                                                        @if(!Session::get('user'))
+                                                        @else
+                                                            <button type="button" class="btn btn-xs btn-primary btn-xs editpatientultrasound" data-toggle="modal" data-target="#modal_ultrasoundnew_edit" data-backdrop="static" data-id="{{$ultrasound->id}}">Edit</button>
+                                                            <a href="/ultrasound/pdf/view/{{$ultrasound->id}}" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                                            <button type="button" class="btn btn-xs btn-warning patientultrasoundlog" data-toggle="modal" data-target="#modal_patientultrasoundlog" data-backdrop="static" data-id="{{$ultrasound->id}}">Logs</button>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ultrasound NEW MODAL -->
+                        <div class="modal fade" id="modal_ultrasoundnew" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modalwidth" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <div class="table-responsive">
+                                            <div class="col-md-12">
+                                                <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                                <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                                <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                                <h4><b>ULTRASOUND</b></h4>
+
+                                                <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/ultrasound">
+                                                {!! csrf_field() !!}
+                                                    <div class="form-group">
+                                                        <label class="col-sm-1 control-label">Name:</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                            <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">O.R. No.</label>
+                                                        <div class="col-sm-3">
+                                                            <input type="text" name="orno" class="form-control" placeholder="O.R. No.">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Address:</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" name="address" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">Sex:</label>
+                                                        <div class="col-sm-3">
+                                                            <select id="agesex" name="agesex" class="form-control" required="" disabled=""> 
+                                                                <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Physician:</label>
+                                                        <div class="col-sm-6">
+                                                            <select id="physician" name="physician" class="form-control physician" required="">
+                                                                @if(Session::get('position') == "Doctor")
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('user') == $doc->id)
+                                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                @endforeach
+                                                                @else
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">Date:</label>
+                                                        <div class="col-sm-3">
+                                                        <?php $datenow = date("Y-m-d"); ?>
+                                                            <input type="text" id="datepicker" name="ultrasounddate" class="form-control ultrasounddate" required="" value="{{$datenow}}" disabled="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Phys.Fee:</label>
+                                                        <div class="col-sm-3">
+                                                            <input type="text" name="pfee" class="form-control pfee" placeholder="0.00" required="">
+                                                        </div>
+                                                    </div>
+
+                                                    <h5><b>Result / Finding :</b></h5>
+
+                                                    <div class="form-group divxrayinfo">
+                                                        <div class="col-sm-6">
+                                                            <div class="checkbox">
+                                                                <label><input type="checkbox" name="finding" checked="" value="Normal" class="noramlfinding_ULTRA">Normal</label>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                <label><input type="checkbox" value="Not Normal" class="notnoramlfinding_ULTRA">Not Normal</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="form-group divxrayinfo">
+                                                        <div class="col-sm-12 fnnormal_ULTRA">
+                                                            <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
+                                                            </textarea>
+                                                        </div>
+                                                        <div class="col-sm-12 fnnotnormal_ULTRA" style="display: none;">
+                                                            <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
+                                                            </textarea>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group phyname divxrayinfo"></div>
+                                                    <div class="form-group phypos"></div>
+
+                                                    <div class="form-group">
+                                                        <label for="inputEmail3" class="control-label"></label>
+                                                        <div class="col-sm-3">
+                                                            <button class="btn btn-primary btn-xs" id="btn-submit-social_history" type="submit">Submit</button>
+                                                        </div>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ultrasound EDIT MODAL -->
+                        <div class="modal fade" id="modal_ultrasoundnew_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modalwidth" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="table-responsive">
+                                            <div class="col-md-12">
+                                                <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
+                                                <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
+                                                <center><p class="nor">Tel. No. (035) 225-3544</p></center>
+                                                <h4><b>ULTRASOUND</b></h4>
+                                                <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/ultrasoundedit">
+                                                {!! csrf_field() !!}
+                                                    <div class="form-group">
+                                                        <label class="col-sm-1 control-label">Name:</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="ultrasound_id" name="ultrasound_id" value="" style="display:none;">
+                                                            <input type="text" name="P_name_edit" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">O.R. No.</label>
+                                                        <div class="col-sm-3">
+                                                            <input type="text" name="orno_edit_ultra" class="form-control orno_edit_ultra" placeholder="O.R. No." readonly="">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Address:</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" name="address_edit" required="" class="form-control" placeholder="Address" value="{{$patient->address}}" readonly="">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">Sex:</label>
+                                                        <div class="col-sm-3">
+                                                            <select id="agesex" name="agesex_edit" class="form-control" required="" disabled=""> 
+                                                                <option value="{{$patient->gender}}" selected="">{{$patient->gender}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Physician:</label>
+                                                        <div class="col-sm-6">
+                                                            <select id="physician" name="physician_edit_ultra" class="form-control physician_edit_ultra" required="" disabled=""></select>
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">Date:</label>
+                                                        <div class="col-sm-3">
+                                                            <input type="text" name="ultrasound_edit_date" class="form-control ultrasound_edit_date" required="" value="" disabled="">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Phys.Fee:</label>
+                                                        <div class="col-sm-3">
+                                                            <input type="text" name="phyfee_edit_ultra" class="form-control phyfee_edit_ultra" placeholder="0.00" required="" readonly="">
+                                                        </div>
+                                                    </div>
+
+                                                    <h5><b>Result / Finding :</b></h5>
+
+                                                    <div class="form-group divxrayinfo">
+                                                        <div class="col-sm-6">
+                                                            <div class="checkbox results_edit_ultra"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group divxrayinfo results_info_edit_ultra"></div>
+
+                                                    <div class="form-group">
+                                                        <label for="inputEmail3" class="control-label"></label>
+                                                        <div class="col-sm-3">
+                                                            <button class="btn btn-primary btn-xs" id="btn-submit-social_history" type="submit">Save Changes</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ultrasound LOGS MODAL -->
+                        <div class="modal fade" id="modal_patientultrasoundlog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-md" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th class="text-center">Date</th>
+                                                        <th class="text-center">Physician</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="ultrasoundlogs">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- END MODAL -->
                         
                     </div>
 
@@ -6512,6 +6795,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             $('.fnnormal').hide();
             $('.txtcommnor').removeAttr('name','comm');
+        }
+    });
+
+    $('.noramlfinding_ULTRA').click(function() {
+        if ($(this).is(':checked')) {
+            $('.noramlfinding_ULTRA').attr('checked');
+            $('.noramlfinding_ULTRA').attr('name','finding');
+
+            $('.notnoramlfinding_ULTRA').prop('checked', false);
+            $('.notnoramlfinding_ULTRA').removeAttr('name','finding');
+
+            $('.fnnormal_ULTRA').show();
+            $('.txtcommnor_ULTRA').attr('name','comm');
+
+            $('.fnnotnormal_ULTRA').hide();
+            $('.txtcommnotnor_ULTRA').removeAttr('name','comm');
+        }
+    });
+    $('.notnoramlfinding_ULTRA').click(function() {
+        if ($(this).is(':checked')) {
+            $('.notnoramlfinding_ULTRA').attr('checked');
+            $('.notnoramlfinding_ULTRA').attr('name','finding');
+
+            $('.noramlfinding_ULTRA').prop('checked', false);
+            $('.noramlfinding_ULTRA').removeAttr('name','finding');
+
+            $('.fnnotnormal_ULTRA').show();
+            $('.txtcommnotnor_ULTRA').attr('name','comm');
+
+            $('.fnnormal_ULTRA').hide();
+            $('.txtcommnor_ULTRA').removeAttr('name','comm');
         }
     });
 
@@ -7517,6 +7831,98 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 changeMonth: true,
             });
         })
+    })
+
+    $('.editpatientultrasound').on('click',function() {
+        var dataid = $(this).data('id');
+        $('.ultrasound_id').val('');
+        $('.orno_edit_ultra').val('');
+        $('.physician_edit_ultra').empty();
+        $('.ultrasound_edit_date').val('');
+        $('.phyfee_edit_ultra').val('');
+        $('.results_edit_ultra').empty();
+        $('.results_info_edit_ultra').empty();
+
+        $.get('../../api/ultrasoundedit?dataid=' + dataid, function(data){
+            $('.ultrasound_id').val(data.id);
+            $('.orno_edit_ultra').val(data.or_no);
+            $('.physician_edit_ultra').append('<option value="'+data.doctor.id+'">'+data.doctor.f_name+' '+data.doctor.m_name+' '+data.doctor.l_name+', '+data.doctor.credential+'</option>');
+            $('.ultrasound_edit_date').val(data.ultrasound_date);
+            $('.phyfee_edit_ultra').val(data.phy_fee);
+
+            if (data.finding == "Normal") {
+                $('.results_edit_ultra').append('<label>\
+                <input type="checkbox" name="finding" checked="" value="Normal" class="noramlfinding_ULTRA">\
+                Normal</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+                <label><input type="checkbox" value="Not Normal" class="notnoramlfinding_ULTRA">Not Normal</label>');
+
+                $('.results_info_edit_ultra').append('<div class="col-sm-12 fnnormal_ULTRA">\
+                    <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment">'+data.finding_info+'</textarea>\
+                </div>\
+                <div class="col-sm-12 fnnotnormal_ULTRA" style="display: none;">\
+                    <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.</textarea>\
+                </div>');
+            }
+            else {
+                $('.results_edit_ultra').append('<label>\
+                <input type="checkbox" name="finding" value="Normal" class="noramlfinding_ULTRA">\
+                Normal</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+                <label><input type="checkbox" checked="" value="Not Normal" class="notnoramlfinding_ULTRA">Not Normal</label>');
+
+                $('.results_info_edit_ultra').append('<div class="col-sm-12 fnnormal_ULTRA" style="display: none;">\
+                    <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.</textarea>\
+                </div>\
+                <div class="col-sm-12 fnnotnormal_ULTRA">\
+                    <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment">'+data.finding_info+'</textarea>\
+                </div>');
+            }
+
+            $('.noramlfinding_ULTRA').click(function() {
+            if ($(this).is(':checked')) {
+            $('.noramlfinding_ULTRA').attr('checked');
+            $('.noramlfinding_ULTRA').attr('name','finding');
+
+            $('.notnoramlfinding_ULTRA').prop('checked', false);
+            $('.notnoramlfinding_ULTRA').removeAttr('name','finding');
+
+            $('.fnnormal_ULTRA').show();
+            $('.txtcommnor_ULTRA').attr('name','comm');
+
+            $('.fnnotnormal_ULTRA').hide();
+            $('.txtcommnotnor_ULTRA').removeAttr('name','comm');
+            }
+            });
+            $('.notnoramlfinding_ULTRA').click(function() {
+            if ($(this).is(':checked')) {
+            $('.notnoramlfinding_ULTRA').attr('checked');
+            $('.notnoramlfinding_ULTRA').attr('name','finding');
+
+            $('.noramlfinding_ULTRA').prop('checked', false);
+            $('.noramlfinding_ULTRA').removeAttr('name','finding');
+
+            $('.fnnotnormal_ULTRA').show();
+            $('.txtcommnotnor_ULTRA').attr('name','comm');
+
+            $('.fnnormal_ULTRA').hide();
+            $('.txtcommnor_ULTRA').removeAttr('name','comm');
+            }
+            });
+        })
+    })
+
+    $('.patientultrasoundlog').on('click',function() {
+        var dataid = $(this).data('id');
+        $.get('../../api/ultrasoundlogs?dataid=' + dataid, function(data){
+            $('.ultrasoundlogs').empty();
+            $.each(data, function(index, logsss){
+                $('.ultrasoundlogs').append('<tr>\
+                                <td>'+logsss.id+'</td>\
+                                <td class="text-center">'+logsss.date+'</td>\
+                                <td class="text-center">'+logsss.doctor.f_name+' '+logsss.doctor.m_name+' '+logsss.doctor.l_name+', '+logsss.doctor.credential+'</td>\
+                                <td class="text-center">'+logsss.action+'</td>\
+                                </tr>');
+            });
+        });
     })
 
 </script>

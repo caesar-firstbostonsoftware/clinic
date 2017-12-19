@@ -18,6 +18,7 @@ use PDF;
 use Dompdf\Dompdf;
 use TCPDF;
 use App\PatientVisit;
+use App\UserPicture;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -56,6 +57,8 @@ class DoctorsController extends Controller
     
     public function printreport(Request $request,$id,$datefrom,$dateto)
     {   
+        if(Session::has('user')){
+
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->SetCreator(PDF_CREATOR);
@@ -105,15 +108,22 @@ class DoctorsController extends Controller
         $pdf->writeHTML(view('printreport',compact('Patientxray','id','counter','income','datefrom','dateto'))->render());
         ob_end_clean();
         $pdf->Output('NFHSIIncomeReport.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function myinfo()
     {   
         if(Session::has('user')){
+
             $doctor_id = Session::get('user');
             $info = Doctor::where('id',$doctor_id)->first();
             $user = User::where('doc_id',$doctor_id)->first();
             return view('doctormyinfopage',compact('info','user'));
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -140,12 +150,14 @@ class DoctorsController extends Controller
     public function userdoctorpage()
     {   
         if(Session::has('user')){
+
             $users = User::join('doctors','users.doc_id','=','doctors.id')
             ->where('users.position','!=','Doctor')
-            ->select('doctors.*','users.username','users.position')
+            ->select('doctors.*','users.username','users.position','users.doc_id')
+            ->with('user_picture')
             ->get();
-           //return Response::json($users, 200, array(), JSON_PRETTY_PRINT);
             return view('userdoctorpage',compact('users'));
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -156,11 +168,13 @@ class DoctorsController extends Controller
     public function doctoruserpage()
     {   
         if(Session::has('user')){
+
             $users = User::join('doctors','users.doc_id','=','doctors.id')
             ->where('users.position','Doctor')
             ->select('doctors.*','users.username','users.position')
             ->get();
             return view('doctoruserpage',compact('users'));
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -172,6 +186,7 @@ class DoctorsController extends Controller
     {   
         if(Session::has('user')){
 
+            $datenow = date("Y-m-d");
             $user_id = $request->input('user_id');
             $fname = $request->input('fname');
             $mname = $request->input('mname');
@@ -218,6 +233,20 @@ class DoctorsController extends Controller
                     Session::flash('alert-success', 'User Created.');
                     return redirect()->action('DoctorsController@userdoctorpage');
                 }
+
+                if (!$request->file('image')) {
+                }
+                else {
+                    $imageName = 'user'.'_'.$doctor->id.'_'.$request->file('image')->getClientOriginalName();
+
+                    $UserPicture = new UserPicture;
+                    $UserPicture->user_id = $doctor->id;
+                    $UserPicture->image_desc = $imageName;
+                    $UserPicture->date_uploaded = $datenow;
+                    $UserPicture->save();
+
+                    $request->file('image')->move(base_path() . '/public/user_pics/', $imageName);
+                }
             }
             else {
                 $doctor = Doctor::where('id',$user_id)->first();
@@ -241,6 +270,42 @@ class DoctorsController extends Controller
                     ->where('users.position','Doctor')
                     ->select('doctors.*','users.username','users.position')
                     ->get();
+
+                    $UserPicture = UserPicture::where('user_id',$user_id)->first();
+                    if (!$UserPicture) {
+                        if (!$request->file('image')) {
+                        }
+                        else {
+                            $imageName = 'user'.'_'.$doctor->id.'_'.$request->file('image')->getClientOriginalName();
+
+                            $UserPicture = new UserPicture;
+                            $UserPicture->user_id = $doctor->id;
+                            $UserPicture->image_desc = $imageName;
+                            $UserPicture->date_uploaded = $datenow;
+                            $UserPicture->save();
+
+                            $request->file('image')->move(base_path() . '/public/user_pics/', $imageName);
+                        }
+                    }
+                    else {
+                        if (!$request->file('image')) {
+                        }
+                        else {
+                            $imageName = $UserPicture->image_desc;
+                            unlink("../public/user_pics/".$imageName);
+
+                            $imageName2 = 'user'.'_'.$doctor->id.'_'.$request->file('image')->getClientOriginalName();
+
+                            $UserPicture = new UserPicture;
+                            $UserPicture->user_id = $doctor->id;
+                            $UserPicture->image_desc = $imageName2;
+                            $UserPicture->date_uploaded = $datenow;
+                            $UserPicture->save();
+
+                            $request->file('image')->move(base_path() . '/public/user_pics/', $imageName2);
+                        }
+                    }
+
                     Session::flash('alert-success', 'Doctor Edited.');
                     return redirect()->action('DoctorsController@doctoruserpage');
                 }
@@ -249,6 +314,42 @@ class DoctorsController extends Controller
                     ->where('users.position','!=','Doctor')
                     ->select('doctors.*','users.username','users.position')
                     ->get();
+
+                    $UserPicture = UserPicture::where('user_id',$user_id)->first();
+                    if (!$UserPicture) {
+                        if (!$request->file('image')) {
+                        }
+                        else {
+                            $imageName = 'user'.'_'.$doctor->id.'_'.$request->file('image')->getClientOriginalName();
+
+                            $UserPicture = new UserPicture;
+                            $UserPicture->user_id = $doctor->id;
+                            $UserPicture->image_desc = $imageName;
+                            $UserPicture->date_uploaded = $datenow;
+                            $UserPicture->save();
+
+                            $request->file('image')->move(base_path() . '/public/user_pics/', $imageName);
+                        }
+                    }
+                    else {
+                        if (!$request->file('image')) {
+                        }
+                        else {
+                            $imageName = $UserPicture->image_desc;
+                            unlink("../public/user_pics/".$imageName);
+
+                            $imageName2 = 'user'.'_'.$doctor->id.'_'.$request->file('image')->getClientOriginalName();
+
+                            $UserPicture = new UserPicture;
+                            $UserPicture->user_id = $doctor->id;
+                            $UserPicture->image_desc = $imageName2;
+                            $UserPicture->date_uploaded = $datenow;
+                            $UserPicture->save();
+
+                            $request->file('image')->move(base_path() . '/public/user_pics/', $imageName2);
+                        }
+                    }
+
                     Session::flash('alert-success', 'User Edited.');
                     return redirect()->action('DoctorsController@userdoctorpage');
                 }
@@ -256,15 +357,14 @@ class DoctorsController extends Controller
 
         }
         else {
-
             return redirect()->action('Auth@checklogin');
-
         } 
     }
 
     public function editmyinfo(Request $request)
     {   
         if(Session::has('user')){
+
             $doc_id = $request->input('doc_id');
             $fname = $request->input('fname');
             $mname = $request->input('mname');
@@ -295,6 +395,7 @@ class DoctorsController extends Controller
 
             Session::flash('alert-success', 'My Info Edited.');
             return redirect()->action('DoctorsController@myinfo');
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -304,10 +405,12 @@ class DoctorsController extends Controller
     public function getuserinfo(Request $request)
     {      
         if(Session::has('user')){
+
             $user_id = $request->input('user_id');
             $Doctor = Doctor::where('id',$user_id)->with('user')->first();
 
             return Response::json($Doctor, 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -316,11 +419,20 @@ class DoctorsController extends Controller
 
     public function reports(Request $request, $id)
     {   
+        if(Session::has('user')){
+
         return view('reports',compact('id'));
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function reportsreports(Request $request)
     {
+        if(Session::has('user')){
+
         $id = $request->input('id');
         $datefrom = $request->input('datefrom');
         $dateto = $request->input('dateto');
@@ -342,12 +454,19 @@ class DoctorsController extends Controller
         }
 
         return Response::json(['patientxray'=>$Patientxray,'id'=>$id,'counter'=>$counter,'income'=>$income], 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
     public function medcert()
     {
         if(Session::has('user')){
+
             return view('medicalcertificate');
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -412,31 +531,10 @@ class DoctorsController extends Controller
     public function xrayreportsreports(Request $request)
     {      
         if(Session::has('user')){
+
             $id = $request->input('id');
             $datefrom = $request->input('datefrom');
             $dateto = $request->input('dateto');
-            // if ($id == 1) {
-            //         $Doctor = User::join('doctors','users.doc_id','=','doctors.id')
-            //         ->where('users.position','=','Doctor')
-            //         ->select('doctors.id','doctors.f_name','doctors.m_name','doctors.l_name','doctors.credential')
-            //         ->get();
-            //         $Patientxray = DB::select("SELECT patientxrays.physician_id, COUNT(patientxrays.physician_id) as counter
-            //         FROM patientxrays
-            //         WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
-            //         GROUP BY patientxrays.physician_id");
-            //         $counter = 0;
-            //         $xrayprice = AdminPanel::where('id',5)->with('price123')->get();
-            // }
-            // else {
-            //     $Doctor = 0;
-            //     $Patientxray = DB::select("SELECT patientxrays.xray_date, COUNT(patientxrays.xray_date) as counter
-            //         FROM patientxrays
-            //         WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id'
-            //         GROUP BY patientxrays.xray_date");
-            //     $counter = 0;
-            //     $xrayprice = AdminPanel::where('id',5)->with('price123')->get();
-                
-            // }
 
             $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
             FROM patient_services
@@ -446,6 +544,7 @@ class DoctorsController extends Controller
             $income = DB::table('patient_services')->where('date_reg','>=',$datefrom)->where('date_reg','<=',$dateto)->where('admin_panel_id',5)->sum('price_amount');
 
             return Response::json(['patientxray'=>$Patientxray,'id'=>$id,'counter'=>$counter,'income'=>$income], 200, array(), JSON_PRETTY_PRINT);
+
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -484,27 +583,6 @@ class DoctorsController extends Controller
             $pdf->SetFont('Courier', '', 10);
 
             $pdf->AddPage();
-                // if ($id == 1) {
-                //     $Doctor = User::join('doctors','users.doc_id','=','doctors.id')
-                //     ->where('users.position','=','Doctor')
-                //     ->select('doctors.id','doctors.f_name','doctors.m_name','doctors.l_name','doctors.credential')
-                //     ->get();
-                //     $Patientxray = DB::select("SELECT patientxrays.physician_id, COUNT(patientxrays.physician_id) as counter
-                //     FROM patientxrays
-                //     WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto'
-                //     GROUP BY patientxrays.physician_id");
-                //     $counter = 0;
-                //     $xrayprice = AdminPanel::where('id','=','35')->first();
-                // }
-                // else {
-                //     $Doctor = 0;
-                //     $Patientxray = DB::select("SELECT patientxrays.xray_date, COUNT(patientxrays.xray_date) as counter
-                //         FROM patientxrays
-                //         WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id'
-                //         GROUP BY patientxrays.xray_date");
-                //     $counter = 0;
-                //     $xrayprice = AdminPanel::where('id','=','35')->first();
-                // }
 
             $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
             FROM patient_services

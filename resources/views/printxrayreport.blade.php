@@ -4,7 +4,7 @@
 
 <div>
         <p style="text-align: center;"><b>X-Ray Count</b><br><b>From: {{$datefrom}} </b><b> To: {{$dateto}}</b></p>
-        <p style="text-align: right;"><b>TOTAL : Php. <?php echo number_format($income, 2);?></b></p>
+        <!-- <p style="text-align: right;"><b>TOTAL : Php. <?php echo number_format($income, 2);?></b></p> -->
         <table class="table table-striped">
             <thead>
                 <tr>

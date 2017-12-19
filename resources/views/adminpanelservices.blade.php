@@ -128,6 +128,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             <td style="text-align: right;">{{$panel->price123->price}}</td>
                                                             <td>
                                                                <a href="#" class="btn btn-xs editservice" data-id="{{$panel->id}}" data-subid="0" data-toggle="modal" data-target="#modal_edit_services" data-backdrop="static"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+                                                               <a href="#" class="btn btn-xs historyservice" data-id="{{$panel->id}}" data-subid="0" data-toggle="modal" data-target="#modal_historyservice" data-backdrop="static"><i class="fa fa-history fa-lg" style="color:brown;"></i></a>
                                                             </td>
                                                         </tr>
                                                     @endif
@@ -258,6 +259,30 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="modal_historyservice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close close_medication" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Service Price History</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr role="row">
+                                        <th style="width: 50%;">Date</th>
+                                        <th style="width: 50%;text-align:right;">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="historyservice_tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
                                 <!-- END MODAL -->
 
     </section>
@@ -313,6 +338,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.mainedit_id').val(id);
             $('.mainedit_name').val(mainname);
         })
+
+        $('.historyservice').on('click',function() {
+            var main_id = $(this).data('id');
+            $('.historyservice_tbody').empty();
+            $.get('../../api/historyservice?main_id=' + main_id, function(data){
+                $.each(data,function(index,history) {
+                    $('.historyservice_tbody').append('<tr>\
+                        <td>'+history.date_reg+'</td>\
+                        <td style="text-align:right;">'+history.price+'</td>\
+                        </tr>');
+                });
+            });
+        });
     </script>
 @show
 

@@ -57,26 +57,17 @@ class AdminPanelContoller extends Controller
             $income = DB::table('patient_visits')->where('visit_date','>=',$maindate1)->where('visit_date','<=',$maindate2)->sum('discounted_total');
             $Patientxray = Patientxray::where('status','New')->with('patient')->orderBy('id','asc')->orderBy('status','asc')->get();
 
-            $day1 = $datenow_Y.'-'.$datenow_m.'-01';
-            $day7 = $datenow_Y.'-'.$datenow_m.'-07';
-            $day08 = $datenow_Y.'-'.$datenow_m.'-08';
-            $day14 = $datenow_Y.'-'.$datenow_m.'-14';
-            $day15 = $datenow_Y.'-'.$datenow_m.'-15';
-            $day21 = $datenow_Y.'-'.$datenow_m.'-21';
-            $day22 = $datenow_Y.'-'.$datenow_m.'-22';
-            $day28 = $datenow_Y.'-'.$datenow_m.'-28';
-            $day29 = $datenow_Y.'-'.$datenow_m.'-29';
-            $day31 = $datenow_Y.'-'.$datenow_m.'-31';
+            $datus = array();
+            for($d=1; $d<=31; $d++)
+            {
+                $time=mktime(12, 0, 0, $datenow_m, $d, $datenow_Y);          
+                    if (date('m', $time)==$datenow_m) {
+                        $list=date('Y-m-d', $time);
+                        $datus[]= PatientVisit::where('visit_date',$list)->where('status','!=','Canceled')->count();
+                    } 
+            }
 
-            $week1 = PatientVisit::where('visit_date','>=',$day1)->where('visit_date','<=',$day7)->where('status','!=','Canceled')->count();
-            $week2 = PatientVisit::where('visit_date','>=',$day08)->where('visit_date','<=',$day14)->where('status','!=','Canceled')->count();
-            $week3 = PatientVisit::where('visit_date','>=',$day15)->where('visit_date','<=',$day21)->where('status','!=','Canceled')->count();
-            $week4 = PatientVisit::where('visit_date','>=',$day22)->where('visit_date','<=',$day28)->where('status','!=','Canceled')->count();
-            $week5 = PatientVisit::where('visit_date','>=',$day29)->where('visit_date','<=',$day31)->where('status','!=','Canceled')->count();
-
-            //return Response::json($pv, 200, array(), JSON_PRETTY_PRINT);
-
-            return view('dashboard',compact('info','user','pv','count','pv2','income','Patientxray','week1','week2','week3','week4','week5'));
+            return view('dashboard',compact('info','user','pv','count','pv2','income','Patientxray','week1','week2','week3','week4','week5','datus'));
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -189,5 +180,13 @@ class AdminPanelContoller extends Controller
         else {
             return redirect()->action('Auth@checklogin');
         }
+    }
+
+    public function historyservice(Request $request)
+    {   
+        $main_id = $request->input('main_id');
+        $sub_id = $request->input('sub_id');
+        $service = ServicePrice::where('admin_panel_sub_id',$main_id)->orderBy('id','DESC')->get();
+        return Response::json($service, 200, array(), JSON_PRETTY_PRINT);
     }
 }

@@ -51,6 +51,8 @@ Route::post('/visit/{id}/{vid}/fecalysis', 'PatientsController@newfecalysis');
 Route::post('/visit/{id}/{vid}/chemistryii', 'PatientsController@newchemistryii');
 Route::post('/visit/{id}/{vid}/ogtt', 'PatientsController@newogtt');
 Route::post('/visit/{id}/{vid}/hematology', 'PatientsController@newhematology');
+Route::post('/visit/{id}/{vid}/ultrasound', 'PatientsController@newultrasound');
+Route::post('/visit/{id}/{vid}/ultrasoundedit', 'PatientsController@newultrasoundedit');
 
 // Route::get('/adminpanel', 'AdminPanelContoller@adminpanel');
 
@@ -80,6 +82,7 @@ Route::get('/visit/{id}/{vid}/hematologydone', 'PatientsController@hematologydon
 Route::get('/visit/{id}/{vid}/serologydone', 'PatientsController@serologydone');
 Route::get('/visit/{id}/{vid}/chemistryiidone', 'PatientsController@chemistryiidone');
 Route::get('/visit/{id}/{vid}/ecgdone', 'PatientsController@ecgdone');
+Route::get('/visit/{id}/{vid}/ultrasounddone', 'PatientsController@ultrasounddone');
 
 
 Route::post('/visit/{id}/{vid}/serology', 'PatientsController@newserology');
@@ -106,6 +109,8 @@ Route::get('/visit/{id}/{vid}/ogttdone/pdf', 'PatientsController@ogttdonepdf');
 Route::get('/visit/{id}/{vid}/chemistryidone/pdf', 'PatientsController@chemistryidonepdf');
 Route::get('/visit/{id}/{vid}/fecalysisdone/pdf', 'PatientsController@fecalysisdonepdf');
 Route::get('/visit/{id}/{vid}/urinalysisdone/pdf', 'PatientsController@urinalysisdonepdf');
+
+Route::get('/ultrasound/pdf/view/{id}', 'PatientsController@ultrasoundpdfview');
 
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');
@@ -148,4 +153,9 @@ Route::get('api/donevisit','PatientsController@donevisit');
 Route::get('api/cancelvisit','PatientsController@cancelvisit');
 
 Route::get('api/checkreceipt','PatientsController@checkreceipt');
+
+Route::get('api/historyservice','AdminPanelContoller@historyservice');
+
+Route::get('api/ultrasoundedit','PatientsController@ultrasoundedit');
+Route::get('api/ultrasoundlogs','PatientsController@ultrasoundlogs');
 

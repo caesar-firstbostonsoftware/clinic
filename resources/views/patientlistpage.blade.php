@@ -97,19 +97,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <tr role="row">
                                                     <th style="width: 5%;">ID</th>
                                                     <th style="width: 30%;">Name</th>
-                                                    <th style="width: 14%;">Address</th>
+                                                    <th style="width: 20%;">Address</th>
                                                     <th style="width: 5%;">Gender</th>
                                                     <th style="width: 5%;">Status</th>
-                                                    <th style="width: 40%;">Action</th>
+                                                    <th style="width: 35%;">Action</th>
                                                 </tr>
                                                 @else
                                                 <tr role="row">
                                                     <th style="width: 5%;">ID</th>
                                                     <th style="width: 30%;">Name</th>
                                                     <th style="width: 5%;">Gender</th>
-                                                    <th style="width: 14%;">Last Visit Date</th>
+                                                    <th style="width: 20%;">Last Visit Date</th>
                                                     <th style="width: 5%;">Status</th>
-                                                    <th style="width: 40%;">Action</th>
+                                                    <th style="width: 35%;">Action</th>
                                                 </tr>
                                                 @endif
                                             </thead>
@@ -937,15 +937,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $.each(data.adminpanel,function(index,selser) {
                     $.getJSON('/api/submainservices?main_id=' + selser.APC_ID, function(data){
                         $('.'+selser.APC_ID+'').append('<div class="row wawsee">\
-                                        <div class="col-sm-2"></div>\
+                                        <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="'+selser.SER_QTY+'"></div>\
                                         <div class="col-sm-4">\
-                                            <input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="'+selser.SER_QTY+'" style=margin-left:-45%;width:40%;">\
-                                            <select class="form-control serser_name service_name'+selser.APC_ID+'" name="service_name[]" required="" style="margin-top:-14%;">\
+                                            <select class="form-control serser_name service_name'+selser.APC_ID+'" name="service_name[]" required="">\
                                             </select>\
-                                            <input class="form-control services" type="text" placeholder="0.00" required="" value="'+selser.AP_PRICE+'" readonly="" autocomplete="off" style="margin-top:-14%;margin-left:105%;width:50%;">\
-                                            <input class="form-control" name="mainservice[]" value="'+selser.PRICE_AMOUNT+'" type="text" style="display:none;">\
                                         </div>\
                                         <div class="col-sm-2">\
+                                            <input class="form-control services" type="text" placeholder="0.00" required="" value="'+selser.AP_PRICE+'" readonly="" autocomplete="off">\
+                                            <input class="form-control" name="mainservice[]" value="'+selser.PRICE_AMOUNT+'" type="text" style="display:none;">\
                                         </div>\
                                         <div class="col-sm-1">\
                                             <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
@@ -965,7 +964,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                     $('.serser_name').on('change',function() {
                         var serserval = $('option:selected',this).data('price');
-                        $(this).next('input').val(serserval);
+                        $(this).parent().parent().find('.services').val(serserval);
 
                         // var aa = $(this).val();
                         // var bbaa = aa.replace(/,/g , '');
@@ -1150,15 +1149,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var main_id = $(this).data('mainid');
             $(this).attr('disabled','disabled');     
             $('.'+main_id+'').append('<div class="row">\
-                                    <div class="col-sm-2"></div>\
+                                    <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1"></div>\
                                     <div class="col-sm-4">\
-                                        <input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1" style=margin-left:-45%;width:40%;">\
-                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="" style="margin-top:-14%;">\
+                                        <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
                                         </select>\
-                                        <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off" style="margin-top:-14%;margin-left:105%;width:50%;">\
-                                        <input class="form-control" name="mainservice[]" value="'+main_id+'" type="text" style="display:none;">\
                                     </div>\
                                     <div class="col-sm-2">\
+                                        <input class="form-control services" type="text" placeholder="0.00" required="" readonly="" autocomplete="off">\
+                                        <input class="form-control" name="mainservice[]" value="'+main_id+'" type="text" style="display:none;">\
                                     </div>\
                                     <div class="col-sm-1">\
                                         <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
@@ -1176,7 +1174,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             $('.serser_name').on('change',function() {
                 var serserval = $('option:selected',this).data('price');
-                $(this).next('input').val(serserval);
+                $(this).parent().parent().find('.services').val(serserval);
 
                 // var aa = $(this).val();
                 // var bbaa = aa.replace(/,/g , '');

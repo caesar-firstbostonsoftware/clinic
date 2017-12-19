@@ -92,11 +92,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="nav-tabs-custom">
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
                             <div class="col-md-12">
-                                <div class="mb-0 mt-4">
+                                <div class="col-sm-6">
                                     <img src="{{ asset('/img/2010.png') }}" height="30" width="30">
                                     <?php $datenow = date("F");?>
                                     No. of Patient for the month of <b>{{$datenow}}</b>
-                                    <i style="margin-left: 50%;"><b>{{$count}} Results Found</b></i>
+                                </div>
+                                <div class="col-sm-6" style="text-align: right;">
+                                    <i><b>{{$count}} Results Found</b></i>
                                 </div>
                                 <hr class="mt-2">
                                 
@@ -108,7 +110,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <th width="34%">Address</th>
                                             <th>Gender</th>
                                             <th>Age</th>
-                                            <th>Number of Visit</th>
+                                            <th>No. of Visit</th>
                                             <th width="1%"></th>
                                         </tr>
                                     </thead>
@@ -135,9 +137,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="nav-tabs-custom">
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
                             <div class="col-md-12">
-                                <div class="mb-0 mt-4">
+                                <div class="col-sm-6">
                                     <img src="{{ asset('/img/2011.png') }}" height="30" width="30">
                                     Income for the month of <b>{{$datenow}}</b>
+                                </div>
+                                <div class="col-sm-6" style="text-align: right;">
                                     <?php $datenow2 = date("Y-m-d"); ?>
                                     <i style="margin-left: 40%;"><b>Total as of {{$datenow2}} :</b> Php. <?php echo number_format($income, 2);?></i>
                                 </div>
@@ -276,17 +280,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 fontSize: 15
             },
             data: [{
-                type: "line",
+                type: "splineArea",
                 name: "Visits",
                 color: "red",
                 showInLegend: true,
                 axisYIndex: 1,
                 dataPoints: [
-                    { label: "1st Week" , y: {{$week1}} },
-                    { label: "2nd Week" , y: {{$week2}} },
-                    { label: "3rd Week" , y: {{$week3}} },
-                    { label: "4th Week" , y: {{$week4}} },
-                    { label: "5th Week" , y: {{$week5}} }
+                    <?php $counter = 0;?>
+                    <?php  foreach ($datus as $key): ?>
+                        { label: "Day "+{{$counter+=1}} , y: {{$key}} },
+                    <?php endforeach ?>
                 ]
             }]
         });

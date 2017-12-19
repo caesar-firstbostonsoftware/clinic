@@ -322,7 +322,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var dateto = $('.xra_dateto').val();
             $('.xra_appendreports').empty();
             $('.xra_Income').empty();
-            //if (id == 1) {
                 $.get('../../api/xrayreportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
                 var count = 0;
                 $('.xra_appendreports').append('<table class="table table-striped">\
@@ -341,37 +340,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <td style="text-align: center;">'+report.counter+'</td>\
                         </tr>');   
                 })
-                $('.xra_Income').append('<b>TOTAL : Php. '+data.income+'</b>');
-                })
-            // }
-            // else {
-            //     $.get('../../api/xrayreportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
-            //     var count = 0;
-            //     $('.xra_appendreports').append('<table class="table table-striped">\
-            //         <thead>\
-            //             <tr>\
-            //                 <th style="text-align: center;">Date</th>\
-            //                 <th style="text-align: center;">Patient Count</th>\
-            //                 <th style="text-align: center;">Amount</th>\
-            //             </tr>\
-            //         </thead>\
-            //         <tbody class="xra_tbodyreports">\
-            //         </tbody>\
-            //     </table>');
-            //     $.each(data.patientxray, function(index, report){
-            //             count += report.counter
-            //             var amount = report.counter * data.xrayprice.price;
-            //             $('.xra_tbodyreports').append('<tr>\
-            //                 <td style="text-align: center;">'+report.xray_date+'</td>\
-            //                 <td style="text-align: center;">'+report.counter+'</td>\
-            //                 <td style="text-align: center;">'+amount+'</td>\
-            //             </tr>'); 
-                    
-            //     })
-            //     var finalincome = ReplaceNumberWithCommas(count * data.xrayprice.price);
-            //     $('.xra_Income').append('<b>Income : Php. '+finalincome+'</b>');
-            //     })
-            // } 
+                // $('.xra_Income').append('<b>TOTAL : Php. '+data.income+'</b>');
+                }) 
         })
 
         $('.inc_printrep').on('click',function() {

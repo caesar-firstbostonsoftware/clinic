@@ -245,29 +245,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="col-md-3">
             <div class="box box-widget widget-user-2">
                 <div class="widget-user-header bg-light-blue">
-                    <h3 class="box-title"><b>Electrocardiographic</b></h3>
-                </div>
-                <div class="box-footer no-padding">
-                    <div class="col-sm-12">
-                        <?php $counter = 1;?>
-                        @foreach($ecg as $patientecg)
-                        <?php
-                            $id = $counter++;
-                            $zero_id = sprintf("%03d", $id);
-                        ?>
-                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientecg->patient->id}}/{{$patientecg->visit_id}}" target="_blank"> {{$patientecg->patient->l_name}}, {{$patientecg->patient->f_name}}</a>
-                            <br>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-
-        <div class="row">
-        <div class="col-md-3">
-            <div class="box box-widget widget-user-2">
-                <div class="widget-user-header bg-light-blue">
                     <h3 class="box-title"><b>Chemistry I</b></h3>
                 </div>
                 <div class="box-footer no-padding">
@@ -291,6 +268,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
             </div>
         </div>
+        </div>
+
+        <div class="row">
         <div class="col-md-3">
             <div class="box box-widget widget-user-2">
                 <div class="widget-user-header bg-light-blue">
@@ -311,6 +291,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     {{$chemiiser->xrayservice1001->name}},
                                 @endif
                             @endforeach
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box box-widget widget-user-2">
+                <div class="widget-user-header bg-light-blue">
+                    <h3 class="box-title"><b>Electrocardiographic</b></h3>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="col-sm-12">
+                        <?php $counter = 1;?>
+                        @foreach($ecg as $patientecg)
+                        <?php
+                            $id = $counter++;
+                            $zero_id = sprintf("%03d", $id);
+                        ?>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientecg->patient->id}}/{{$patientecg->visit_id}}" target="_blank"> {{$patientecg->patient->l_name}}, {{$patientecg->patient->f_name}}</a>
                             <br>
                         @endforeach
                     </div>

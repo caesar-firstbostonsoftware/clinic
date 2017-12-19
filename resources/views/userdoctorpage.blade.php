@@ -73,7 +73,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </ol>
     </section>
     <section class="content">
-        <div class="row">
+        <h3 class="box-title">List of Users <button class="btn btn-primary btn-xs addnew" data-toggle="modal" data-target="#addnewuser" data-backdrop="static">Add New</button></h3>
+        <!-- <div class="row">
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
@@ -128,6 +129,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </div>
                 </div>
             </div>
+        </div> -->
+        <div class="row">
+            @foreach($users as $u_doctor)
+            <?php
+                $id = $u_doctor->id;
+                $zero_id = sprintf("%04d", $id);
+            ?>
+            <div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-body box-profile">
+                        @if(!$u_doctor->user_picture)
+                        <img class="profile-user-img img-responsive img-circle" src="{{ asset('/img/2012.png') }}" alt="User profile picture">
+                        @else
+                        <img class="profile-user-img img-responsive img-circle" src="http://localhost:8000/user_pics/{{$u_doctor->user_picture->image_desc}}" alt="User profile picture">
+                        @endif
+                        <p class="text-muted text-center">ID # {{$zero_id}}</p>
+                        <h3 class="profile-username text-center">{{$u_doctor->f_name}} {{$u_doctor->m_name}} {{$u_doctor->l_name}}</h3>
+                        <p class="text-muted text-center">{{$u_doctor->position}}</p>
+                        <button class="btn btn-xs btn-primary btn-block edituser" data-toggle="modal" data-target="#addnewuser" data-id="{{$u_doctor->id}}" data-backdrop="static">Edit</button>
+                    </div>
+                </div>
+            </div>
+            @endforeach
         </div>
     </section>
     </div>
@@ -141,7 +165,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </button>
                     </div>
                     <div class="modal-body">
-                            <form class="form-horizontal" id="adddoctoruser" action="/NFHSI/users" method="post">
+                            <form class="form-horizontal" id="adddoctoruser" action="/NFHSI/users" method="post" enctype="multipart/form-data">
                             {!! csrf_field() !!}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Position</label>
@@ -201,6 +225,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <label class="col-sm-2 control-label">Password</label>
                                     <div class="col-sm-10">
                                         <input class="form-control password" id="password" name="password" placeholder="Password" type="text" required="" autocomplete="off" tabindex="8">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Upload Image:</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="image" id="image" class="form-control">
                                     </div>
                                 </div>
                             </form>
@@ -289,7 +319,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <option value="Labtest" selected >Lab Test</option>\
                                             <option value="Cashier">Cashier</option>');
                 }
-                else if (data.user.position == "Labtest"){
+                else if (data.user.position == "Cashier"){
                     $('.divcredential').hide();
                     $('.divspecialization').hide();
                     $('.position').append('<option value="">-- Select One --</option>\

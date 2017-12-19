@@ -26,4 +26,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function user_picture()
+    {
+         return $this->belongsTo('App\UserPicture','doc_id','user_id');
+    }
 }

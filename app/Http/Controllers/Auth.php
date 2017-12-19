@@ -39,7 +39,6 @@ class Auth extends Controller
 				Session::flush();
 				return redirect()->action('Auth@checklogin');
 			}
-			return redirect('/myinfo');
 		}
 		else{
 			return view('welcome');
