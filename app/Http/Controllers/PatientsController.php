@@ -40,6 +40,7 @@ use App\Electrocardiographic;
 use App\SecondChemistry;
 use App\Patientultrasound;
 use App\UltrasoundLog;
+use App\Aptt;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -167,6 +168,7 @@ class PatientsController extends Controller
             $patient->address = $add;
             $patient->senior_id_no = $senciz_id;
             $patient->pwd_id_no = $pwd_id;
+            $patient->type = $request->input('type');
             $patient->save();
 
             $check_p_v = PatientVisit::where('patient_id',$patient->id)->orderBy('id', 'desc')->first();
@@ -177,11 +179,24 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $asd;
-                $patientvisit->totalbill = round($totalprice);
-                $patientvisit->discounted_price = round($discounted_price);
-                $patientvisit->discounted_total = round($discounted_total);
-                $patientvisit->cashier_id = Session::get('user');
+
+                if ($patient->type == 'Walk-in') {
+                    $patientvisit->discount = $asd;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($discounted_price);
+                    $patientvisit->discounted_total = round($discounted_total);
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = 0;
+                }
+                else {
+                    $patientvisit->discount = 0;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($request->input('wh_discount'));
+                    $patientvisit->discounted_total = round($totalprice - $request->input('wh_discount'));
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = $request->input('wh_discount');
+                }
+                
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -213,11 +228,24 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = $check_p_v->visitid + 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $asd;
-                $patientvisit->totalbill = round($totalprice);
-                $patientvisit->discounted_price = round($discounted_price);
-                $patientvisit->discounted_total = round($discounted_total);
-                $patientvisit->cashier_id = Session::get('user');
+
+                if ($patient->type == 'Walk-in') {
+                    $patientvisit->discount = $asd;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($discounted_price);
+                    $patientvisit->discounted_total = round($discounted_total);
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = 0;
+                }
+                else {
+                    $patientvisit->discount = 0;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($request->input('wh_discount'));
+                    $patientvisit->discounted_total = round($totalprice - $request->input('wh_discount'));
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = $request->input('wh_discount');
+                }
+
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -278,11 +306,24 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $asd;
-                $patientvisit->totalbill = round($totalprice);
-                $patientvisit->discounted_price = round($discounted_price);
-                $patientvisit->discounted_total = round($discounted_total);
-                $patientvisit->cashier_id = Session::get('user');
+                
+                if ($patient->type == 'Walk-in') {
+                    $patientvisit->discount = $asd;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($discounted_price);
+                    $patientvisit->discounted_total = round($discounted_total);
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = 0;
+                }
+                else {
+                    $patientvisit->discount = 0;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($request->input('wh_discount'));
+                    $patientvisit->discounted_total = round($totalprice - $request->input('wh_discount'));
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = $request->input('wh_discount');
+                }
+
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -314,11 +355,24 @@ class PatientsController extends Controller
                 $patientvisit->visit_date = $datenow;
                 $patientvisit->visitid = $check_p_v->visitid + 1;
                 $patientvisit->purpose_visit = $purvis;
-                $patientvisit->discount = $asd;
-                $patientvisit->totalbill = round($totalprice);
-                $patientvisit->discounted_price = round($discounted_price);
-                $patientvisit->discounted_total = round($discounted_total);
-                $patientvisit->cashier_id = Session::get('user');
+                
+                if ($patient->type == 'Walk-in') {
+                    $patientvisit->discount = $asd;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($discounted_price);
+                    $patientvisit->discounted_total = round($discounted_total);
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = 0;
+                }
+                else {
+                    $patientvisit->discount = 0;
+                    $patientvisit->totalbill = round($totalprice);
+                    $patientvisit->discounted_price = round($request->input('wh_discount'));
+                    $patientvisit->discounted_total = round($totalprice - $request->input('wh_discount'));
+                    $patientvisit->cashier_id = Session::get('user');
+                    $patientvisit->wh_discount = $request->input('wh_discount');
+                }
+
                 $patientvisit->save();
 
                 for ($i=0; $i < $mainservice; $i++) { 
@@ -481,7 +535,8 @@ class PatientsController extends Controller
         $ecg = Electrocardiographic::where('patient_id',$id)->where('visit_id',$vid)->first();
         $SecondChemistry = SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Patientultrasound = Patientultrasound::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->get();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry','Patientultrasound'));
+        $Aptt = Aptt::where('patient_id',$id)->where('visit_id',$vid)->first();
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry','Patientultrasound','Aptt'));
 
         }
         else {
@@ -553,7 +608,7 @@ class PatientsController extends Controller
 
         $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
         ->where('patients.id',$p_id)
-        ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill','patient_visits.discount')
+        ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill','patient_visits.discount','patient_visits.wh_discount')
         ->first();
 
         $adminpanel = PatientService::join('admin_panels','patient_services.admin_panel_sub_id','=','admin_panels.id')
@@ -613,6 +668,7 @@ class PatientsController extends Controller
         $patient->address = $add;
         $patient->senior_id_no = $senciz_id;
         $patient->pwd_id_no = $pwd_id;
+        $patient->type = $request->input('type');
         $patient->save();
 
         return redirect()->action('PatientsController@patientlist');
@@ -1447,13 +1503,29 @@ class PatientsController extends Controller
             $service->save();
         }
 
+        $patient = Patient::where('id',$p_id)->first();
+
         $patientvisit = PatientVisit::where('patient_id',$p_id)->where('visitid',$v_id)->first();
-        $patientvisit->discount = $asd;
-        $patientvisit->totalbill = round($totalprice);
-        $patientvisit->discounted_price = round($discounted_price);
-        $patientvisit->discounted_total = round($discounted_total);
         $patientvisit->visit_date = $now;
         $patientvisit->purpose_visit = $request->input('purpose_visit');
+        
+        if ($patient->type == 'Walk-in') {
+            $patientvisit->discount = $asd;
+            $patientvisit->totalbill = round($totalprice);
+            $patientvisit->discounted_price = round($discounted_price);
+            $patientvisit->discounted_total = round($discounted_total);
+            $patientvisit->cashier_id = Session::get('user');
+            $patientvisit->wh_discount = 0;
+        }
+        else {
+            $patientvisit->discount = 0;
+            $patientvisit->totalbill = round($totalprice);
+            $patientvisit->discounted_price = round($request->input('wh_discount'));
+            $patientvisit->discounted_total = round($totalprice - $request->input('wh_discount'));
+            $patientvisit->cashier_id = Session::get('user');
+            $patientvisit->wh_discount = $request->input('wh_discount');
+        }
+
         $patientvisit->save(); 
 
         return redirect()->action('PatientsController@patientlist');
@@ -3186,7 +3258,7 @@ class PatientsController extends Controller
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
-            $pdf->SetTitle('NFHSI SEROLOGY');
+            $pdf->SetTitle('NFHSI HEMATOLOGY');
 
             $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
@@ -3577,6 +3649,302 @@ class PatientsController extends Controller
             }
     
            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function newaptt(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+
+            $uri_id = $request->input('uri_id');
+            $physician = $request->input('physician');
+            $orno = $request->input('orno');
+            $now = date("Y-m-d");
+
+            // 1st
+            $cbc = $request->input('cbc');
+            if ($cbc == "Yes") {
+                $cbc1002 = $cbc;
+            }
+            else {
+                $cbc1002 = "No";
+            }
+            $hematocrit = $request->input('hematocrit');
+            if ($hematocrit == "Yes") {
+                $hematocrit1002 = $hematocrit;
+            }
+            else {
+                $hematocrit1002 = "No";
+            }
+            $hemoglobin = $request->input('hemoglobin');
+            if ($hemoglobin == "Yes") {
+                $hemoglobin1002 = $hemoglobin;
+            }
+            else {
+                $hemoglobin1002 = "No";
+            }
+            $wbc = $request->input('wbc');
+            if ($wbc == "Yes") {
+                $wbc1002 = $wbc;
+            }
+            else {
+                $wbc1002 = "No";
+            }
+            // 2nd
+            $protime = $request->input('protime');
+            if ($protime == "Yes") {
+                $protime1002 = $protime;
+            }
+            else {
+                $protime1002 = "No";
+            }
+            // 3rd
+            $cellindices = $request->input('cellindices');
+            if ($cellindices == "Yes") {
+                $cellindices1002 = $cellindices;
+            }
+            else {
+                $cellindices1002 = "No";
+            }
+            // 4th
+            $clotting_lw = $request->input('clotting_lw');
+            if ($clotting_lw == "Yes") {
+                $clotting_lw1002 = $clotting_lw;
+            }
+            else {
+                $clotting_lw1002 = "No";
+            }
+            $clotting = $request->input('clotting');
+            if ($clotting == "Yes") {
+                $clotting1002 = $clotting;
+            }
+            else {
+                $clotting1002 = "No";
+            }
+            $bleeding = $request->input('bleeding');
+            if ($bleeding == "Yes") {
+                $bleeding1002 = $bleeding;
+            }
+            else {
+                $bleeding1002 = "No";
+            }
+            $clot = $request->input('clot');
+            if ($clot == "Yes") {
+                $clot1002 = $clot;
+            }
+            else {
+                $clot1002 = "No";
+            }
+            $platelet = $request->input('platelet');
+            if ($platelet == "Yes") {
+                $platelet1002 = $platelet;
+            }
+            else {
+                $platelet1002 = "No";
+            }
+            $esr = $request->input('esr');
+            if ($esr == "Yes") {
+                $esr1002 = $esr;
+            }
+            else {
+                $esr1002 = "No";
+            }
+            $grp = $request->input('grp');
+            if ($grp == "Yes") {
+                $grp1002 = $grp;
+            }
+            else {
+                $grp1002 = "No";
+            }
+            
+            $rbc = $request->input('rbc');
+            if ($rbc == "Yes") {
+                $rbc1002 = $rbc;
+            }
+            else {
+                $rbc1002 = "No";
+            }
+            
+            if(!$uri_id) {
+                $Aptt = new Aptt;
+                $Aptt->patient_id = $id;
+                $Aptt->visit_id = $vid;
+                $Aptt->doc_id = $physician;
+                $Aptt->date_reg = $now;
+                $Aptt->or_no = $orno;
+
+                $Aptt->cbc = $cbc1002;
+                $Aptt->hematocrit = $hematocrit1002;
+                $Aptt->hematocrit_desc = $request->input('hematocrit_desc');
+                $Aptt->hemoglobin = $hemoglobin1002;
+                $Aptt->hemoglobin_desc = $request->input('hemoglobin_desc');
+                $Aptt->wbc = $wbc1002;
+                $Aptt->wbc_desc = $request->input('wbc_desc');
+
+                $Aptt->dc_band = $request->input('band');
+                $Aptt->dc_pmn = $request->input('pmn');
+                $Aptt->dc_baso = $request->input('baso');
+                $Aptt->dc_eos = $request->input('eos');
+                $Aptt->dc_mono = $request->input('mono');
+                $Aptt->dc_lymph = $request->input('lymphs');
+
+                $Aptt->protime = $protime1002;
+                $Aptt->control_desc = $request->input('control_desc');
+                $Aptt->patient_desc = $request->input('patient_desc');
+                $Aptt->a_desc = $request->input('a_desc');
+                $Aptt->inr_desc = $request->input('inr_desc');
+
+                $Aptt->cellindice = $cellindices1002;
+                $Aptt->mcv_desc = $request->input('mcv_desc');
+                $Aptt->mch_desc = $request->input('indices_mch_desc');
+                $Aptt->mchc_desc = $request->input('mchc_desc');
+
+                $Aptt->clottinglw = $clotting_lw1002;
+                $Aptt->clottinglw_time = $request->input('clotting_lw_desc');
+                $Aptt->clotting = $clotting1002;
+                $Aptt->clotting_time = $request->input('clotting_desc');
+                $Aptt->bleedingdm = $bleeding1002;
+                $Aptt->bleedingdm_time = $request->input('bleeding_desc');
+                $Aptt->clot = $clot1002;
+                $Aptt->clot_retraction = $request->input('clot_desc');
+                $Aptt->platelet = $platelet1002;
+                $Aptt->platelet_count = $request->input('platelet_desc');
+                $Aptt->esr = $esr1002;
+                $Aptt->esr_desc = $request->input('esr_desc');
+                $Aptt->grp = $grp1002;
+                $Aptt->grp_desc = $request->input('grp_desc');
+                $Aptt->rh_desc = $request->input('rh_desc');
+                
+                $Aptt->rbc = $rbc1002;
+                $Aptt->rbc_desc = $request->input('rbc_desc');
+
+                $Aptt->save();
+            }
+            else {
+                $Aptt = Aptt::where('id',$uri_id)->first();
+                $Aptt->doc_id = $physician;
+                $Aptt->or_no = $orno;
+
+                $Aptt->cbc = $cbc1002;
+                $Aptt->hematocrit = $hematocrit1002;
+                $Aptt->hematocrit_desc = $request->input('hematocrit_desc');
+                $Aptt->hemoglobin = $hemoglobin1002;
+                $Aptt->hemoglobin_desc = $request->input('hemoglobin_desc');
+                $Aptt->wbc = $wbc1002;
+                $Aptt->wbc_desc = $request->input('wbc_desc');
+
+                $Aptt->dc_band = $request->input('band');
+                $Aptt->dc_pmn = $request->input('pmn');
+                $Aptt->dc_baso = $request->input('baso');
+                $Aptt->dc_eos = $request->input('eos');
+                $Aptt->dc_mono = $request->input('mono');
+                $Aptt->dc_lymph = $request->input('lymphs');
+
+                $Aptt->protime = $protime1002;
+                $Aptt->control_desc = $request->input('control_desc');
+                $Aptt->patient_desc = $request->input('patient_desc');
+                $Aptt->a_desc = $request->input('a_desc');
+                $Aptt->inr_desc = $request->input('inr_desc');
+
+                $Aptt->cellindice = $cellindices1002;
+                $Aptt->mcv_desc = $request->input('mcv_desc');
+                $Aptt->mch_desc = $request->input('indices_mch_desc');
+                $Aptt->mchc_desc = $request->input('mchc_desc');
+
+                $Aptt->clottinglw = $clotting_lw1002;
+                $Aptt->clottinglw_time = $request->input('clotting_lw_desc');
+                $Aptt->clotting = $clotting1002;
+                $Aptt->clotting_time = $request->input('clotting_desc');
+                $Aptt->bleedingdm = $bleeding1002;
+                $Aptt->bleedingdm_time = $request->input('bleeding_desc');
+                $Aptt->clot = $clot1002;
+                $Aptt->clot_retraction = $request->input('clot_desc');
+                $Aptt->platelet = $platelet1002;
+                $Aptt->platelet_count = $request->input('platelet_desc');
+                $Aptt->esr = $esr1002;
+                $Aptt->esr_desc = $request->input('esr_desc');
+                $Aptt->grp = $grp1002;
+                $Aptt->grp_desc = $request->input('grp_desc');
+                $Aptt->rh_desc = $request->input('rh_desc');
+                
+                $Aptt->rbc = $rbc1002;
+                $Aptt->rbc_desc = $request->input('rbc_desc');
+
+                $Aptt->save();
+            }
+    
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function apttdone(Request $request, $id, $vid)
+    {   
+        if(Session::has('user')){
+
+             $PatientService = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',3)
+            ->get();
+            if ($PatientService) {
+                foreach ($PatientService as $key) {
+                    $Hematology = PatientService::where('id',$key->id)->first();
+                    $Hematology->status = "Done";
+                    $Hematology->save();
+                }
+            }
+            
+            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function apttdonepdf(Request $request,$id,$vid)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI HEMATOLOGY');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 12);
+            $pdf->AddPage('P');
+
+            $info = Patient::where('id',$id)->first();
+            $Aptt = Aptt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $pdf->writeHTML(view('apttdonepdf',compact('info','Aptt'))->render());
+            ob_end_clean();
+            $pdf->Output('HEMATOLOGYPDF.pdf','I');
 
         }
         else {

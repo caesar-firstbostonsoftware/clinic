@@ -173,7 +173,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
         <div class="modal fade" id="modal_visits" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog" role="document" style="width: 70%;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -195,6 +195,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <th>Purpose of Visit</th>
                                         <th style="text-align:right;">Total</th>
                                         <th style="text-align:right;">Discount %</th>
+                                        <th style="text-align:right;">WH Discount</th>
                                         <th style="text-align:right;">Discounted</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -230,26 +231,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
                             </div>
                         </div>
-                        <!-- <div class="form-group">
-                            <div class="checkbox col-sm-3">
-                                <label><input type="checkbox" class="check_senciz_id" value="Yes">Senior Citizen ID #</label>
-                            </div>
-                            <div class="col-sm-3">
-                                <input class="form-control senciz_id" id="senciz_id" name="senciz_id" placeholder="Senior Citizen ID #" type="type" autocomplete="off" readonly="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox col-sm-3">
-                                <label><input type="checkbox" class="check_pwd_id" value="Yes">PWD ID #</label>
-                            </div>
-                            <div class="col-sm-3">
-                                <input class="form-control pwd_id" id="pwd_id" name="pwd_id" placeholder="PWD ID #" type="type" autocomplete="off" readonly="">
-                            </div>
-                        </div> -->
-                        <div class="form-group ">
+                        <div class="form-group 12345">
                             <label class="col-sm-3 control-label" style="text-align: left;">Discount %</label>
                             <div class="col-sm-3">
                                 <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="4">
+                            </div>
+                        </div>
+                        <div class="form-group 67890">
+                            <label class="col-sm-3 control-label" style="text-align: left;">WH Discount</label>
+                            <div class="col-sm-3">
+                                <input class="form-control wh_discount" id="wh_discount" name="wh_discount" type="number" min="0" autocomplete="off" tabindex="4">
                             </div>
                         </div>
 
@@ -298,15 +289,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <form class="form-horizontal posteditpatient" id="posteditpatient" method="post" action="/NFHSI">
                             {!! csrf_field() !!}
                             <input class="edit_p_id" name="p_id" type="text" style="display: none;">
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type walk" value="Walk-in" checked="">Walk-in
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type co" value="Company">Company
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
                                         <input class="form-control edit_fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2 12345">
                                         <input class="form-control edit_mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4 12345">
                                         <input class="form-control edit_lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
@@ -338,7 +339,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control age edit_age" id="age" name="age" placeholder="" type="text">
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group 12345">
                                     <div class="checkbox col-sm-3">
                                         <label><input type="checkbox" class="check_senciz_id" value="Yes">Senior Citizen ID #</label>
                                     </div>
@@ -346,7 +347,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control senciz_id" id="senciz_id" name="senciz_id" placeholder="Senior Citizen ID #" type="type" autocomplete="off" readonly="">
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group 12345">
                                     <div class="checkbox col-sm-3">
                                         <label><input type="checkbox" class="check_pwd_id" value="Yes">PWD ID #</label>
                                     </div>
@@ -354,63 +355,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control pwd_id" id="pwd_id" name="pwd_id" placeholder="PWD ID #" type="type" autocomplete="off" readonly="">
                                     </div>
                                 </div>
-
-                                <!-- <div class="form-group">
-                                    <label class="col-sm-2 control-label">Purpose of Visit</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="patient_visit_id" class="patient_visit_id" style="display: none;">
-                                        <textarea class="form-control purpose_visit" name="purpose_visit" rows="2" id="purpose_visit" required=""></textarea>
-                                    </div>
-                                </div> -->
-
-                                <!-- <h3>Services</h3>
-                                @foreach($adminpanelcat as $cat)
-                                <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i>{{$cat->cat_name}}</i></b></h5><br>
-                                    @foreach($adminpanel as $panel)
-                                        @if($cat->id == $panel->admin_panel_cat_id)
-                                            <div class="form-group">
-                                                <label class="col-sm-1 control-label"></label>
-                                                <div class="col-sm-6">
-                                                    <label>
-                                                        <input type="checkbox" class="{{$panel->id}} cate cateservices" name="services[]" value="{{$panel->id}}-0"><b> {{$panel->name}}</b>
-                                                    </label>
-                                                </div>
-                                                <div class="col-sm-2" style="text-align: right;">
-                                                    @if($panel->price == 0)
-                                                    <label><b></b></label>
-                                                    @else
-                                                    <?php $price = number_format($panel->price,2); ?>
-                                                    <label class="priceprice"><b> {{$price}}</b></label>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            @foreach($sub as $panelsub)
-                                                @if($panel->id == $panelsub->admin_panel_id)
-                                                    <div class="form-group">
-                                                        <label class="col-sm-1 control-label"></label>
-                                                        <div class="col-sm-6">
-                                                            <label>
-                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="sub{{$panelsub->admin_panel_id}} subsub{{$panelsub->admin_panel_id}}{{$panelsub->id}} cateservices" name="services[]" value="{{$panelsub->admin_panel_id}}-{{$panelsub->id}}" disabled=""><b> {{$panelsub->name}}</b>
-                                                            </label>
-                                                        </div>
-                                                        <div class="col-sm-2" style="text-align: right;">
-                                                            <?php $price = number_format($panelsub->price,2); ?>
-                                                            <label class="priceprice"><b> {{$price}}</b></label>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            @endforeach
-                                        @endif
-                                    @endforeach
-                                @endforeach
-                                <hr>
-                                <div class="form-group ">
-                                    <label class="col-sm-5 control-label total" style="text-align: left;">
-                                        <b>Total : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>Php. <i class="totaltotal">0.00</i>
-                                        <input type="text" name="totalprice" class="totalprice" style="display: none;">
-                                    </label>
-                                </div> -->
-
                             </form>
                     </div>
                     <div class="modal-footer">
@@ -551,6 +495,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:red;"><b>'+visit.status+'</b></td>\
                     <td>\
@@ -569,6 +514,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:green;"><b>'+visit.status+'</b></td>\
                     <td>\
@@ -585,6 +531,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:gold;"><b>'+visit.status+'</b></td>\
                     <td></td>\
@@ -645,6 +592,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:red;"><b>'+visit.status+'</b></td>\
                     <td>\
@@ -663,6 +611,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:green;"><b>'+visit.status+'</b></td>\
                     <td>\
@@ -679,6 +628,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:gold;"><b>'+visit.status+'</b></td>\
                     <td></td>\
@@ -737,6 +687,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:red;"><b>'+visit.status+'</b></td>\
                     <td>\
@@ -752,6 +703,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:green;"><b>'+visit.status+'</b></td>\
                     <td>\
@@ -767,6 +719,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>'+visit.purpose_visit+'</td>\
                     <td style="text-align:right;">'+visit.totalbill+'</td>\
                     <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:gold;"><b>'+visit.status+'</b></td>\
                     <td></td>\
@@ -923,6 +876,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.purpose_visit').empty();
 
                 $('.discount').removeAttr('value');
+                $('.wh_discount').removeAttr('value');
 
                 $.get('/api/modalaeditpatient?p_id=' + p_id + '&v_id=' + v_id, function(data){
                     var aa = data.patient.totalbill;
@@ -932,7 +886,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     $('.totalprice').val(data.patient.totalbill);
                     $('.purpose_visit').text(data.patient.purpose_visit);
 
-                    $('.discount').val(data.patient.discount);
+                    if (data.patient.type == 'Walk-in') {
+                        $('.12345').show();
+                        $('.67890').hide();
+                        $('.discount').val(data.patient.discount);
+                    }
+                    else {
+                        $('.12345').hide();
+                        $('.67890').show();
+                        $('.wh_discount').val(data.patient.wh_discount);
+                    }
+                    
 
                 $.each(data.adminpanel,function(index,selser) {
                     $.getJSON('/api/submainservices?main_id=' + selser.APC_ID, function(data){
@@ -1127,6 +1091,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.pwd_id').val(data.patient.pwd_id_no);
                 $('.pwd_id').removeAttr('readonly');
             }
+
+            if (data.patient.type == 'Walk-in') {
+                $('.walk').prop("checked", true);
+                $('.co').removeAttr('checked');
+                $('.12345').show();
+            }
+            else {
+                $('.co').prop("checked", true);
+                $('.walk').removeAttr('checked');
+                $('.12345').hide();
+            }
+
+            $('.type').on('click',function() {
+                var type = $(this).val();
+                if (type == 'Walk-in') {
+                    $('.12345').show();
+                }
+                else {
+                    $('.12345').hide();
+                }
+            })
 
         })
     });

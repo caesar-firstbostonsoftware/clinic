@@ -93,27 +93,72 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <form id="frm_personal_info" class="form-horizontal" method="post" action="/newvisit">
                                 {!! csrf_field() !!}
                                 <div class="form-group">
+                                    @if(!$patient)
+                                    <div class="col-sm-4">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Walk-in" checked="">Walk-in
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Company">Company
+                                        </label>
+                                    </div>
+                                    @else
+                                    <div class="col-sm-4">
+                                        @if($patient->type == 'Walk-in')
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Walk-in" checked="">Walk-in
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Company">Company
+                                        </label>
+                                        @else
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Walk-in">Walk-in
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Company" checked="">Company
+                                        </label>
+                                        @endif
+                                    </div>
+                                    @endif
+                                </div>
+                                <div class="form-group">
                                     <label class="col-sm-1 control-label">Name</label>
                                     <div class="col-sm-2">
                                         @if(!$patient)
-                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off" autofocus="" tabindex="1">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First / Company" required="" type="text" autocomplete="off" autofocus="" tabindex="1">
                                             <input type="text" name="patient_id" value="0" style="display: none;">
                                         @else
-                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" type="text" readonly="" value="{{$patient->f_name}}">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First / Company" type="text" readonly="" value="{{$patient->f_name}}">
                                             <input type="text" name="patient_id" value="{{$patient->id}}" style="display: none;">
                                         @endif
                                     </div>
-                                    <div class="col-sm-1">
+                                    @if(!$patient)
+                                    <div class="col-sm-1 discount12345">
+                                    @else
+                                    @if($patient->type == 'Walk-in')
+                                    <div class="col-sm-1 discount12345">
+                                    @else
+                                    <div class="col-sm-1 discount12345" style="display: none;">
+                                    @endif
+                                    @endif
                                         @if(!$patient)
                                             <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off" tabindex="2">
                                         @else
                                             <input class="form-control" id="mname" name="mname" placeholder="M" type="text" readonly="" value="{{$patient->m_name}}">
                                         @endif
-                                        
                                     </div>
-                                    <div class="col-sm-2">
+                                    @if(!$patient)
+                                    <div class="col-sm-2 discount12345">
+                                    @else
+                                    @if($patient->type == 'Walk-in')
+                                    <div class="col-sm-2 discount12345">
+                                    @else
+                                    <div class="col-sm-2 discount12345" style="display: none;">
+                                    @endif
+                                    @endif
                                         @if(!$patient)
-                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off" tabindex="3">
+                                            <input class="form-control" id="lname" name="lname" placeholder="Last Name" type="text" autocomplete="off" tabindex="3">
                                         @else
                                             <input class="form-control" id="lname" name="lname" placeholder="Last Name" type="text" readonly="" value="{{$patient->l_name}}">
                                         @endif
@@ -172,7 +217,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </div>
                                 </div>
                                 @if(!$patient)
-                                <div class="form-group">
+                                <div class="form-group discount12345">
                                     <div class="checkbox col-sm-2">
                                         <label><input type="checkbox" class="check_senciz_id" value="Yes">Senior Citizen ID #</label>
                                     </div>
@@ -180,7 +225,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control senciz_id" id="senciz_id" name="senciz_id" placeholder="Senior Citizen ID #" type="type" autocomplete="off" readonly="">
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group discount12345">
                                     <div class="checkbox col-sm-2">
                                         <label><input type="checkbox" class="check_pwd_id" value="Yes">PWD ID #</label>
                                     </div>
@@ -188,13 +233,67 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <input class="form-control pwd_id" id="pwd_id" name="pwd_id" placeholder="PWD ID #" type="type" autocomplete="off" readonly="">
                                     </div>
                                 </div>
+                                @else
+                                @if($patient->type == 'Walk-in')
+                                <div class="form-group discount12345">
+                                @else
+                                <div class="form-group discount12345" style="display: none;">
                                 @endif
-                                <div class="form-group ">
-                                    <label class="col-sm-1 control-label">Discount %</label>
+                                    <div class="checkbox col-sm-2">
+                                        <label><input type="checkbox" class="check_senciz_id" value="Yes">Senior Citizen ID #</label>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input class="form-control senciz_id" id="senciz_id" name="senciz_id" placeholder="Senior Citizen ID #" type="type" autocomplete="off" readonly="" value="{{$patient->senior_id_no}}">
+                                    </div>
+                                </div>
+                                @if($patient->type == 'Walk-in')
+                                <div class="form-group discount12345">
+                                @else
+                                <div class="form-group discount12345" style="display: none;">
+                                @endif
+                                    <div class="checkbox col-sm-2">
+                                        <label><input type="checkbox" class="check_pwd_id" value="Yes">PWD ID #</label>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input class="form-control pwd_id" id="pwd_id" name="pwd_id" placeholder="PWD ID #" type="type" autocomplete="off" readonly="" value="{{$patient->pwd_id_no}}">
+                                    </div>
+                                </div>
+                                @endif
+                                @if(!$patient)
+                                <div class="form-group discount12345">
+                                    <label class="col-sm-2 control-label" style="text-align: left;">Discount %</label>
                                     <div class="col-sm-3">
                                         <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="9">
                                     </div>
                                 </div>
+                                <div class="form-group discount67890" style="display: none;">
+                                    <label class="col-sm-2 control-label" style="text-align: left;">WH Tax Discount</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control discount" id="discount" name="wh_discount" type="number" min="0" autocomplete="off" tabindex="9">
+                                    </div>
+                                </div>
+                                @else
+                                @if($patient->type == 'Walk-in')
+                                <div class="form-group discount12345">
+                                @else
+                                <div class="form-group discount12345" style="display: none;">
+                                @endif
+                                    <label class="col-sm-2 control-label" style="text-align: left;">Discount %</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="9" value="{{$patient->discount}}">
+                                    </div>
+                                </div>
+                                @if($patient->type == 'Walk-in')
+                                <div class="form-group discount67890" style="display: none;">
+                                @else
+                                <div class="form-group discount67890">
+                                @endif
+                                    <label class="col-sm-2 control-label" style="text-align: left;">WH Tax Discount</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control discount" id="discount" name="wh_discount" type="number" min="0" autocomplete="off" tabindex="9" value="{{$patient->wh_discount}}">
+                                    </div>
+                                </div>
+                                @endif
                                 <br>
 
                                 <h3>Services</h3>
@@ -280,41 +379,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
     });
 
-    // $('.cateservices').click(function() {
-    //     if ($(this).is(':checked')) {
-    //         var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
-    //         var totaltotal = parseFloat($('.totaltotal').html());
-    //         if (!priceprice) {
-    //             var price2price = 0.00;
-    //         }
-    //         else {
-    //             var price2price = priceprice;
-    //         }
-    //         var totals = price2price + totaltotal;
-    //         var finaltotal = totals.toFixed(2);
-    //         $('.totaltotal').empty();
-    //         $('.totaltotal').append(''+finaltotal+'');
-    //         $('.totalprice').empty();
-    //         $('.totalprice').val(finaltotal);
-            
-    //     }
-    //     else {
-    //         var priceprice = parseFloat($(this).parent().parent().parent().find('.priceprice b').html());
-    //         var totaltotal = parseFloat($('.totaltotal').html());
-    //         if (!priceprice) {
-    //             var price2price = 0.00;
-    //         }
-    //         else {
-    //             var price2price = priceprice;
-    //         }
-    //         var totals = totaltotal - price2price;
-    //         var finaltotal = totals.toFixed(2);
-    //         $('.totaltotal').empty();
-    //         $('.totaltotal').append(''+finaltotal+'');
-    //         $('.totalprice').empty();
-    //         $('.totalprice').val(finaltotal);
-    //     }
-    // });
+    $('.type').on('click',function() {
+        var type = $(this).val();
+        if (type == 'Walk-in') {
+            $('.discount67890').hide();
+            $('.discount12345').show();
+        }
+        else {
+            $('.discount12345').hide();
+            $('.discount67890').show();
+        }
+    })
 
     $('.appendservice').on('click',function() {
             var main_id = $(this).data('mainid');

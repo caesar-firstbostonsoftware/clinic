@@ -53,6 +53,7 @@ Route::post('/visit/{id}/{vid}/ogtt', 'PatientsController@newogtt');
 Route::post('/visit/{id}/{vid}/hematology', 'PatientsController@newhematology');
 Route::post('/visit/{id}/{vid}/ultrasound', 'PatientsController@newultrasound');
 Route::post('/visit/{id}/{vid}/ultrasoundedit', 'PatientsController@newultrasoundedit');
+Route::post('/visit/{id}/{vid}/aptt', 'PatientsController@newaptt');
 
 // Route::get('/adminpanel', 'AdminPanelContoller@adminpanel');
 
@@ -83,6 +84,7 @@ Route::get('/visit/{id}/{vid}/serologydone', 'PatientsController@serologydone');
 Route::get('/visit/{id}/{vid}/chemistryiidone', 'PatientsController@chemistryiidone');
 Route::get('/visit/{id}/{vid}/ecgdone', 'PatientsController@ecgdone');
 Route::get('/visit/{id}/{vid}/ultrasounddone', 'PatientsController@ultrasounddone');
+Route::get('/visit/{id}/{vid}/apttdone', 'PatientsController@apttdone');
 
 
 Route::post('/visit/{id}/{vid}/serology', 'PatientsController@newserology');
@@ -109,6 +111,7 @@ Route::get('/visit/{id}/{vid}/ogttdone/pdf', 'PatientsController@ogttdonepdf');
 Route::get('/visit/{id}/{vid}/chemistryidone/pdf', 'PatientsController@chemistryidonepdf');
 Route::get('/visit/{id}/{vid}/fecalysisdone/pdf', 'PatientsController@fecalysisdonepdf');
 Route::get('/visit/{id}/{vid}/urinalysisdone/pdf', 'PatientsController@urinalysisdonepdf');
+Route::get('/visit/{id}/{vid}/apttdone/pdf', 'PatientsController@apttdonepdf');
 
 Route::get('/ultrasound/pdf/view/{id}', 'PatientsController@ultrasoundpdfview');
 
