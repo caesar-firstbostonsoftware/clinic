@@ -83,6 +83,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li role="presentation">
                         <a href="#xrareports" role="tab" data-toggle="tab" style="font-size: 8pt;">X-Ray Reports</a>
                     </li>
+                    <li role="presentation">
+                        <a href="#servicereports" role="tab" data-toggle="tab" style="font-size: 8pt;">Service Reports</a>
+                    </li>
                 @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
                     <li role="presentation" class="active">
                         <a href="#xrareports" role="tab" data-toggle="tab" style="font-size: 8pt;">X-Ray Reports</a>
@@ -174,6 +177,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                             </form>
                         </div>
+
+                        <div role="tabpanel" class="tab-pane fade" id="servicereports">
+                            <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
+                                {!! csrf_field() !!}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Date From :</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="datepickerser" class="form-control ser_datefrom"  placeholder="YYYY-MM-DD" readonly="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Date To :</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="datepickerser1" class="form-control ser_dateto"  placeholder="YYYY-MM-DD" readonly="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-2">
+                                        <!-- <button class="btn btn-xs btn-primary ser_generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button> -->
+                                        <a href="/pdf/view" class="btn btn-xs btn-success ser_printrep" id="btn-submit-personal_info" type="button" disabled="" target="_blank">Print</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                 </div>
             </div>
             </div>
@@ -186,7 +214,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 
@@ -283,6 +311,50 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         else {
                             $('.xra_generate').attr('disabled','disabled');
                             $('.xra_printrep').attr('disabled','disabled');
+                        }
+                    }
+    });
+
+        $(".ser_datefrom").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        $('.ser_Pcount').empty();
+                        $('.ser_Income').empty();
+                        $('.ser_appendreports').empty();
+                        var datefrom = $(this).val();
+                        var dateto = $('.ser_dateto').val();
+                        if (datefrom <= dateto) {
+                            $('.ser_generate').removeAttr('disabled');
+                            $('.ser_printrep').removeAttr('disabled');
+                        }
+                        else {
+                            $('.ser_generate').attr('disabled','disabled');
+                            $('.ser_printrep').attr('disabled','disabled');
+                        }
+                    }
+    });
+
+        $(".ser_dateto").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        $('.ser_Pcount').empty();
+                        $('.ser_Income').empty();
+                        $('.ser_appendreports').empty();
+                        var dateto = $(this).val();
+                        var datefrom = $('.ser_datefrom').val();
+                        if (datefrom <= dateto) {
+                            $('.ser_generate').removeAttr('disabled');
+                            $('.ser_printrep').removeAttr('disabled');
+                        }
+                        else {
+                            $('.ser_generate').attr('disabled','disabled');
+                            $('.ser_printrep').attr('disabled','disabled');
                         }
                     }
     });

@@ -1463,7 +1463,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     @endif
                                 @endif -->
                                 <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
+                                @if(!$patientxray)
                                 <a href="/visit/{{$id}}/{{$vid}}/xraydone" class="btn btn-xs btn-default">Done</a>
+                                @endif
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -7092,7 +7094,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="col-md-12">
                                 <h3> Ultrasound
                                 <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_ultrasoundnew" data-backdrop="static">Add New</button>
+                                @if(!$Patientultrasound)
                                 <a href="/visit/{{$id}}/{{$vid}}/ultrasounddone" class="btn btn-xs btn-default">Done</a>
+                                @endif
                                 </h3>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped">
@@ -7376,7 +7380,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 

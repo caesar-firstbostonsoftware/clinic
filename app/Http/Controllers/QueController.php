@@ -114,13 +114,13 @@ class QueController extends Controller
 
              $chemistryii = PatientService::join('patients','patient_services.patient_id','=','patients.id')
             ->select('patient_services.patient_id','patient_services.visit_id','patients.f_name','patients.l_name')
-            ->where('patient_services.admin_panel_id',8)
+            ->where('patient_services.admin_panel_id',10)
             ->where('patient_services.date_reg',$now)
             ->where('patient_services.status','Pending')
             ->orderBy('patient_services.date_reg','asc')
             ->groupBy('patient_services.patient_id','patient_services.visit_id','patients.f_name','patients.l_name')
             ->get();
-            $chemistryiiservice = PatientService::where('admin_panel_id',8)->where('date_reg',$now)->where('status','Pending')->orderBy('date_reg','asc')->with('xrayservice1001')->get();
+            $chemistryiiservice = PatientService::where('admin_panel_id',10)->where('date_reg',$now)->where('status','Pending')->orderBy('date_reg','asc')->with('xrayservice1001')->get();
 
     		return view('queueingpage',compact('xray','xrayservice','urinalysis','pregnancy','fecalysis','amoeba','hematology','hematologyservice','serology','serologyservice','ecg','chemistryii','chemistryiiservice','chemistryi','chemistryiservice','User'));
             

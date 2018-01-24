@@ -574,7 +574,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-            <b>Powered by </b> <img src="{{ asset('/img/fbismain.png') }}" alt="" height="40" width="200">
+           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 
