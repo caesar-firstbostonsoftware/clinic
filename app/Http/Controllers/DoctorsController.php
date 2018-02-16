@@ -23,31 +23,27 @@ use App\UserPicture;
 class MYPDF extends TCPDF {
                 public function Header() {
 
-                    // $image_file = K_PATH_IMAGES.'logo_example.jpg';
-                    // $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $this->Image($image_file, 5, 5, 30, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
-                    $this->SetFont('Courier', 'B', 14);
-                    $this->Cell(0, 15, 'NEGROS FAMILY HEALTH SERVICES, INC.', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                    $this->SetXY(35, 12);
+                    $this->SetFont('Courier', 'B', 12);
+                    $this->Cell(0, 0, 'NEGROS FAMILY HEALTH SERVICES, INC.', 0, false, 'L', 0, '', 0, false, 'L', 'L');    
                     
-                    $this->SetXY(0, 18);
-                    $this->SetFont('Courier', '', 12);
-                    $this->Cell(0, 15, 'NORTH ROAD, DARO (IN FRONT OF NOPH)', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-
-                    $this->SetXY(0, 23);
-                    $this->SetFont('Courier', '', 12);
-                    $this->Cell(0, 15, 'DUMAGUETE CITY, NEGROS ORIENTAL', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-
-                    $this->SetXY(0, 28);
+                    $this->SetXY(35, 16);
                     $this->SetFont('Courier', '', 10);
-                    $this->Cell(0, 15, 'TEL No. (035)225-3544', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                    $this->Cell(0, 0, 'NORTH ROAD, DARO (IN FRONT OF NOPH), DUMAGUETE CITY, NEGROS ORIENTAL', 0, false, 'L', 0, '', 0, false, 'L', 'L');
+
+                    $this->SetXY(35, 20);
+                    $this->SetFont('Courier', '', 10);
+                    $this->Cell(0, 0, 'TEL No. (035)225-3544', 0, false, 'L', 0, '', 0, false, 'L', 'L');
+
                 }
 
                 public function Footer() {
 
                     $this->SetY(-15);
-
                     $this->SetFont('Courier', 'I', 8);
-
                     $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
                 }
             }
@@ -71,7 +67,7 @@ class DoctorsController extends Controller
 
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-        $pdf->SetMargins(10, 36, 10, true);
+        $pdf->SetMargins(10, 26, 10, true);
         $pdf->SetHeaderMargin(12);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -84,7 +80,7 @@ class DoctorsController extends Controller
             $pdf->setLanguageArray($l);
         }
 
-        $pdf->SetFont('Courier', '', 10);
+        $pdf->SetFont('Courier', '', 8);
 
         $pdf->AddPage();
 
@@ -489,7 +485,7 @@ class DoctorsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -502,7 +498,7 @@ class DoctorsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 8);
 
             $pdf->AddPage();
 
@@ -536,14 +532,22 @@ class DoctorsController extends Controller
             $datefrom = $request->input('datefrom');
             $dateto = $request->input('dateto');
 
-            $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
-            FROM patient_services
-            WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto' AND patient_services.admin_panel_id = 5
-            GROUP BY patient_services.date_reg");
-            $counter = 0;
-            $income = DB::table('patient_services')->where('date_reg','>=',$datefrom)->where('date_reg','<=',$dateto)->where('admin_panel_id',5)->sum('price_amount');
+            if ($id == 1) {
+                $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
+                FROM patient_services
+                WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto' AND patient_services.admin_panel_id = 5
+                GROUP BY patient_services.date_reg");
+            }
+            else {
+                $Patientxray = DB::select("SELECT patientxrays.xray_date AS date_reg,COUNT(patientxrays.id) as counter
+                FROM patientxrays
+                WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id'
+                GROUP BY patientxrays.xray_date");
+            }
 
-            return Response::json(['patientxray'=>$Patientxray,'id'=>$id,'counter'=>$counter,'income'=>$income], 200, array(), JSON_PRETTY_PRINT);
+            
+
+            return Response::json(['patientxray'=>$Patientxray], 200, array(), JSON_PRETTY_PRINT);
 
         }
         else {
@@ -567,7 +571,7 @@ class DoctorsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -580,20 +584,97 @@ class DoctorsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 8);
 
             $pdf->AddPage();
 
-            $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
-            FROM patient_services
-            WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto' AND patient_services.admin_panel_id = 5
-            GROUP BY patient_services.date_reg");
-            $counter = 0;
-            $income = DB::table('patient_services')->where('date_reg','>=',$datefrom)->where('date_reg','<=',$dateto)->where('admin_panel_id',5)->sum('price_amount');
+            if ($id == 1) {
+                $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
+                FROM patient_services
+                WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto' AND patient_services.admin_panel_id = 5
+                GROUP BY patient_services.date_reg");
+            }
+            else {
+                $Patientxray = DB::select("SELECT patientxrays.xray_date AS date_reg,COUNT(patientxrays.id) as counter
+                FROM patientxrays
+                WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id'
+                GROUP BY patientxrays.xray_date");
+            }
 
             $pdf->writeHTML(view('printxrayreport',compact('Patientxray','counter','income','id','datefrom','dateto'))->render());
             ob_end_clean();
             $pdf->Output('NFHSIXrayIncomeReport.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
+    }
+
+    public function servicereportsreports(Request $request)
+    {      
+        if(Session::has('user')){
+
+            $datefrom = $request->input('datefrom');
+            $dateto = $request->input('dateto');
+
+            $Patientxray = DB::select("SELECT admin_panels.name as service_name,patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
+            FROM patient_services
+            INNER JOIN admin_panels ON patient_services.admin_panel_sub_id = admin_panels.id
+            WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto'
+            GROUP BY patient_services.admin_panel_sub_id, admin_panels.name, patient_services.date_reg");
+
+            return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function viewservice(Request $request,$datefrom,$dateto)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Service Report');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 26, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 8);
+
+            $pdf->AddPage();
+
+            $Patientxray = DB::select("SELECT admin_panels.name as service_name,patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
+            FROM patient_services
+            INNER JOIN admin_panels ON patient_services.admin_panel_sub_id = admin_panels.id
+            WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto'
+            GROUP BY patient_services.admin_panel_sub_id, admin_panels.name, patient_services.date_reg");
+
+            $pdf->writeHTML(view('printservicereport',compact('Patientxray','datefrom','dateto'))->render());
+            ob_end_clean();
+            $pdf->Output('NFHSIServiceReport.pdf','I');
 
         }
         else {

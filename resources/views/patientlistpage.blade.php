@@ -234,13 +234,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="form-group 12345">
                             <label class="col-sm-3 control-label" style="text-align: left;">Discount %</label>
                             <div class="col-sm-3">
-                                <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="4">
+                                <input class="form-control discount stopalpha" id="discount" name="discount" type="text" autocomplete="off" tabindex="4" placeholder="0.00">
                             </div>
                         </div>
                         <div class="form-group 67890">
                             <label class="col-sm-3 control-label" style="text-align: left;">WH Discount</label>
                             <div class="col-sm-3">
-                                <input class="form-control wh_discount" id="wh_discount" name="wh_discount" type="number" min="0" autocomplete="off" tabindex="4">
+                                <input class="form-control wh_discount stopalpha" id="wh_discount" name="wh_discount" type="text" autocomplete="off" tabindex="4" placeholder="0.00">
                             </div>
                         </div>
 
@@ -453,6 +453,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         setTimeout(function(){ 
             $('.topmessage').hide();
         }, 2000);
+    });
+
+    $('.stopalpha').keypress(function(event) {
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
     });
 
     $(".dob").datepicker({

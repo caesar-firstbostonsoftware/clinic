@@ -263,13 +263,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group discount12345">
                                     <label class="col-sm-2 control-label" style="text-align: left;">Discount %</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="9">
+                                        <input class="form-control discount stopalpha" id="discount" name="discount" type="text" autocomplete="off" tabindex="9" placeholder="0.00">
                                     </div>
                                 </div>
                                 <div class="form-group discount67890" style="display: none;">
                                     <label class="col-sm-2 control-label" style="text-align: left;">WH Tax Discount</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control discount" id="discount" name="wh_discount" type="number" min="0" autocomplete="off" tabindex="9">
+                                        <input class="form-control discount stopalpha" id="discount" name="wh_discount" type="text" autocomplete="off" tabindex="9" placeholder="0.00">
                                     </div>
                                 </div>
                                 @else
@@ -280,7 +280,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 @endif
                                     <label class="col-sm-2 control-label" style="text-align: left;">Discount %</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control discount" id="discount" name="discount" type="number" min="0" autocomplete="off" tabindex="9" value="{{$patient->discount}}">
+                                        <input class="form-control discount stopalpha" id="discount" name="discount" type="text" autocomplete="off" tabindex="9" placeholder="0.00" value="{{$patient->discount}}">
                                     </div>
                                 </div>
                                 @if($patient->type == 'Walk-in')
@@ -290,7 +290,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 @endif
                                     <label class="col-sm-2 control-label" style="text-align: left;">WH Tax Discount</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control discount" id="discount" name="wh_discount" type="number" min="0" autocomplete="off" tabindex="9" value="{{$patient->wh_discount}}">
+                                        <input class="form-control discount stopalpha" id="discount" name="wh_discount" type="text" autocomplete="off" tabindex="9" placeholder="0.00" value="{{$patient->wh_discount}}">
                                     </div>
                                 </div>
                                 @endif
@@ -364,6 +364,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         $('.age').val(years);
                     }
     });
+
+    $('.stopalpha').keypress(function(event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 
     $('.cate').click(function() {
         if ($(this).is(':checked')) {

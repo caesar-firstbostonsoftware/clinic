@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html>
-<style type="text/css">
-    td{
-        font-size: 10pt;
-    }
-</style>
 <body>
     <table>
         <tbody>
@@ -90,8 +85,8 @@
         </tbody>
         <tbody>
             <tr>
-                <td style="width:50%;">_____________________________________</td>
-                <td style="width:50%;">_____________________________________, M.D.</td>
+                <td style="width:50%;text-align: center;">___________________________________________</td>
+                <td style="width:50%;">___________________________________________, M.D.</td>
             </tr>
             <tr>
                 <td style="width:50%;text-align:center;">Date Taken</td>

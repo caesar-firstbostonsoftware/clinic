@@ -97,6 +97,7 @@ Route::get('/patient/pdf/view/{id}/{vid}', 'PatientsController@patientprintrepor
 Route::get('/patientreceipt/pdf/view/{id}/{vid}/{recno}', 'PatientsController@patientreceipt');
 Route::get('/pdf/view2/{id}/{datefrom}/{dateto}', 'DoctorsController@printxrayreport');
 Route::get('/print/rx/{id}/{vid}', 'PatientsController@printpatientrx');
+Route::get('/pdf/viewservice/{datefrom}/{dateto}', 'DoctorsController@viewservice');
 
 Route::get('/NFHSI/doctors', 'DoctorsController@doctoruserpage');
 
@@ -161,4 +162,6 @@ Route::get('api/historyservice','AdminPanelContoller@historyservice');
 
 Route::get('api/ultrasoundedit','PatientsController@ultrasoundedit');
 Route::get('api/ultrasoundlogs','PatientsController@ultrasoundlogs');
+
+Route::get('api/servicereportsreports','DoctorsController@servicereportsreports');
 

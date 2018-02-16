@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html>
-<style type="text/css">
-    td{
-        font-size: 10pt;
-    }
-</style>
 <body>
     <table>
         <tbody>
@@ -31,8 +26,8 @@
                 <td style="width:19%;">{{$info->gender}}</td>
             </tr>
             <tr>
-                <td style="width:20%;">Physician:</td>
-                <td style="width:50%;">{{$Ogtt->doctor->f_name}} {{$Ogtt->doctor->m_name}} {{$Ogtt->doctor->l_name}}, {{$Ogtt->doctor->credential}}</td>
+                <td style="width:20%;"></td>
+                <td style="width:50%;"></td>
                 <td style="width:11%;">Date:</td>
                 <td style="width:19%;">{{$Ogtt->date_reg}}</td>
             </tr>
@@ -102,13 +97,14 @@
                 <td style="border: 1px solid black;"> < 155 mg / dl</td>
             </tr>
             <tr><td></td></tr>
+            <tr><td></td></tr>
         </tbody>
     </table>
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;">___________________________________________</td>
-                <td style="width:50%;"> _____________________________________, RMT</td>
+                <td style="width:50%;text-align: center;">___________________________________________</td>
+                <td style="width:50%;"> ___________________________________________, RMT</td>
             </tr>
             <tr>
                 <td style="width:50%;text-align:center;"><b>ROGELIO S. McNTIRE, M.D.,FPSP</b></td>

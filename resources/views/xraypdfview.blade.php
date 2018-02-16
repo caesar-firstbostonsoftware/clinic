@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html>
-<style type="text/css">
-	td{
-		font-size: 10pt;
-	}
-</style>
 <body>
 	<table>
 		<tbody>

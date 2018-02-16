@@ -178,6 +178,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </form>
                         </div>
 
+                    <!-- Service Reports -->
                         <div role="tabpanel" class="tab-pane fade" id="servicereports">
                             <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
                                 {!! csrf_field() !!}
@@ -196,9 +197,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label"></label>
                                     <div class="col-sm-2">
-                                        <!-- <button class="btn btn-xs btn-primary ser_generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button> -->
+                                        <button class="btn btn-xs btn-primary ser_generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button>
                                         <a href="/pdf/view" class="btn btn-xs btn-success ser_printrep" id="btn-submit-personal_info" type="button" disabled="" target="_blank">Print</a>
                                     </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-6 ser_Pcount"></div>
+                                    <div class="col-sm-6 ser_Income" style="text-align: right;"></div>
+                                    <br>
+                                    <div class="col-md-12 ser_appendreports"></div>
                                 </div>
                             </form>
                         </div>
@@ -395,24 +403,50 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.xra_appendreports').empty();
             $('.xra_Income').empty();
                 $.get('../../api/xrayreportsreports?id=' + id + '&datefrom=' + datefrom + '&dateto=' + dateto, function(data){
-                var count = 0;
-                $('.xra_appendreports').append('<table class="table table-striped">\
-                    <thead>\
-                        <tr>\
-                            <th style="text-align: center;">Date</th>\
-                            <th style="text-align: center;">Xray Count</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody class="xra_tbodyreports">\
-                    </tbody>\
-                </table>');
-                $.each(data.patientxray, function(index, report){
+                    var count = 0;
+                    $('.xra_appendreports').append('<table class="table table-striped">\
+                        <thead>\
+                            <tr>\
+                                <th style="text-align: center;">Date</th>\
+                                <th style="text-align: center;">Xray Count</th>\
+                            </tr>\
+                        </thead>\
+                        <tbody class="xra_tbodyreports">\
+                        </tbody>\
+                    </table>');
+                    $.each(data.patientxray, function(index, report){
                         $('.xra_tbodyreports').append('<tr>\
                             <td style="text-align: center;">'+report.date_reg+'</td>\
                             <td style="text-align: center;">'+report.counter+'</td>\
                         </tr>');   
-                })
-                // $('.xra_Income').append('<b>TOTAL : Php. '+data.income+'</b>');
+                    })
+                }) 
+        })
+
+        $('.ser_generate').on('click',function() {
+            var datefrom = $(".ser_datefrom").val();
+            var dateto = $('.ser_dateto').val();
+            $('.ser_appendreports').empty();
+            $('.ser_Income').empty();
+                $.get('../../api/servicereportsreports?datefrom=' + datefrom + '&dateto=' + dateto, function(data){
+                    $('.ser_appendreports').append('<table class="table table-striped">\
+                        <thead>\
+                            <tr>\
+                                <th style="text-align: center;">Service Description</th>\
+                                <th style="text-align: center;">Patient Count</th>\
+                                <th style="text-align: center;">Date</th>\
+                            </tr>\
+                        </thead>\
+                        <tbody class="ser_tbodyreports">\
+                        </tbody>\
+                    </table>');
+                    $.each(data, function(index, report){
+                            $('.ser_tbodyreports').append('<tr>\
+                                <td style="text-align: center;">'+report.service_name+'</td>\
+                                <td style="text-align: center;">'+report.counter+'</td>\
+                                <td style="text-align: center;">'+report.date_reg+'</td>\
+                            </tr>');   
+                    })
                 }) 
         })
 
@@ -430,6 +464,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var dateto = $('.xra_dateto').val();
             $(this).removeAttr('href','href');
             $(this).attr('href','/pdf/view2/'+id+'/'+datefrom+'/'+dateto+'');
+        })
+
+        $('.ser_printrep').on('click',function() {
+            var datefrom = $(".ser_datefrom").val();
+            var dateto = $('.ser_dateto').val();
+            $(this).removeAttr('href','href');
+            $(this).attr('href','/pdf/viewservice/'+datefrom+'/'+dateto+'');
         })
     </script>
 @show

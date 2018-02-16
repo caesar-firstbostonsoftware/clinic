@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html>
-<style type="text/css">
-    td{
-        font-size: 10pt;
-    }
-</style>
 <body>
     <table>
         <tbody>
@@ -31,8 +26,8 @@
                 <td style="width:19%;">{{$info->gender}}</td>
             </tr>
             <tr>
-                <td style="width:20%;">Physician:</td>
-                <td style="width:50%;">{{$SecondChemistry->doctor->f_name}} {{$SecondChemistry->doctor->m_name}} {{$SecondChemistry->doctor->l_name}}, {{$SecondChemistry->doctor->credential}}</td>
+                <td style="width:20%;"></td>
+                <td style="width:50%;"></td>
                 <td style="width:11%;">Date:</td>
                 <td style="width:19%;">{{$SecondChemistry->sec_chem_date}}</td>
             </tr>
@@ -129,18 +124,18 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:10%;">REMARKS</td>
+                <td style="width:10%;"><b>REMARKS</b></td>
                 <td style="width:90%;"></td>
             </tr>
             <tr><td></td></tr>
         </tbody>
         <tbody>
             <tr>
-                <td style="width:50%;">_____________________________________</td>
-                <td style="width:50%;">_____________________________________, RMT</td>
+                <td style="width:50%;text-align: center;">___________________________________________</td>
+                <td style="width:50%;">___________________________________________, RMT</td>
             </tr>
             <tr>
-                <td style="width:50%;text-align:center;">[ Name ]</td>
+                <td style="width:50%;text-align:center;"><b>ROGELIO S. McNTIRE, M.D.,FPSP</b></td>
                 <td style="width:50%;"></td>
             </tr>
             <tr>

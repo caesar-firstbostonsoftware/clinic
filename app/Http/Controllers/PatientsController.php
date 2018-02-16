@@ -45,31 +45,27 @@ use App\Aptt;
 class MYPDF extends TCPDF {
                 public function Header() {
 
-                    // $image_file = K_PATH_IMAGES.'logo_example.jpg';
-                    // $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $this->Image($image_file, 5, 5, 25, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
-                    $this->SetFont('Courier', 'B', 14);
-                    $this->Cell(0, 15, 'NEGROS FAMILY HEALTH SERVICES, INC.', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                    $this->SetXY(30, 12);
+                    $this->SetFont('Courier', 'B', 12);
+                    $this->Cell(0, 0, 'NEGROS FAMILY HEALTH SERVICES, INC.', 0, false, 'L', 0, '', 0, false, 'L', 'L');    
                     
-                    $this->SetXY(0, 18);
-                    $this->SetFont('Courier', '', 12);
-                    $this->Cell(0, 15, 'NORTH ROAD, DARO (IN FRONT OF NOPH)', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-
-                    $this->SetXY(0, 23);
-                    $this->SetFont('Courier', '', 12);
-                    $this->Cell(0, 15, 'DUMAGUETE CITY, NEGROS ORIENTAL', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-
-                    $this->SetXY(0, 28);
+                    $this->SetXY(30, 16);
                     $this->SetFont('Courier', '', 10);
-                    $this->Cell(0, 15, 'TEL No. (035)225-3544', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+                    $this->Cell(0, 0, 'NORTH ROAD, DARO (IN FRONT OF NOPH), DUMAGUETE CITY, NEGROS ORIENTAL', 0, false, 'L', 0, '', 0, false, 'L', 'L');
+
+                    $this->SetXY(30, 20);
+                    $this->SetFont('Courier', '', 10);
+                    $this->Cell(0, 0, 'TEL No. (035)225-3544', 0, false, 'L', 0, '', 0, false, 'L', 'L');
+
                 }
 
                 public function Footer() {
 
                     $this->SetY(-15);
-
                     $this->SetFont('Courier', 'I', 8);
-
                     $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
                 }
             }
@@ -273,6 +269,8 @@ class PatientsController extends Controller
             return redirect()->action('PatientsController@patientlist');
         }
         else {
+            $patient = Patient::where('id',$patient_id)->first();
+
             $purpose_visit = $request->input('purpose_visit');
             if (!$purpose_visit) {
                 $purvis = "N/A";
@@ -535,8 +533,9 @@ class PatientsController extends Controller
         $ecg = Electrocardiographic::where('patient_id',$id)->where('visit_id',$vid)->first();
         $SecondChemistry = SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->first();
         $Patientultrasound = Patientultrasound::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->get();
+        $Patientultrasoundcount = Patientultrasound::where('patient_id',$id)->where('visit_id',$vid)->count();
         $Aptt = Aptt::where('patient_id',$id)->where('visit_id',$vid)->first();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry','Patientultrasound','Aptt'));
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry','Patientultrasound','Aptt','Patientultrasoundcount'));
 
         }
         else {
@@ -608,6 +607,7 @@ class PatientsController extends Controller
 
         $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
         ->where('patients.id',$p_id)
+        ->where('patient_visits.visitid',$v_id)
         ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill','patient_visits.discount','patient_visits.wh_discount')
         ->first();
 
@@ -1421,7 +1421,7 @@ class PatientsController extends Controller
 
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-        $pdf->SetMargins(10, 36, 10, true);
+        $pdf->SetMargins(10, 32, 10, true);
         $pdf->SetHeaderMargin(12);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -1434,7 +1434,7 @@ class PatientsController extends Controller
             $pdf->setLanguageArray($l);
         }
 
-        $pdf->SetFont('Courier', '', 12);
+        $pdf->SetFont('Courier', '', 8);
         $pdf->AddPage();
 
         $patient = Patient::where('id',$id)->first();
@@ -1709,7 +1709,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('L');
 
             $doctor_id = Session::get('user');
@@ -1744,7 +1744,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -1757,7 +1757,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage();
 
             $Patientxray = Patientxray::where('id',$id)->with('patient','doctor','xraydate')->first();
@@ -1790,7 +1790,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -1803,7 +1803,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage();
 
             $Urinalyses = Urinalyses::where('id',$id)->with('patient','phy')->first();
@@ -2759,7 +2759,7 @@ class PatientsController extends Controller
                     $Serology->visit_id = $vid;
                     $Serology->doctor_id = $physician;
                     $Serology->or_no = $orno;
-                    $Serology->serology_date = $sero_date;
+                    $Serology->serology_date = $now;
                     $Serology->admin_panel_cat_id = $request->input('seroser_cat_id')[$i];
                     $Serology->admin_panel_id = $request->input('seroser_id')[$i];
                     $Serology->result = $request->input('hemaresult')[$i];
@@ -2780,7 +2780,7 @@ class PatientsController extends Controller
                     $Serology->visit_id = $vid;
                     $Serology->doctor_id = $physician;
                     $Serology->or_no = $orno;
-                    $Serology->serology_date = $sero_date;
+                    $Serology->serology_date = $now;
                     $Serology->admin_panel_cat_id = $request->input('seroser_cat_id')[$i];
                     $Serology->admin_panel_id = $request->input('seroser_id')[$i];
                     $Serology->result = $request->input('hemaresult')[$i];
@@ -2814,7 +2814,7 @@ class PatientsController extends Controller
                 $Electrocardiographic->visit_id = $vid;
                 $Electrocardiographic->req_doc = $req_doc;
                 $Electrocardiographic->or_no = $orno;
-                $Electrocardiographic->ecg_date = $ecg_date;
+                $Electrocardiographic->ecg_date = $now;
                 $Electrocardiographic->diagnosis = $ecg_diagnosis;
                 $Electrocardiographic->auricular_rate = $request->input('AuricularRate');
                 $Electrocardiographic->venticular_rate = $request->input('VenticularRate');
@@ -2824,6 +2824,7 @@ class PatientsController extends Controller
                 $Electrocardiographic->electrical_axis = $request->input('ElectricalAxis');
                 $Electrocardiographic->significant_finding = $request->input('sig_find');
                 $Electrocardiographic->interpretation = $request->input('interpretation');
+                $Electrocardiographic->phy_fee = $request->input('phyfee_ecg');
                 $Electrocardiographic->save();
             }
             else {
@@ -2832,7 +2833,7 @@ class PatientsController extends Controller
                 $Electrocardiographic->visit_id = $vid;
                 $Electrocardiographic->req_doc = $req_doc;
                 $Electrocardiographic->or_no = $orno;
-                $Electrocardiographic->ecg_date = $ecg_date;
+                $Electrocardiographic->ecg_date = $now;
                 $Electrocardiographic->diagnosis = $ecg_diagnosis;
                 $Electrocardiographic->auricular_rate = $request->input('AuricularRate');
                 $Electrocardiographic->venticular_rate = $request->input('VenticularRate');
@@ -2842,6 +2843,7 @@ class PatientsController extends Controller
                 $Electrocardiographic->electrical_axis = $request->input('ElectricalAxis');
                 $Electrocardiographic->significant_finding = $request->input('sig_find');
                 $Electrocardiographic->interpretation = $request->input('interpretation');
+                $Electrocardiographic->phy_fee = $request->input('phyfee_ecg');
                 $Electrocardiographic->save();
             }
 
@@ -2869,7 +2871,7 @@ class PatientsController extends Controller
                 $SecondChemistry->visit_id = $vid;
                 $SecondChemistry->doc_id = $physician;
                 $SecondChemistry->or_no = $orno;
-                $SecondChemistry->sec_chem_date = $chemtwo_date;
+                $SecondChemistry->sec_chem_date = $now;
                 $SecondChemistry->tsh = $request->input('tsh');
                 $SecondChemistry->t3 = $request->input('t3');
                 $SecondChemistry->t4 = $request->input('t4');
@@ -2890,7 +2892,7 @@ class PatientsController extends Controller
                 $SecondChemistry->visit_id = $vid;
                 $SecondChemistry->doc_id = $physician;
                 $SecondChemistry->or_no = $orno;
-                $SecondChemistry->sec_chem_date = $chemtwo_date;
+                $SecondChemistry->sec_chem_date = $now;
                 $SecondChemistry->tsh = $request->input('tsh');
                 $SecondChemistry->t3 = $request->input('t3');
                 $SecondChemistry->t4 = $request->input('t4');
@@ -3134,7 +3136,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3147,7 +3149,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3178,7 +3180,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3191,7 +3193,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3222,7 +3224,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3235,7 +3237,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3267,7 +3269,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3280,7 +3282,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3311,7 +3313,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3324,7 +3326,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3355,7 +3357,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3368,7 +3370,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3399,7 +3401,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3412,7 +3414,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3443,7 +3445,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3456,7 +3458,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3571,7 +3573,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3584,7 +3586,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage();
 
             $now = date("Y-m-d");
@@ -3924,7 +3926,7 @@ class PatientsController extends Controller
 
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-            $pdf->SetMargins(10, 36, 10, true);
+            $pdf->SetMargins(10, 26, 10, true);
             $pdf->SetHeaderMargin(12);
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -3937,7 +3939,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 8);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
