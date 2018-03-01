@@ -24,6 +24,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
+        @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
@@ -193,7 +196,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
+           <b>Powered by</b> <a href="http://www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 

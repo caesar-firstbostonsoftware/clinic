@@ -24,6 +24,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
+        @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
@@ -173,7 +176,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
         <div class="modal fade" id="modal_visits" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document" style="width: 70%;">
+            <div class="modal-dialog" role="document" style="width: 90%;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -277,7 +280,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
 
         <div class="modal fade" id="modal_edit_patient" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog" role="document" style="width: 90%;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -299,15 +302,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </label>
                                     </div>
                                 </div>
+                                <div class="form-group 67890">
+                                    <label class="col-sm-2 control-label">Company</label>
+                                    <div class="col-sm-4">
+                                        <select id="company" name="company" class="form-control company" required=""> 
+                                            <option value="">- Select -</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group ">
                                     <label class="col-sm-2 control-label">Name</label>
                                     <div class="col-sm-4">
                                         <input class="form-control edit_fname" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-2 12345">
+                                    <div class="col-sm-2">
                                         <input class="form-control edit_mname" id="mname" name="mname" placeholder="M" type="text" autocomplete="off">
                                     </div>
-                                    <div class="col-sm-4 12345">
+                                    <div class="col-sm-4">
                                         <input class="form-control edit_lname" id="lname" name="lname" placeholder="Last Name" required="" type="text" autocomplete="off">
                                     </div>
                                 </div>
@@ -359,7 +370,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </div>
                     <div class="modal-footer">
                         <input id="pid" name="pid" value="" type="hidden">
-                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                         <button class="btn btn-primary btn-xs" form="posteditpatient" id="btn-submit-personal_info" type="submit">Save Changes</button>
                     </div>
                 </div>
@@ -431,7 +441,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
+           <b>Powered by</b> <a href="http://www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 
@@ -907,7 +917,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $.each(data.adminpanel,function(index,selser) {
                     $.getJSON('/api/submainservices?main_id=' + selser.APC_ID, function(data){
                         $('.'+selser.APC_ID+'').append('<div class="row wawsee">\
-                                        <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="'+selser.SER_QTY+'"></div>\
+                                        <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="'+selser.SER_QTY+'" readonly></div>\
                                         <div class="col-sm-4">\
                                             <select class="form-control serser_name service_name'+selser.APC_ID+'" name="service_name[]" required="">\
                                             </select>\
@@ -1079,6 +1089,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.edit_dob').val(data.patient.dob);
             $('.edit_age').val(data.patient.age);
 
+            $('.company').empty();
+            $.get('api/getcompany', function(datacom){
+                $('.company').append('<option value="">-Select-</option>');
+                $.each(datacom,function(index,comcom) {
+                    if (comcom.id == data.patient.company_id) {
+                        $('.company').append('<option value="'+comcom.id+'" selected>'+comcom.complete_name+'</option>');
+                    }
+                    else {
+                        $('.company').append('<option value="'+comcom.id+'">'+comcom.complete_name+'</option>');
+                    }
+                })
+            })
+
             if (!data.patient.senior_id_no) {
                 $('.check_senciz_id').prop('checked',false);
                 $('.senciz_id').removeAttr('value','value');
@@ -1102,20 +1125,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.walk').prop("checked", true);
                 $('.co').removeAttr('checked');
                 $('.12345').show();
+                $('.67890').hide();
             }
             else {
                 $('.co').prop("checked", true);
                 $('.walk').removeAttr('checked');
                 $('.12345').hide();
+                $('.67890').show();
             }
 
             $('.type').on('click',function() {
                 var type = $(this).val();
                 if (type == 'Walk-in') {
                     $('.12345').show();
+                    $('.67890').hide();
                 }
                 else {
                     $('.12345').hide();
+                    $('.67890').show();
                 }
             })
 
@@ -1140,7 +1167,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var main_id = $(this).data('mainid');
             $(this).attr('disabled','disabled');     
             $('.'+main_id+'').append('<div class="row">\
-                                    <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1"></div>\
+                                    <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1" readonly></div>\
                                     <div class="col-sm-4">\
                                         <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
                                         </select>\

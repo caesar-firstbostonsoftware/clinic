@@ -32,6 +32,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
+        @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
@@ -144,41 +147,86 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
         </div>
 
-                                <!-- MODAL MEDICATIONS -->
-                                <div class="modal fade" id="modal_edit_services" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close close_medication" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form class="form-horizontal" id="formeditservices" method="POST" action="/NFHSI/services/edit/service">
-                                                {!! csrf_field() !!}
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Name</label>
-                                                        <div class="col-sm-8">
-                                                            <input class="form-control id_service" id="id_service" name="id_service" type="text" value="" style="display: none;">
-                                                            <input class="form-control subid_service" id="subid_service" name="subid_service" type="text" value="" style="display: none;">
-                                                            <input class="form-control name_service" id="name_service" name="name_service" type="text" value="" autocomplete="off">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Price</label>
-                                                        <div class="col-sm-4">
-                                                            <input class="form-control price_service" id="price_service" name="price_service" type="text" placeholder="Price" autocomplete="off" onkeypress="return isNumberKey(event)">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" form="formeditservices" class="btn btn-primary btn-xs" id="btn-add-medication">Submit</button>
-                                            </div>
+            <!-- MODALS -->
+            <div class="modal fade" id="modal_edit_services" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document" style="width: 90%;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close close_medication" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Edit Sub Service</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" id="formeditservices" method="POST" action="/NFHSI/services/edit/service">
+                            {!! csrf_field() !!}
+                                <div class="row sertype">
+                                    <div class="col-sm-4">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="edit_type" value="Service" checked="">Service
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="edit_type" value="Package">Package
+                                        </label>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="edit_divservice">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Service Description</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control edit_id_service" name="id_service" type="text" value="" style="display: none;">
+                                            <input class="form-control edit_name_service" name="name_service" type="text" value="" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Price</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control edit_price_service stopalpha" name="price_service" type="text" placeholder="0.00" autocomplete="off" style="text-align: right;">
                                         </div>
                                     </div>
                                 </div>
+                                <div class="edit_divpackage">
+                                    <div class="form-group">
+                                        <div class="col-sm-8">
+                                            <button type="button" class="btn btn-xs btn-primary edit_appendservice">Add Service</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Service Description</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control edit_id_service_pack" name="id_service" type="text" value="" style="display: none;">
+                                            <input class="form-control edit_name_service_pack" name="name_service" type="text" value="" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Price</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control edit_price_service_pack stopalpha" name="price_service" type="text" placeholder="0.00" autocomplete="off" style="text-align: right;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="edit_divpackage">
+                                    <div class="row">
+                                        <div class="col-sm-7" style="text-align: center;">
+                                            <b>Service Description</b>
+                                        </div>
+                                        <div class="col-sm-4" style="text-align: center;">
+                                            <b>Price</b>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="edit_appendservicehere edit_divpackage">   
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" form="formeditservices" class="btn btn-primary btn-xs submit_formeditservices" id="btn-add-medication">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="modal fade" id="modal_addservice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document" style="width: 90%;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close close_add" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -203,7 +251,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
 
             <div class="modal fade" id="modal_addsub" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document" style="width: 90%;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close close_add" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -212,23 +260,68 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="modal-body">
                             <form class="form-horizontal" id="frm_addsub" method="Post" action="/NFHSI/services/subadd">
                             {!! csrf_field() !!}
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Service Description</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control sub_mainedit_id" name="sub_mainedit_id" type="text" style="display: none;">
-                                        <input class="form-control subname" name="subname" type="text" placeholder="Service Description" required="" autocomplete="off">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Service" checked="">Service
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" class="type" value="Package">Package
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Price</label>
-                                    <div class="col-sm-4">
-                                        <input class="form-control price_service" id="price_service" name="price_service" type="text" placeholder="Price" autocomplete="off" onkeypress="return isNumberKey(event)">
+                                <br>
+                                <div class="divservice">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Service Description</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control sub_mainedit_id" name="sub_mainedit_id" type="text" style="display: none;">
+                                            <input class="form-control subname" name="subname" type="text" placeholder="Service Description" autocomplete="off">
+                                        </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Price</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control price_service stopalpha" id="price_service" name="price_service" type="text" placeholder="0.00" autocomplete="off" style="text-align: right;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divpackage" style="display: none;">
+                                    <div class="form-group">
+                                        <div class="col-sm-8">
+                                            <button type="button" class="btn btn-xs btn-primary appendservice">Add Service</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Package Description</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control sub_mainedit_id" name="sub_mainedit_id" type="text" style="display: none;">
+                                            <input class="form-control subname_pack" name="subname" type="text" placeholder="Package Description" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Price</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control price_service_pack stopalpha" id="price_service" name="price_service" type="text" placeholder="0.00" autocomplete="off" style="text-align: right;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divpackage" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-sm-7" style="text-align: center;">
+                                            <b>Service Description</b>
+                                        </div>
+                                        <div class="col-sm-4" style="text-align: center;">
+                                            <b>Price</b>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="appendservicehere divpackage" style="display: none;">   
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" form="frm_addsub" class="btn btn-xs btn-primary submitsubmit">Submit</button>
+                            <button type="submit" form="frm_addsub" class="btn btn-xs btn-primary submit_frm_addsub">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -292,7 +385,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
+           <b>Powered by</b> <a href="http://www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 
@@ -311,19 +404,158 @@ scratch. This page gets rid of all links and provides the needed markup only.
             return true;
         }
 
+        $('.stopalpha').keypress(function(event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
+        $('.type').on('click',function() {
+            var type = $(this).val();
+            if (type == 'Service') {
+                $('.divservice').show();
+                $('.divpackage').hide();
+            }
+            else {
+                $('.divservice').hide();
+                $('.divpackage').show();
+            }
+        })
+
         $('.editservice').on('click',function() {
             var main_id = $(this).data('id');
             var sub_id = $(this).data('subid');
+            $('.sertype').empty();
             $.get('../../api/editservice?main_id=' + main_id +'&sub_id='+ sub_id, function(data){
-                $('.id_service').val(data.id);
-                if (!data.admin_panel_id) {
-                    $('.subid_service').val(0);
+                if (data.type == 'Service') {
+                    $('.edit_id_service').val(data.id);
+                    $('.sertype').append('<div class="col-sm-4">\
+                                        <label class="radio-inline">\
+                                            <input type="radio" name="type" class="edit_type" value="Service" checked="">Service\
+                                        </label>\
+                                        <label class="radio-inline">\
+                                            <input type="radio" name="type" class="edit_type" value="Package">Package\
+                                        </label>\
+                                    </div>');
+                    $('.edit_divservice').show();
+                    $('.edit_divpackage').hide();
+                    $('.edit_name_service').val(data.name);
+                    $('.edit_price_service').val(data.price);
                 }
                 else {
-                    $('.subid_service').val(data.admin_panel_id);
+                    $('.edit_id_service_pack').val(data.id);
+                    $('.sertype').append('<div class="col-sm-4">\
+                                        <label class="radio-inline">\
+                                            <input type="radio" name="type" class="edit_type" value="Service">Service\
+                                        </label>\
+                                        <label class="radio-inline">\
+                                            <input type="radio" name="type" class="edit_type" value="Package" checked="">Package\
+                                        </label>\
+                                    </div>');
+                    $('.edit_divservice').hide();
+                    $('.edit_divpackage').show();
+                    $('.edit_name_service_pack').val(data.name);
+                    $('.edit_price_service_pack').val(data.price);
+                    $('.edit_appendservicehere').empty();
+                    $.get('../../api/servicepackage?package_id=' + main_id, function(dataser){
+                        $.each(dataser,function(index,packser) {
+                            $.get('../../api/allservice', function(dataall){
+                                $('.edit_appendservicehere').append('<div class="row">\
+                                            <div class="col-sm-7">\
+                                                <select class="form-control serser_name service_name" name="service_name[]" required="">\
+                                                </select>\
+                                            </div>\
+                                            <div class="col-sm-4">\
+                                                <input class="form-control main_id" name="main_id[]" type="text" value="'+packser.main_id+'" style="display:none;">\
+                                                <input class="form-control services stopalpha" name="service_price[]" type="text" placeholder="0.00" required="" autocomplete="off" style="text-align:right;" value="'+packser.price+'">\
+                                            </div>\
+                                            <div class="col-sm-1">\
+                                                <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
+                                            </div>\
+                                        </div>');
+                                $('.serser_name:last').append('<option value="">--Select One--</option>');
+                                $.each(dataall,function(index,serser) {
+                                    if (packser.service.id == serser.id) {
+                                        $('.serser_name:last').append('<option value="'+serser.id+'" data-price="'+serser.price+'" data-main_id="'+serser.admin_panel_cat_id+'" selected>'+serser.name+'</option>');
+                                    }
+                                    else {
+                                        $('.serser_name:last').append('<option value="'+serser.id+'" data-price="'+serser.price+'" data-main_id="'+serser.admin_panel_cat_id+'">'+serser.name+'</option>');
+                                    }
+                                })
+                                $('.serser_name').on('change',function() {
+                                    var serserval = $('option:selected',this).data('price');
+                                    var main_id = $('option:selected',this).data('main_id');
+                                    $(this).parent().parent().find('.services').val(serserval);
+                                    $(this).parent().parent().find('.main_id').val(main_id);
+                                })
+                    
+                                $('.removeservice').on('click',function() {
+                                    $(this).parent().parent().remove();
+                                })
+                    
+                                $('.stopalpha').keypress(function(event) {
+                                    if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                                        event.preventDefault();
+                                    }
+                                });
+                            });
+                        })
+                    });
                 }
-                $('.name_service').val(data.name);
-                $('.price_service').val(data.price);
+
+                $('.edit_type').on('click',function() {
+                    var type = $(this).val();
+                    if (type == 'Service') {
+                        $('.edit_divservice').show();
+                        $('.edit_divpackage').hide();
+                    }
+                    else {
+                        $('.edit_divservice').hide();
+                        $('.edit_divpackage').show();
+                    }
+                })
+
+                $('.edit_appendservice').on('click',function() {    
+                    $('.edit_appendservicehere').append('<div class="row">\
+                                            <div class="col-sm-7">\
+                                                <select class="form-control serser_name service_name" name="service_name[]" required="">\
+                                                </select>\
+                                            </div>\
+                                            <div class="col-sm-4">\
+                                                <input class="form-control main_id" name="main_id[]" type="text" style="display:none;">\
+                                                <input class="form-control services stopalpha" name="service_price[]" type="text" placeholder="0.00" required="" autocomplete="off" style="text-align:right;">\
+                                            </div>\
+                                            <div class="col-sm-1">\
+                                                <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
+                                            </div>\
+                                        </div>');
+
+                    $.get('../../api/allservice', function(data){
+                        $('.serser_name:last').empty();
+                        $('.services:last').val('');
+                        $('.serser_name:last').append('<option value="">--Select One--</option>');
+                        $.each(data,function(index,serser) {
+                            $('.serser_name:last').append('<option value="'+serser.id+'" data-price="'+serser.price+'" data-main_id="'+serser.admin_panel_cat_id+'">'+serser.name+'</option>');
+                        })
+                    });
+
+                    $('.serser_name').on('change',function() {
+                        var serserval = $('option:selected',this).data('price');
+                        var main_id = $('option:selected',this).data('main_id');
+                        $(this).parent().parent().find('.services').val(serserval);
+                        $(this).parent().parent().find('.main_id').val(main_id);
+                    })
+        
+                    $('.removeservice').on('click',function() {
+                        $(this).parent().parent().remove();
+                    })
+        
+                    $('.stopalpha').keypress(function(event) {
+                        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                            event.preventDefault();
+                        }
+                    });
+                });
             })
         })
 
@@ -351,6 +583,104 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 });
             });
         });
+
+        $('.appendservice').on('click',function() {    
+            $('.appendservicehere').append('<div class="row">\
+                                    <div class="col-sm-7">\
+                                        <select class="form-control serser_name service_name" name="service_name[]" required="">\
+                                        </select>\
+                                    </div>\
+                                    <div class="col-sm-4">\
+                                        <input class="form-control main_id" name="main_id[]" type="text" style="display:none;">\
+                                        <input class="form-control services stopalpha" name="service_price[]" type="text" placeholder="0.00" required="" autocomplete="off" style="text-align:right;">\
+                                    </div>\
+                                    <div class="col-sm-1">\
+                                        <a href="#" class="removeservice"><i class="fa fa-times fa-2x" style="color:red;"></i></a>\
+                                    </div>\
+                                    </div>');
+
+            $.get('../../api/allservice', function(data){
+                $('.serser_name:last').empty();
+                $('.services:last').val('');
+                $('.serser_name:last').append('<option value="">--Select One--</option>');
+                $.each(data,function(index,serser) {
+                    $('.serser_name:last').append('<option value="'+serser.id+'" data-price="'+serser.price+'" data-main_id="'+serser.admin_panel_cat_id+'">'+serser.name+'</option>');
+                })
+            });
+
+            $('.serser_name').on('change',function() {
+                var serserval = $('option:selected',this).data('price');
+                var main_id = $('option:selected',this).data('main_id');
+                $(this).parent().parent().find('.services').val(serserval);
+                $(this).parent().parent().find('.main_id').val(main_id);
+            })
+
+            $('.removeservice').on('click',function() {
+                $(this).parent().parent().remove();
+            })
+
+            $('.stopalpha').keypress(function(event) {
+                if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                    event.preventDefault();
+                }
+            });
+        });
+
+        $('.submit_frm_addsub').on('click',function() {
+            var type = $('.type:checked').val();
+            if (type == 'Service') {
+                var subname = $('.subname').val();
+                var price_service = $('.price_service').val();
+                if (subname == '' || price_service == '') {
+                    alert('Please Fill Up Form.');
+                    return false;
+                }
+
+            }
+            else {
+                var subname_pack = $('.subname_pack').val();
+                var price_service_pack = $('.price_service_pack').val();
+                if (subname_pack == '' || price_service_pack == '') {
+                    alert('Please Fill Up Form.');
+                    return false;
+                }
+                else {
+                    var appendservicehere = $('.appendservicehere div').length;
+                    if (appendservicehere == 0) {
+                        alert('Please Fill Up Service Form.');
+                        return false;
+                    }
+                }
+            }
+        })
+
+        $('.submit_formeditservices').on('click',function() {
+            var edit_type = $('.edit_type:checked').val();
+            if (edit_type == 'Service') {
+                var edit_name_service = $('.edit_name_service').val();
+                var edit_price_service = $('.edit_price_service').val();
+                if (edit_name_service == '' || edit_price_service == '') {
+                    alert('Please Fill Up Form.');
+                    return false;
+                }
+
+            }
+            else {
+                var edit_name_service_pack = $('.edit_name_service_pack').val();
+                var edit_price_service_pack = $('.edit_price_service_pack').val();
+                if (edit_name_service_pack == '' || edit_price_service_pack == '') {
+                    alert('Please Fill Up Form.');
+                    return false;
+                }
+                else {
+                    var edit_appendservicehere = $('.edit_appendservicehere div').length;
+                    if (edit_appendservicehere == 0) {
+                        alert('Please Fill Up Service Form.');
+                        return false;
+                    }
+                }
+            }
+        })
     </script>
 @show
 

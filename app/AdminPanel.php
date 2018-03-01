@@ -10,4 +10,9 @@ class AdminPanel extends Model
     {
     	 return $this->belongsTo('App\ServicePrice','id','admin_panel_sub_id');
     }
+
+    public function package()
+    {
+    	 return $this->hasMany('App\PackageService','package_id');
+    }
 }

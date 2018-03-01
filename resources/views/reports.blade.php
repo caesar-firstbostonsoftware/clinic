@@ -24,6 +24,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
+        @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
@@ -81,6 +84,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#incomereports" role="tab" data-toggle="tab" style="font-size: 8pt;">Income Reports</a>
                     </li>
                     <li role="presentation">
+                        <a href="#ledger" role="tab" data-toggle="tab" style="font-size: 8pt;">Ledger Reports</a>
+                    </li>
+                    <li role="presentation">
                         <a href="#xrareports" role="tab" data-toggle="tab" style="font-size: 8pt;">X-Ray Reports</a>
                     </li>
                     <li role="presentation">
@@ -93,6 +99,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 @elseif(Session::get('user') > 1 && Session::get('position') == "Cashier")
                     <li role="presentation" class="active">
                         <a href="#incomereports" role="tab" data-toggle="tab" style="font-size: 8pt;">Income Reports</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#ledger" role="tab" data-toggle="tab" style="font-size: 8pt;">Ledger Reports</a>
                     </li>
                 @endif
                 </ul>
@@ -137,6 +146,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                             </form>
                         </div>
+
+                    <!-- Ledger Reports -->
+                    <div role="tabpanel" class="tab-pane fade" id="ledger">
+                        <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
+                            {!! csrf_field() !!}
+                            <input type="text" class="ledg_user_id" value="{{$id}}" style="display: none;">
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Date From :</label>
+                                <div class="col-sm-3">
+                                    <input type="text" id="datepickerledg" class="form-control ledg_datefrom"  placeholder="YYYY-MM-DD" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Date To :</label>
+                                <div class="col-sm-3">
+                                    <input type="text" id="datepickerledg1" class="form-control ledg_dateto"  placeholder="YYYY-MM-DD" readonly="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"></label>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-xs btn-primary ledg_generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button>
+                                    <a href="/pdf/view" class="btn btn-xs btn-success ledg_printrep" id="btn-submit-personal_info" type="button" disabled="" target="_blank">Print</a>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12 ledg_appendreports"></div>
+                            </div>
+                        </form>
+                    </div>
 
                     <!-- X-Ray Reports -->
                     @if(Session::get('user') == 1)
@@ -203,9 +244,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="col-sm-6 ser_Pcount"></div>
-                                    <div class="col-sm-6 ser_Income" style="text-align: right;"></div>
-                                    <br>
                                     <div class="col-md-12 ser_appendreports"></div>
                                 </div>
                             </form>
@@ -222,7 +260,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
+           <b>Powered by</b> <a href="http://www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 
@@ -367,6 +405,50 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     }
     });
 
+        $(".ledg_datefrom").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        $('.ledg_Pcount').empty();
+                        $('.ledg_Income').empty();
+                        $('.ledg_appendreports').empty();
+                        var datefrom = $(this).val();
+                        var dateto = $('.ledg_dateto').val();
+                        if (datefrom <= dateto) {
+                            $('.ledg_generate').removeAttr('disabled');
+                            $('.ledg_printrep').removeAttr('disabled');
+                        }
+                        else {
+                            $('.ledg_generate').attr('disabled','disabled');
+                            $('.ledg_printrep').attr('disabled','disabled');
+                        }
+                    }
+    });
+
+        $(".ledg_dateto").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        $('.ledg_Pcount').empty();
+                        $('.ledg_Income').empty();
+                        $('.ledg_appendreports').empty();
+                        var dateto = $(this).val();
+                        var datefrom = $('.ledg_datefrom').val();
+                        if (datefrom <= dateto) {
+                            $('.ledg_generate').removeAttr('disabled');
+                            $('.ledg_printrep').removeAttr('disabled');
+                        }
+                        else {
+                            $('.ledg_generate').attr('disabled','disabled');
+                            $('.ledg_printrep').attr('disabled','disabled');
+                        }
+                    }
+    });
+
         $('.inc_generate').on('click',function() {
             var id = $('.inc_user_id').val();
             var datefrom = $(".inc_datefrom").val();
@@ -450,6 +532,125 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 }) 
         })
 
+        $('.ledg_generate').on('click',function() {
+            var datefrom = $(".ledg_datefrom").val();
+            var dateto = $('.ledg_dateto').val();
+            $('.ledg_appendreports').empty();
+            $('.ledg_Income').empty();
+            $.get('../../api/ledgerreports?datefrom=' + datefrom + '&dateto=' + dateto, function(data){
+                $('.ledg_appendreports').append('<table class="table table-striped">\
+                    <thead>\
+                        <tr>\
+                            <th style="width:10%;">Date</th>\
+                            <th style="width:10%;">OR No.</th>\
+                            <th style="width:40%;">Service(s)</th>\
+                            <th style="text-align: right;width:10%;">Laboratory</th>\
+                            <th style="text-align: right;width:10%;">Ultrasound</th>\
+                            <th style="text-align: right;width:10%;">Xray</th>\
+                            <th style="text-align: right;width:10%;">ECG</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody class="ledg_tbodyreports">\
+                    </tbody>\
+                </table>');
+                var total1 = 0;
+                var total2 = 0;
+                var total3 = 0;
+                var total4 = 0;
+                $.each(data.PatientVisit, function(index, ledgerreport){
+                    if (!ledgerreport.receipt) {
+                        var rere = '';
+                    }
+                    else {
+                        var rere = ledgerreport.receipt.receipt_number;
+                    }
+                        $('.ledg_tbodyreports').append('<tr>\
+                            <td style="width:10%;">'+ledgerreport.visit_date+'</td>\
+                            <td style="width:10%;">'+rere+'</td>\
+                            <td style="width:40%;" class="putservice"></td>\
+                            <td style="text-align: right;width:10%;" class="putlab"></td>\
+                            <td style="text-align: right;width:10%;" class="putultra"></td>\
+                            <td style="text-align: right;width:10%;" class="putxray"></td>\
+                            <td style="text-align: right;width:10%;" class="putecg"></td>\
+                        </tr>');
+                        var sum1 = 0;
+                        var sum2 = 0;
+                        var sum3 = 0;
+                        var sum4 = 0;
+                        $.each(ledgerreport.service, function(index, ledgerservice){
+                            $.each(data.AdminPanel, function(index, adminpanel){
+                                if (ledgerreport.visitid == ledgerservice.visit_id) {
+                                    if (ledgerservice.admin_panel_sub_id == adminpanel.id) {
+                                        $('.putservice:last').append(''+adminpanel.name+',');
+
+                                        if (adminpanel.type == 'Package') {
+                                            $.each(adminpanel.package,function(index,package) {
+                                                if (package.main_id == 1 || package.main_id == 2 || package.main_id == 3 || package.main_id == 4 || package.main_id == 7 || package.main_id == 8 || package.main_id == 9 || package.main_id == 10 ) {
+                                                    if (package.service_id == 92) {
+                                                    }
+                                                    else {
+                                                        sum1 += parseFloat(package.price);
+                                                    }
+                                                }
+                                                if (package.main_id == 6) {
+                                                    sum2 += parseFloat(package.price);
+                                                }
+                                                if (package.main_id == 5) {
+                                                    sum3 += parseFloat(package.price);
+                                                }
+                                                if (package.service_id == 92) {
+                                                    sum4 += parseFloat(package.price);
+                                                }
+                                            })
+                                        }
+                                        else {
+                                            if (ledgerservice.admin_panel_id == 1 || ledgerservice.admin_panel_id == 2 || ledgerservice.admin_panel_id == 3 || ledgerservice.admin_panel_id == 4 || ledgerservice.admin_panel_id == 7 || ledgerservice.admin_panel_id == 8 || ledgerservice.admin_panel_id == 9 || ledgerservice.admin_panel_id == 10 ) {
+                                                if (ledgerservice.admin_panel_sub_id == 92) {
+                                                }
+                                                else {
+                                                    sum1 += parseFloat(adminpanel.price);
+                                                }
+                                            }
+                                            if (ledgerservice.admin_panel_id == 6) {
+                                                sum2 += parseFloat(adminpanel.price);
+                                            }
+                                            if (ledgerservice.admin_panel_id == 5) {
+                                                sum3 += parseFloat(adminpanel.price);
+                                            }
+                                            if (ledgerservice.admin_panel_sub_id == 92) {
+                                                sum4 += parseFloat(adminpanel.price);
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            })
+                        })
+                        $('.putlab:last').append(''+ReplaceNumberWithCommas(sum1)+'');
+                        $('.putultra:last').append(''+ReplaceNumberWithCommas(sum2)+'');
+                        $('.putxray:last').append(''+ReplaceNumberWithCommas(sum3)+'');
+                        $('.putecg:last').append(''+ReplaceNumberWithCommas(sum4)+'');
+                        total1 += parseFloat(sum1);
+                        total2 += parseFloat(sum2);
+                        total3 += parseFloat(sum3);
+                        total4 += parseFloat(sum4);
+                })
+                $('.ledg_tbodyreports').append('<tr>\
+                                <td></td>\
+                                <td></td>\
+                                <td style="text-align: right;"><b>TOTAL (Php)</b></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;" class="putlab_total"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;" class="putultra_total"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;" class="putxray_total"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;" class="putecg_total"></td>\
+                        </tr>');
+                $('.putlab_total:last').append(''+ReplaceNumberWithCommas(total1)+'');
+                $('.putultra_total:last').append(''+ReplaceNumberWithCommas(total2)+'');
+                $('.putxray_total:last').append(''+ReplaceNumberWithCommas(total3)+'');
+                $('.putecg_total:last').append(''+ReplaceNumberWithCommas(total4)+'');
+            });    
+        })
+
         $('.inc_printrep').on('click',function() {
             var id = $('.inc_user_id').val();
             var datefrom = $(".inc_datefrom").val();
@@ -471,6 +672,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var dateto = $('.ser_dateto').val();
             $(this).removeAttr('href','href');
             $(this).attr('href','/pdf/viewservice/'+datefrom+'/'+dateto+'');
+        })
+
+        $('.ledg_printrep').on('click',function() {
+            var datefrom = $(".ledg_datefrom").val();
+            var dateto = $('.ledg_dateto').val();
+            $(this).removeAttr('href','href');
+            $(this).attr('href','/pdf/viewledger/'+datefrom+'/'+dateto+'');
         })
     </script>
 @show

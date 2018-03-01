@@ -11,7 +11,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <style type="text/css">
     .tableBodyScroll tbody.dtl {
     display:block;
-    max-height:100px;
+    max-height:225px;
     overflow-y:scroll;
     }
     .tableBodyScroll thead.dtl, tbody.dtl tr.dtl {
@@ -35,6 +35,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @endif
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
+        @endif
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
         @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
@@ -102,7 +105,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <hr class="mt-2">
                                 
-                                <table class="tableBodyScroll table-striped">
+                                <table class="tableBodyScroll table-striped" style="width: 100%;">
                                     <thead class="dtl">
                                         <tr class="dtl">
                                             <th width="5%">ID</th>
@@ -147,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <hr class="mt-2">
                                 
-                                <table class="tableBodyScroll table-striped">
+                                <table class="tableBodyScroll table-striped" style="width: 100%;">
                                     <thead class="dtl">
                                         <tr class="dtl">
                                             <th width="30%">Patient Name</th>
@@ -242,7 +245,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
+           <b>Powered by</b> <a href="http://www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 

@@ -41,6 +41,9 @@ use App\SecondChemistry;
 use App\Patientultrasound;
 use App\UltrasoundLog;
 use App\Aptt;
+use App\Company;
+use App\ForQueue;
+use App\PackageService;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -92,7 +95,8 @@ class PatientsController extends Controller
         $adminpanel = AdminPanel::with('price123')->get();
         $sub = AdminPanelSub::all();
         $patient = 0;
-	    return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
+        $Company = Company::where('status','Active')->get();
+	    return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient','Company'));
 
         }
         else {
@@ -165,6 +169,12 @@ class PatientsController extends Controller
             $patient->senior_id_no = $senciz_id;
             $patient->pwd_id_no = $pwd_id;
             $patient->type = $request->input('type');
+            if ($request->input('type') == 'Walk-in') {
+                $patient->company_id = 0;
+            }
+            else {
+                $patient->company_id = $request->input('company');
+            }
             $patient->save();
 
             $check_p_v = PatientVisit::where('patient_id',$patient->id)->orderBy('id', 'desc')->first();
@@ -214,6 +224,42 @@ class PatientsController extends Controller
                     $service->price_amount = $AdminPanel->price123->price;
                     $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
+
+                    $checking = AdminPanel::where('id',$request->input('service_name')[$i])->first();
+                    if ($checking->type == 'Package') {
+                        $PackageService = PackageService::where('package_id',$checking->id)->get();
+                        foreach ($PackageService as $key) {
+                            $service = new ForQueue;
+                            $service->patient_id = $patient->id;
+                            $service->admin_panel_id = $key->main_id;
+                            $service->admin_panel_sub_id = $key->service_id;
+                            $service->visit_id = 1;
+                            if ($key->main_id == 5) {
+                                $department_pack = 'xray';
+                            }
+                            else {
+                                $department_pack = 'labtest';
+                            }
+                            $service->department = $department_pack;
+                            $service->date_reg = $datenow;
+                            $service->price_amount = $key->price;
+                            $service->qty = 1;
+                            $service->save();
+                        }
+                    }
+                    else {
+                        $service = new ForQueue;
+                        $service->patient_id = $patient->id;
+                        $service->admin_panel_id = $request->input('mainservice')[$i];
+                        $service->admin_panel_sub_id = $request->input('service_name')[$i];
+                        $service->visit_id = 1;
+                        $service->department = $department;
+                        $service->date_reg = $datenow;
+                        $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                        $service->price_amount = $AdminPanel->price123->price;
+                        $service->qty = $request->input('ser_qty')[$i];
+                        $service->save();
+                    }
                 }
 
             }
@@ -263,6 +309,42 @@ class PatientsController extends Controller
                     $service->price_amount = $AdminPanel->price123->price;
                     $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
+
+                    $checking = AdminPanel::where('id',$request->input('service_name')[$i])->first();
+                    if ($checking->type == 'Package') {
+                        $PackageService = PackageService::where('package_id',$checking->id)->get();
+                        foreach ($PackageService as $key) {
+                            $service = new ForQueue;
+                            $service->patient_id = $patient->id;
+                            $service->admin_panel_id = $key->main_id;
+                            $service->admin_panel_sub_id = $key->service_id;
+                            $service->visit_id = $check_p_v->visitid + 1;
+                            if ($key->main_id == 5) {
+                                $department_pack = 'xray';
+                            }
+                            else {
+                                $department_pack = 'labtest';
+                            }
+                            $service->department = $department_pack;
+                            $service->date_reg = $datenow;
+                            $service->price_amount = $key->price;
+                            $service->qty = 1;
+                            $service->save();
+                        }
+                    }
+                    else {
+                        $service = new ForQueue;
+                        $service->patient_id = $patient->id;
+                        $service->admin_panel_id = $request->input('mainservice')[$i];
+                        $service->admin_panel_sub_id = $request->input('service_name')[$i];
+                        $service->visit_id = $check_p_v->visitid + 1;
+                        $service->department = $department;
+                        $service->date_reg = $datenow;
+                        $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                        $service->price_amount = $AdminPanel->price123->price;
+                        $service->qty = $request->input('ser_qty')[$i];
+                        $service->save();
+                    }
                 }
             }
             Session::flash('alert-success', 'Personal Info Created.');
@@ -343,6 +425,42 @@ class PatientsController extends Controller
                     $service->price_amount = $AdminPanel->price123->price;
                     $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
+
+                    $checking = AdminPanel::where('id',$request->input('service_name')[$i])->first();
+                    if ($checking->type == 'Package') {
+                        $PackageService = PackageService::where('package_id',$checking->id)->get();
+                        foreach ($PackageService as $key) {
+                            $service = new ForQueue;
+                            $service->patient_id = $patient->id;
+                            $service->admin_panel_id = $key->main_id;
+                            $service->admin_panel_sub_id = $key->service_id;
+                            $service->visit_id = 1;
+                            if ($key->main_id == 5) {
+                                $department_pack = 'xray';
+                            }
+                            else {
+                                $department_pack = 'labtest';
+                            }
+                            $service->department = $department_pack;
+                            $service->date_reg = $datenow;
+                            $service->price_amount = $key->price;
+                            $service->qty = 1;
+                            $service->save();
+                        }
+                    }
+                    else {
+                        $service = new ForQueue;
+                        $service->patient_id = $patient->id;
+                        $service->admin_panel_id = $request->input('mainservice')[$i];
+                        $service->admin_panel_sub_id = $request->input('service_name')[$i];
+                        $service->visit_id = 1;
+                        $service->department = $department;
+                        $service->date_reg = $datenow;
+                        $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                        $service->price_amount = $AdminPanel->price123->price;
+                        $service->qty = $request->input('ser_qty')[$i];
+                        $service->save();
+                    }
                 }
 
             }
@@ -392,6 +510,42 @@ class PatientsController extends Controller
                     $service->price_amount = $AdminPanel->price123->price;
                     $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
+
+                    $checking = AdminPanel::where('id',$request->input('service_name')[$i])->first();
+                    if ($checking->type == 'Package') {
+                        $PackageService = PackageService::where('package_id',$checking->id)->get();
+                        foreach ($PackageService as $key) {
+                            $service = new ForQueue;
+                            $service->patient_id = $patient->id;
+                            $service->admin_panel_id = $key->main_id;
+                            $service->admin_panel_sub_id = $key->service_id;
+                            $service->visit_id = $check_p_v->visitid + 1;
+                            if ($key->main_id == 5) {
+                                $department_pack = 'xray';
+                            }
+                            else {
+                                $department_pack = 'labtest';
+                            }
+                            $service->department = $department_pack;
+                            $service->date_reg = $datenow;
+                            $service->price_amount = $key->price;
+                            $service->qty = 1;
+                            $service->save();
+                        }
+                    }
+                    else {
+                        $service = new ForQueue;
+                        $service->patient_id = $patient->id;
+                        $service->admin_panel_id = $request->input('mainservice')[$i];
+                        $service->admin_panel_sub_id = $request->input('service_name')[$i];
+                        $service->visit_id = $check_p_v->visitid + 1;
+                        $service->department = $department;
+                        $service->date_reg = $datenow;
+                        $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                        $service->price_amount = $AdminPanel->price123->price;
+                        $service->qty = $request->input('ser_qty')[$i];
+                        $service->save();
+                    }
                 }
             }
             Session::flash('alert-success', 'Personal Info Created.');
@@ -504,20 +658,21 @@ class PatientsController extends Controller
             ->where('patient_visits.patient_id',$id)
             ->where('patient_visits.visitid',$vid)
             ->select('patients.*','patient_visits.purpose_visit','patient_visits.status')
+            ->with('company')
             ->first();
         $doctor = Doctor::join('users','doctors.id','=','users.doc_id')->where('users.position','Doctor')->select('doctors.*')->get();
         $adminpanel = AdminPanelCategory::with('adminpanel')->get();
-        $PatientService1002 = PatientService::where('patient_id',$id)->where('visit_id',$vid)->get();
-        $PatientService = PatientService::select('department')
+        $PatientService1002 = ForQueue::where('patient_id',$id)->where('visit_id',$vid)->get();
+        $PatientService = ForQueue::select('department')
         ->where('patient_id',$id)
         ->where('visit_id',$vid)
         ->groupBy('department')
         ->get();
-        $PatientService1003 = PatientService::join('admin_panels','patient_services.admin_panel_sub_id','=','admin_panels.id')
+        $PatientService1003 = ForQueue::join('admin_panels','for_queues.admin_panel_sub_id','=','admin_panels.id')
         ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','admin_panel_categories.id')
         ->select('admin_panels.id','admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
-        ->where('patient_services.patient_id',$id)
-        ->where('patient_services.visit_id',$vid)
+        ->where('for_queues.patient_id',$id)
+        ->where('for_queues.visit_id',$vid)
         ->groupBy('admin_panels.id','admin_panels.admin_panel_cat_id','admin_panel_categories.cat_name')
         ->get();
         $Labtest = AdminPanelCategory::all();
@@ -567,6 +722,7 @@ class PatientsController extends Controller
             $patientxray->finding_info = $comm;
             $patientxray->visitid = $vid;
             $patientxray->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
+            $patientxray->plate = $request->input('plate');
             $patientxray->save();
 
             $logs = new PatientXrayLog;
@@ -605,12 +761,17 @@ class PatientsController extends Controller
         $p_id = $request->input('p_id');
         $v_id = $request->input('v_id');
 
-        $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
-        ->where('patients.id',$p_id)
-        ->where('patient_visits.visitid',$v_id)
-        ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill','patient_visits.discount','patient_visits.wh_discount')
-        ->first();
-
+        if ($v_id == 0) {
+            $patient = Patient::where('id',$p_id)->with('company')->first();
+        }
+        else {
+            $patient = Patient::join('patient_visits','patients.id','=','patient_visits.patient_id')
+            ->where('patients.id',$p_id)
+            ->where('patient_visits.visitid',$v_id)
+            ->select('patients.*','patient_visits.purpose_visit','patient_visits.visitid','patient_visits.id as patient_visit_id','patient_visits.totalbill as totalbill','patient_visits.discount','patient_visits.wh_discount')
+            ->first();
+        }
+        
         $adminpanel = PatientService::join('admin_panels','patient_services.admin_panel_sub_id','=','admin_panels.id')
         ->leftJoin('admin_panel_categories','admin_panels.admin_panel_cat_id','=','admin_panel_categories.id')
         ->where('patient_services.patient_id',$p_id)
@@ -618,6 +779,7 @@ class PatientsController extends Controller
         ->select('patient_services.*','admin_panels.id as AP_ID','admin_panels.name as AP_NAME','admin_panels.price as AP_PRICE','admin_panel_categories.id as APC_ID','patient_services.price_amount as PRICE_AMOUNT','patient_services.qty as SER_QTY')
         ->get();
         return Response::json(['patient' => $patient,'adminpanel' => $adminpanel], 200, array(), JSON_PRETTY_PRINT);
+
 
         }
         else {
@@ -669,6 +831,12 @@ class PatientsController extends Controller
         $patient->senior_id_no = $senciz_id;
         $patient->pwd_id_no = $pwd_id;
         $patient->type = $request->input('type');
+        if ($request->input('type') == 'Walk-in') {
+            $patient->company_id = 0;
+        }
+        else {
+            $patient->company_id = $request->input('company');
+        }
         $patient->save();
 
         return redirect()->action('PatientsController@patientlist');
@@ -686,7 +854,7 @@ class PatientsController extends Controller
             $xray_id = $request->input('dataid');
             $patientxray = Patientxray::join('doctors','patientxrays.physician_id','=','doctors.id')
             ->where('patientxrays.id',$xray_id)
-            ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info','patientxrays.or_no as or_no','patientxrays.phy_fee')
+            ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info','patientxrays.or_no as or_no','patientxrays.phy_fee','patientxrays.plate')
             ->first();
             return Response::json($patientxray, 200, array(), JSON_PRETTY_PRINT);
 
@@ -1202,6 +1370,8 @@ class PatientsController extends Controller
             $patientxray->finding = $finding;
             $patientxray->finding_info = $comm;
             $patientxray->status = 'Old';
+            $patientxray->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
+            $patientxray->plate = $request->input('plate');
             $patientxray->save();
 
             $logs = new PatientXrayLog;
@@ -1486,6 +1656,12 @@ class PatientsController extends Controller
                 $deldel->delete();
             }
 
+        $delete1002 = ForQueue::where('patient_id',$p_id)->where('visit_id',$v_id)->get();
+            foreach ($delete1002 as $del1002) {
+                $deldel1001 = ForQueue::where('id',$del1002->id)->first();
+                $deldel1001->delete();
+            }
+
         for ($i=0; $i < $mainservice; $i++) { 
             if ($request->input('mainservice')[$i] == 5) {
                 $department = 'xray';
@@ -1500,7 +1676,45 @@ class PatientsController extends Controller
             $service->visit_id = $v_id;
             $service->department = $department;
             $service->date_reg = $now;
+            $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+            $service->price_amount = $AdminPanel->price123->price;
             $service->save();
+
+            $checking = AdminPanel::where('id',$request->input('service_name')[$i])->first();
+            if ($checking->type == 'Package') {
+                $PackageService = PackageService::where('package_id',$checking->id)->get();
+                foreach ($PackageService as $key) {
+                    $service = new ForQueue;
+                    $service->patient_id = $p_id;
+                    $service->admin_panel_id = $key->main_id;
+                    $service->admin_panel_sub_id = $key->service_id;
+                    $service->visit_id = $v_id;
+                    if ($key->main_id == 5) {
+                        $department_pack = 'xray';
+                    }
+                    else {
+                        $department_pack = 'labtest';
+                    }
+                    $service->department = $department_pack;
+                    $service->date_reg = $now;
+                    $service->price_amount = $key->price;
+                    $service->qty = 1;
+                    $service->save();
+                }
+            }
+            else {
+                $service = new ForQueue;
+                $service->patient_id = $p_id;
+                $service->admin_panel_id = $request->input('mainservice')[$i];
+                $service->admin_panel_sub_id = $request->input('service_name')[$i];
+                $service->visit_id = $v_id;
+                $service->department = $department;
+                $service->date_reg = $now;
+                $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
+                $service->price_amount = $AdminPanel->price123->price;
+                $service->qty = $request->input('ser_qty')[$i];
+                $service->save();
+            }
         }
 
         $patient = Patient::where('id',$p_id)->first();
@@ -1543,7 +1757,7 @@ class PatientsController extends Controller
         $adminpanelcat = AdminPanelCategory::all();
         $adminpanel = AdminPanel::all();
         $sub = AdminPanelSub::all();
-        $patient = Patient::where('id',$id)->first();
+        $patient = Patient::where('id',$id)->with('company')->first();
         return view('patientnewvisitpage',compact('adminpanelcat','adminpanel','sub','patient'));
 
         }
@@ -2717,6 +2931,13 @@ class PatientsController extends Controller
                 $Xray->status = "Done";
                 $Xray->save();
             }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)->where('admin_panel_id',5)->get();
+            foreach ($ForQueue as $key) {
+                $Xray = ForQueue::where('id',$key->id)->first();
+                $Xray->status = "Done";
+                $Xray->save();
+            }
     
            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
@@ -2935,6 +3156,22 @@ class PatientsController extends Controller
                 $PatientService2->status = "Done";
                 $PatientService2->save();
             }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',1)->where('admin_panel_sub_id',1)
+            ->first();
+            if ($ForQueue) {
+                $ForQueue->status = "Done";
+                $ForQueue->save();
+            }
+
+            $ForQueue2 = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',4)->where('admin_panel_sub_id',40)
+            ->first();
+            if ($ForQueue2) {
+                $ForQueue2->status = "Done";
+                $ForQueue2->save();
+            }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
@@ -2963,6 +3200,22 @@ class PatientsController extends Controller
                 $PatientService2->status = "Done";
                 $PatientService2->save();
             }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',1)->where('admin_panel_sub_id',2)
+            ->first();
+            if ($ForQueue) {
+                $ForQueue->status = "Done";
+                $ForQueue->save();
+            }
+
+            $ForQueue2 = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',1)->where('admin_panel_sub_id',3)
+            ->first();
+            if ($ForQueue2) {
+                $ForQueue2->status = "Done";
+                $ForQueue2->save();
+            }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
@@ -2982,6 +3235,17 @@ class PatientsController extends Controller
             if ($PatientService) {
                 foreach ($PatientService as $key) {
                     $ChemistryI = PatientService::where('id',$key->id)->first();
+                    $ChemistryI->status = "Done";
+                    $ChemistryI->save();
+                }
+            }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id','!=',11)->where('admin_panel_sub_id','!=',12)->where('admin_panel_sub_id','!=',13)
+            ->get();
+            if ($ForQueue) {
+                foreach ($ForQueue as $key) {
+                    $ChemistryI = ForQueue::where('id',$key->id)->first();
                     $ChemistryI->status = "Done";
                     $ChemistryI->save();
                 }
@@ -3015,12 +3279,36 @@ class PatientsController extends Controller
                 $PatientService2->save();
             }
 
-            $PatientService2 = PatientService::where('patient_id',$id)->where('visit_id',$vid)
+            $PatientService3 = PatientService::where('patient_id',$id)->where('visit_id',$vid)
             ->where('admin_panel_id',2)->where('admin_panel_sub_id',13)
             ->first();
-            if ($PatientService2) {
-                $PatientService2->status = "Done";
-                $PatientService2->save();
+            if ($PatientService3) {
+                $PatientService3->status = "Done";
+                $PatientService3->save();
+            }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id',11)
+            ->first();
+            if ($ForQueue) {
+                $ForQueue->status = "Done";
+                $ForQueue->save();
+            }
+
+            $ForQueue2 = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id',12)
+            ->first();
+            if ($ForQueue2) {
+                $ForQueue2->status = "Done";
+                $ForQueue2->save();
+            }
+
+            $ForQueue3 = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',2)->where('admin_panel_sub_id',13)
+            ->first();
+            if ($ForQueue3) {
+                $ForQueue3->status = "Done";
+                $ForQueue3->save();
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
@@ -3041,6 +3329,17 @@ class PatientsController extends Controller
             if ($PatientService) {
                 foreach ($PatientService as $key) {
                     $Hematology = PatientService::where('id',$key->id)->first();
+                    $Hematology->status = "Done";
+                    $Hematology->save();
+                }
+            }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',3)
+            ->get();
+            if ($ForQueue) {
+                foreach ($ForQueue as $key) {
+                    $Hematology = ForQueue::where('id',$key->id)->first();
                     $Hematology->status = "Done";
                     $Hematology->save();
                 }
@@ -3068,6 +3367,17 @@ class PatientsController extends Controller
                     $Serology->save();
                 }
             }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',4)->where('admin_panel_sub_id','!=',40)
+            ->get();
+            if ($ForQueue) {
+                foreach ($ForQueue as $key) {
+                    $Serology = ForQueue::where('id',$key->id)->first();
+                    $Serology->status = "Done";
+                    $Serology->save();
+                }
+            }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
@@ -3091,6 +3401,17 @@ class PatientsController extends Controller
                     $ChemistryII->save();
                 }
             }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',8)
+            ->get();
+            if ($ForQueue) {
+                foreach ($ForQueue as $key) {
+                    $ChemistryII = ForQueue::where('id',$key->id)->first();
+                    $ChemistryII->status = "Done";
+                    $ChemistryII->save();
+                }
+            }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
@@ -3110,6 +3431,14 @@ class PatientsController extends Controller
             if ($PatientService) {
                 $PatientService->status = "Done";
                 $PatientService->save();
+            }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',7)->where('admin_panel_sub_id',92)
+            ->first();
+            if ($ForQueue) {
+                $ForQueue->status = "Done";
+                $ForQueue->save();
             }
             
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
@@ -3649,6 +3978,13 @@ class PatientsController extends Controller
                 $Xray->status = "Done";
                 $Xray->save();
             }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)->where('admin_panel_id',6)->get();
+            foreach ($ForQueue as $key) {
+                $Xray = ForQueue::where('id',$key->id)->first();
+                $Xray->status = "Done";
+                $Xray->save();
+            }
     
            return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
@@ -3897,6 +4233,17 @@ class PatientsController extends Controller
             if ($PatientService) {
                 foreach ($PatientService as $key) {
                     $Hematology = PatientService::where('id',$key->id)->first();
+                    $Hematology->status = "Done";
+                    $Hematology->save();
+                }
+            }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)
+            ->where('admin_panel_id',3)
+            ->get();
+            if ($ForQueue) {
+                foreach ($ForQueue as $key) {
+                    $Hematology = ForQueue::where('id',$key->id)->first();
                     $Hematology->status = "Done";
                     $Hematology->save();
                 }

@@ -116,6 +116,12 @@ Route::get('/visit/{id}/{vid}/apttdone/pdf', 'PatientsController@apttdonepdf');
 
 Route::get('/ultrasound/pdf/view/{id}', 'PatientsController@ultrasoundpdfview');
 
+Route::get('/pdf/viewledger/{datefrom}/{dateto}', 'DoctorsController@viewledger');
+
+Route::get('/company', 'CompanyController@company');
+Route::post('/company', 'CompanyController@newcompany');
+Route::post('/company/viewedit', 'CompanyController@editcompany');
+
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');
 Route::get('api/modalaeditpatient','PatientsController@modalaeditpatient');
@@ -164,4 +170,14 @@ Route::get('api/ultrasoundedit','PatientsController@ultrasoundedit');
 Route::get('api/ultrasoundlogs','PatientsController@ultrasoundlogs');
 
 Route::get('api/servicereportsreports','DoctorsController@servicereportsreports');
+
+Route::get('api/ledgerreports','DoctorsController@ledgerreports');
+
+Route::get('api/viewcompany','CompanyController@viewcompany');
+Route::get('api/getcompany','CompanyController@getcompany');
+
+Route::get('api/allservice','AdminPanelContoller@allservice');
+Route::get('api/servicepackage','AdminPanelContoller@servicepackage');
+
+Route::get('api/viewpatentlist','CompanyController@viewpatentlist');
 

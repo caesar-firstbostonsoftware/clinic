@@ -24,6 +24,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
+        @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
@@ -106,57 +109,68 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-sm-4">
                                         @if($patient->type == 'Walk-in')
                                         <label class="radio-inline">
-                                            <input type="radio" name="type" class="type" value="Walk-in" checked="">Walk-in
+                                            <input type="radio" name="type" class="type" value="Walk-in" checked="" disabled="">Walk-in
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="type" class="type" value="Company">Company
+                                            <input type="radio" name="type" class="type" value="Company" disabled="">Company
                                         </label>
                                         @else
                                         <label class="radio-inline">
-                                            <input type="radio" name="type" class="type" value="Walk-in">Walk-in
+                                            <input type="radio" name="type" class="type" value="Walk-in" disabled="">Walk-in
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="type" class="type" value="Company" checked="">Company
+                                            <input type="radio" name="type" class="type" value="Company" checked="" disabled="">Company
                                         </label>
                                         @endif
                                     </div>
                                     @endif
                                 </div>
+                                @if(!$patient)
+                                <div class="form-group discount67890" style="display: none;">
+                                @elseif($patient->type == 'Walk-in')
+                                <div class="form-group discount67890" style="display: none;">
+                                @else
+                                <div class="form-group discount67890">
+                                @endif
+                                    <label class="col-sm-1 control-label">Company</label>
+                                    <div class="col-sm-3">
+                                        @if(!$patient)
+                                            <select id="company" name="company" class="form-control company"> 
+                                                <option value="">- Select -</option>
+                                                @foreach($Company as $comcom)
+                                                    <option value="{{$comcom->id}}">{{$comcom->complete_name}}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <select id="company" name="company" class="form-control company" disabled="">
+                                                @if(!$patient->company)
+                                                <option value="">- Select -</option>
+                                                @else
+                                                <option value="{{$patient->company->id}}">{{$patient->company->complete_name}}</option>
+                                                @endif
+                                            </select>
+                                        @endif
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label class="col-sm-1 control-label">Name</label>
                                     <div class="col-sm-2">
                                         @if(!$patient)
-                                            <input class="form-control" id="fname" name="fname" placeholder="First / Company" required="" type="text" autocomplete="off" autofocus="" tabindex="1">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" required="" type="text" autocomplete="off" autofocus="" tabindex="1">
                                             <input type="text" name="patient_id" value="0" style="display: none;">
                                         @else
-                                            <input class="form-control" id="fname" name="fname" placeholder="First / Company" type="text" readonly="" value="{{$patient->f_name}}">
+                                            <input class="form-control" id="fname" name="fname" placeholder="First Name" type="text" readonly="" value="{{$patient->f_name}}">
                                             <input type="text" name="patient_id" value="{{$patient->id}}" style="display: none;">
                                         @endif
                                     </div>
-                                    @if(!$patient)
-                                    <div class="col-sm-1 discount12345">
-                                    @else
-                                    @if($patient->type == 'Walk-in')
-                                    <div class="col-sm-1 discount12345">
-                                    @else
-                                    <div class="col-sm-1 discount12345" style="display: none;">
-                                    @endif
-                                    @endif
+                                    <div class="col-sm-1">
                                         @if(!$patient)
                                             <input class="form-control" id="mname" name="mname" placeholder="M" type="text" autocomplete="off" tabindex="2">
                                         @else
                                             <input class="form-control" id="mname" name="mname" placeholder="M" type="text" readonly="" value="{{$patient->m_name}}">
                                         @endif
                                     </div>
-                                    @if(!$patient)
-                                    <div class="col-sm-2 discount12345">
-                                    @else
-                                    @if($patient->type == 'Walk-in')
-                                    <div class="col-sm-2 discount12345">
-                                    @else
-                                    <div class="col-sm-2 discount12345" style="display: none;">
-                                    @endif
-                                    @endif
+                                    <div class="col-sm-2">
                                         @if(!$patient)
                                             <input class="form-control" id="lname" name="lname" placeholder="Last Name" type="text" autocomplete="off" tabindex="3">
                                         @else
@@ -342,7 +356,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
+           <b>Powered by</b> <a href="http://www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 
@@ -390,10 +404,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         if (type == 'Walk-in') {
             $('.discount67890').hide();
             $('.discount12345').show();
+            $('.company').removeAttr('required');
         }
         else {
             $('.discount12345').hide();
             $('.discount67890').show();
+            $('.company').attr('required','required');
         }
     })
 
@@ -401,7 +417,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var main_id = $(this).data('mainid');
             $(this).attr('disabled','disabled');     
             $('.'+main_id+'').append('<div class="row">\
-                                    <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1"></div>\
+                                    <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1" readonly></div>\
                                     <div class="col-sm-4">\
                                         <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
                                         </select>\

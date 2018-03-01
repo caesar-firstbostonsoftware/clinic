@@ -37,7 +37,7 @@
 
             <tr>
                 <td>
-                    <h4><i>Result / Finding : </i> <b style="font-size: 14pt;">{{$Patientxray->finding}}</b></h4>
+                    <h4><i>Result / Finding : </i> <b style="font-size: 14pt;">{{$Patientxray->finding}}</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLATE: <b style="font-size: 10pt;">{{$Patientxray->plate}}</b></h4>
                 </td>
             </tr>
             <tr><td></td></tr>

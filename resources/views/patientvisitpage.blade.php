@@ -33,6 +33,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
+        @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
@@ -1534,13 +1537,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                                     <h4><b>X-RAY / ULTRASOUND</b></h4>
 
-                                                    <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/edit">
+                                                    <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/edit">
                                                     {!! csrf_field() !!}
                                                         <div class="form-group">
                                                             <label class="col-sm-1 control-label">Name:</label>
                                                             <div class="col-sm-6">
                                                                 <input type="text" class="xray_id" name="xray_id" value="" style="display: none;">
-                                                                <input type="text" name="P_id_edit" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id_edit" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name_edit" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -1577,12 +1580,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="form-group divxrayinfo">
                                                             <label class="col-sm-1 control-label">Phys.Fee:</label>
                                                             <div class="col-sm-3">
-                                                                <input type="text" name="pfee" class="form-control pfee_edit" placeholder="0.00" required="" readonly="">
+                                                                <input type="text" name="pfee" class="form-control pfee_edit stopalpha" placeholder="0.00" required="">
                                                             </div>
                                                             <label class="col-sm-5 control-label">Edit Date:</label>
                                                             <div class="col-sm-3">
                                                             <?php $datenow = date("Y-m-d"); ?>
                                                                 <input type="text" id="datepickerxray" name="xraydate_edit_edit" class="form-control xraydate" required="" value="{{$datenow}}" readonly="" disabled="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group divxrayinfo">
+                                                            <label class="col-sm-1 control-label">PLATE</label>
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="plate" class="form-control plate_edit" placeholder="PLATE" autocomplete="off">
                                                             </div>
                                                         </div>
 
@@ -1633,12 +1642,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                         <h4><b>X-RAY / ULTRASOUND</b></h4>
 
-                                        <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}">
+                                        <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}">
                                         {!! csrf_field() !!}
                                             <div class="form-group">
                                                 <label class="col-sm-1 control-label">Name:</label>
                                                 <div class="col-sm-6">
-                                                    <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                    <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                     <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                 </div>
                                                 <label class="col-sm-2 control-label">O.R. No.</label>
@@ -1686,6 +1695,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <label class="col-sm-1 control-label">Phys.Fee:</label>
                                                 <div class="col-sm-3">
                                                     <input type="text" name="pfee" class="form-control pfee" placeholder="0.00" required="" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <div class="form-group divxrayinfo">
+                                                <label class="col-sm-1 control-label">PLATE</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" name="plate" class="form-control plate" placeholder="PLATE" autocomplete="off">
                                                 </div>
                                             </div>
 
@@ -7113,7 +7128,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <footer class="main-footer">
         <div style="text-align: right;">
-           <b>Powered by</b> <a href="www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
+           <b>Powered by</b> <a href="http://www.inovenzo.com" target="_blank">Inovenzo</a> <img src="{{ asset('/img/LOGO.png') }}" height="30" width="30">
         </div> 
     </footer>
 
@@ -7490,11 +7505,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $('.xray_id').removeAttr('value');
         $('.orno_edit').removeAttr('value');
         $('.pfee_edit').removeAttr('value');
+        $('.plate_edit').removeAttr('value');
         $.get('../../api/modalxrayedit?dataid=' + dataid, function(data){
             $('.xray_id').attr('value',data.xray_id);
             $('.orno_edit').attr('value',data.or_no);
             $('.xraydate_edit').val(data.xray_date);
             $('.pfee_edit').val(data.phy_fee);
+            $('.plate_edit').val(data.plate);
             $('.physician_edit').append('<option>'+data.f_name+' '+data.m_name+' '+data.l_name+', '+data.credential+'</option>');
 
             $('.phyname').append('<label class="col-sm-5 control-label" style="text-align: left;"><b>'+data.f_name+' '+data.m_name+' '+data.l_name+', '+data.credential+'</b></label>');

@@ -19,6 +19,8 @@ use Dompdf\Dompdf;
 use TCPDF;
 use App\PatientVisit;
 use App\UserPicture;
+use App\ReceiptNumber;
+use App\ForQueue;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -533,10 +535,10 @@ class DoctorsController extends Controller
             $dateto = $request->input('dateto');
 
             if ($id == 1) {
-                $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
-                FROM patient_services
-                WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto' AND patient_services.admin_panel_id = 5
-                GROUP BY patient_services.date_reg");
+                $Patientxray = DB::select("SELECT for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
+                FROM for_queues
+                WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.admin_panel_id = 5
+                GROUP BY for_queues.date_reg");
             }
             else {
                 $Patientxray = DB::select("SELECT patientxrays.xray_date AS date_reg,COUNT(patientxrays.id) as counter
@@ -589,10 +591,10 @@ class DoctorsController extends Controller
             $pdf->AddPage();
 
             if ($id == 1) {
-                $Patientxray = DB::select("SELECT patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
-                FROM patient_services
-                WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto' AND patient_services.admin_panel_id = 5
-                GROUP BY patient_services.date_reg");
+                $Patientxray = DB::select("SELECT for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
+                FROM for_queues
+                WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.admin_panel_id = 5
+                GROUP BY for_queues.date_reg");
             }
             else {
                 $Patientxray = DB::select("SELECT patientxrays.xray_date AS date_reg,COUNT(patientxrays.id) as counter
@@ -619,11 +621,11 @@ class DoctorsController extends Controller
             $datefrom = $request->input('datefrom');
             $dateto = $request->input('dateto');
 
-            $Patientxray = DB::select("SELECT admin_panels.name as service_name,patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
-            FROM patient_services
-            INNER JOIN admin_panels ON patient_services.admin_panel_sub_id = admin_panels.id
-            WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto'
-            GROUP BY patient_services.admin_panel_sub_id, admin_panels.name, patient_services.date_reg");
+            $Patientxray = DB::select("SELECT admin_panels.name as service_name,for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
+            FROM for_queues
+            INNER JOIN admin_panels ON for_queues.admin_panel_sub_id = admin_panels.id
+            WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto'
+            GROUP BY for_queues.admin_panel_sub_id, admin_panels.name, for_queues.date_reg");
 
             return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
 
@@ -666,11 +668,11 @@ class DoctorsController extends Controller
 
             $pdf->AddPage();
 
-            $Patientxray = DB::select("SELECT admin_panels.name as service_name,patient_services.date_reg AS date_reg,COUNT(patient_services.id) as counter
-            FROM patient_services
-            INNER JOIN admin_panels ON patient_services.admin_panel_sub_id = admin_panels.id
-            WHERE patient_services.date_reg >= '$datefrom' AND patient_services.date_reg <= '$dateto'
-            GROUP BY patient_services.admin_panel_sub_id, admin_panels.name, patient_services.date_reg");
+            $Patientxray = DB::select("SELECT admin_panels.name as service_name,for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
+            FROM for_queues
+            INNER JOIN admin_panels ON for_queues.admin_panel_sub_id = admin_panels.id
+            WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto'
+            GROUP BY for_queues.admin_panel_sub_id, admin_panels.name, for_queues.date_reg");
 
             $pdf->writeHTML(view('printservicereport',compact('Patientxray','datefrom','dateto'))->render());
             ob_end_clean();
@@ -681,6 +683,84 @@ class DoctorsController extends Controller
             return redirect()->action('Auth@checklogin');
         }
         
+    }
+
+    public function ledgerreports(Request $request)
+    {      
+        if(Session::has('user')){
+
+            $datefrom = $request->input('datefrom');
+            $dateto = $request->input('dateto');
+
+            $PatientVisit = PatientVisit::where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->with('receipt','service')->get();
+            $AdminPanel = AdminPanel::with('package')->get();
+
+            return Response::json(['PatientVisit'=>$PatientVisit,'AdminPanel'=>$AdminPanel], 200, array(), JSON_PRETTY_PRINT);
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    // public function viewledger(Request $request,$datefrom,$dateto)
+    // {   
+    //     if(Session::has('user')){
+
+    //         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    //         $pdf->SetCreator(PDF_CREATOR);
+    //         $pdf->SetTitle('NFHSI Ledger Report');
+
+    //         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+    //         $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    //         $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+    //         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    //         $pdf->SetMargins(10, 26, 10, true);
+    //         $pdf->SetHeaderMargin(12);
+    //         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    //         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    //         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    //         if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+    //             require_once(dirname(__FILE__).'/lang/eng.php');
+    //             $pdf->setLanguageArray($l);
+    //         }
+
+    //         $pdf->SetFont('Courier', '', 8);
+
+    //         $pdf->AddPage();
+
+    //         $PatientVisit = PatientVisit::where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->with('receipt','service')->get();
+    //         $AdminPanel = AdminPanel::all();
+
+    //         $pdf->writeHTML(view('printledgerreport',compact('PatientVisit','AdminPanel','datefrom','dateto'))->render());
+    //         ob_end_clean();
+    //         $pdf->Output('NFHSILedgerReport.pdf','I');
+
+    //     }
+    //     else {
+    //         return redirect()->action('Auth@checklogin');
+    //     }
+    // }
+
+    public function viewledger(Request $request,$datefrom,$dateto)
+    {   
+        if(Session::has('user')){
+
+            $PatientVisit = PatientVisit::where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->with('receipt','service')->get()->sortBy('visit_date');
+            $AdminPanel = AdminPanel::with('package')->get();
+
+            return view('printledgerreport',compact('PatientVisit','AdminPanel','datefrom','dateto'));
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 
 }

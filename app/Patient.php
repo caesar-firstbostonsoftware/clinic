@@ -10,4 +10,9 @@ class Patient extends Model
     {
     	 return $this->belongsTo('App\PatientVisit','id','patient_id')->orderBy('visitid','asc');
     }
+
+    public function company()
+    {
+    	 return $this->belongsTo('App\Company','company_id');
+    }
 }

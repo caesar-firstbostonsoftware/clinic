@@ -14,6 +14,7 @@ use App\PatientVisit;
 use DB;
 use App\Patientxray;
 use App\ServicePrice;
+use App\PackageService;
 
 class AdminPanelContoller extends Controller
 {
@@ -96,17 +97,48 @@ class AdminPanelContoller extends Controller
             $subid_service = $request->input('subid_service');
             $name_service = $request->input('name_service');
             $price_service = $request->input('price_service');
+            if (!$price_service) {
+                $price = 0;
+            }
+            else {
+                $price = $request->input('price_service');
+            }
 
             $editadmin = AdminPanel::where('id',$id_service)->first();
             $editadmin->name = $name_service;
+            $editadmin->price = $price;
+            $editadmin->type = $request->input('type');
             $editadmin->save();
 
             $ServicePrice = new ServicePrice;
             $ServicePrice->admin_panel_id = $editadmin->admin_panel_cat_id;
             $ServicePrice->admin_panel_sub_id = $editadmin->id;
-            $ServicePrice->price = $price_service;
+            $ServicePrice->price = $price;
             $ServicePrice->date_reg = $now;
             $ServicePrice->save();
+
+            $delete = PackageService::where('package_id',$id_service)->get();
+            if (!$delete) {
+            }
+            else {
+                foreach ($delete as $key) {
+                    $deldel = PackageService::where('id',$key->id)->first();
+                    $deldel->delete();
+                }
+            }
+
+            if ($request->input('type') == 'Package') {
+                $counter = count($request->input('service_name'));
+                for ($i=0; $i < $counter; $i++) { 
+                    $PackageService = new PackageService;
+                    $PackageService->package_id = $editadmin->id;
+                    $PackageService->main_id = $request->input('main_id')[$i];
+                    $PackageService->service_id = $request->input('service_name')[$i];
+                    $PackageService->price = $request->input('service_price')[$i];
+                    $PackageService->date_reg = $now;
+                    $PackageService->save();
+                }
+            }
 
             return redirect()->action('AdminPanelContoller@services');
         }
@@ -149,6 +181,7 @@ class AdminPanelContoller extends Controller
             $AdminPanel->admin_panel_cat_id = $sub_mainedit_id;
             $AdminPanel->name = $subname;
             $AdminPanel->price = $price;
+            $AdminPanel->type = $request->input('type');
             $AdminPanel->save();
 
             $ServicePrice = new ServicePrice;
@@ -157,6 +190,19 @@ class AdminPanelContoller extends Controller
             $ServicePrice->price = $price;
             $ServicePrice->date_reg = $now;
             $ServicePrice->save();
+
+            if ($request->input('type') == 'Package') {
+                $counter = count($request->input('service_name'));
+                for ($i=0; $i < $counter; $i++) { 
+                    $PackageService = new PackageService;
+                    $PackageService->package_id = $AdminPanel->id;
+                    $PackageService->main_id = $request->input('main_id')[$i];
+                    $PackageService->service_id = $request->input('service_name')[$i];
+                    $PackageService->price = $request->input('service_price')[$i];
+                    $PackageService->date_reg = $now;
+                    $PackageService->save();
+                }
+            }
 
             return redirect()->action('AdminPanelContoller@services');
         }
@@ -188,5 +234,28 @@ class AdminPanelContoller extends Controller
         $sub_id = $request->input('sub_id');
         $service = ServicePrice::where('admin_panel_sub_id',$main_id)->orderBy('id','DESC')->get();
         return Response::json($service, 200, array(), JSON_PRETTY_PRINT);
+    }
+
+    public function allservice(Request $request)
+    {   
+        if(Session::has('user')){
+            $AdminPanel = AdminPanel::all();
+            return Response::json($AdminPanel, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function servicepackage(Request $request)
+    {   
+        if(Session::has('user')){
+            $package_id = $request->input('package_id');
+            $PackageService = PackageService::where('package_id',$package_id)->with('service')->get();
+            return Response::json($PackageService, 200, array(), JSON_PRETTY_PRINT);
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
     }
 }
