@@ -21,6 +21,7 @@ use App\PatientVisit;
 use App\UserPicture;
 use App\ReceiptNumber;
 use App\ForQueue;
+use App\Company;
 
 class MYPDF extends TCPDF {
                 public function Header() {
@@ -418,9 +419,8 @@ class DoctorsController extends Controller
     public function reports(Request $request, $id)
     {   
         if(Session::has('user')){
-
-        return view('reports',compact('id'));
-
+            $Company = Company::where('status','Active')->get();
+            return view('reports',compact('id','Company'));
         }
         else {
             return redirect()->action('Auth@checklogin');
@@ -757,6 +757,55 @@ class DoctorsController extends Controller
             $AdminPanel = AdminPanel::with('package')->get();
 
             return view('printledgerreport',compact('PatientVisit','AdminPanel','datefrom','dateto'));
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function viewcompanyreport(Request $request,$datefrom,$dateto,$company_id)
+    {   
+        if(Session::has('user')){
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Company Report');
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 26, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 8);
+
+            $pdf->AddPage();
+
+            $ForQueue = DB::select("SELECT admin_panels.name as service_name,for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
+            FROM for_queues
+            INNER JOIN admin_panels ON for_queues.admin_panel_sub_id = admin_panels.id
+            INNER JOIN patients ON for_queues.patient_id = patients.id
+            WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND patients.company_id = '$company_id'
+            GROUP BY for_queues.admin_panel_sub_id, admin_panels.name, for_queues.date_reg");
+
+            $pdf->writeHTML(view('printcompanyreport',compact('ForQueue'))->render());
+            ob_end_clean();
+            $pdf->Output('NFHSICompanyReport.pdf','I');
         }
         else {
             return redirect()->action('Auth@checklogin');

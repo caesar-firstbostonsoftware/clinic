@@ -122,6 +122,8 @@ Route::get('/company', 'CompanyController@company');
 Route::post('/company', 'CompanyController@newcompany');
 Route::post('/company/viewedit', 'CompanyController@editcompany');
 
+Route::get('/pdf/viewcompanyreport/{datefrom}/{dateto}/{company_id}', 'DoctorsController@viewcompanyreport');
+
 //----API---
 Route::get('api/modalavisit','PatientsController@modalavisit');
 Route::get('api/modalaeditpatient','PatientsController@modalaeditpatient');

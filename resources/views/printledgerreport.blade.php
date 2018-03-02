@@ -27,21 +27,24 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th style="text-align: center;width:10%;"><b>Date</b></th>
-                    <th style="text-align: center;width:10%;"><b>OR No.</b></th>
-                    <th style="width:40%;"><b>Service(s)</b></th>
-                    <th style="text-align: right;width:10%;"><b>Laboratory</b></th>
-                    <th style="text-align: right;width:10%;"><b>Ultrasound</b></th>
-                    <th style="text-align: right;width:10%;"><b>Xray</b></th>
-                    <th style="text-align: right;width:10%;"><b>ECG</b></th>
+                    <th style="width:9%;font-size:8pt;">Date</th>
+                    <th style="width:9%;font-size:8pt;">OR No.</th>
+                    <th style="width:40%;font-size:8pt;">Service(s)</th>
+                    <th style="text-align: right;width:6%;font-size:8pt;">Laboratory</th>
+                    <th style="text-align: right;width:6%;font-size:8pt;">Ultrasound</th>
+                    <th style="text-align: right;width:6%;font-size:8pt;">Xray</th>
+                    <th style="text-align: right;width:6%;font-size:8pt;">ECG</th>
+                    <th style="text-align: right;width:6%;font-size:8pt;">Amount</th>
+                    <th style="text-align: right;width:6%;font-size:8pt;">Discount</th>
+                    <th style="text-align: right;width:6%;font-size:8pt;">Total</th>
                 </tr>
             </thead>
             <tbody class="tbodyreports">
-                <?php $total1 = 0; $total2 = 0; $total3 = 0; $total4 = 0;?>
+                <?php $total1 = 0; $total2 = 0; $total3 = 0; $total4 = 0; $total5 = 0; $total6 = 0; $total7 = 0; ?>
             @foreach($PatientVisit as $PV)
                 <tr>
-                    <td style="text-align: center;width:10%;">{{$PV->visit_date}}</td>
-                    <td style="text-align: center;width:10%;">@if(!$PV->receipt)@else{{$PV->receipt->receipt_number}}@endif</td>
+                    <td style="text-align: center;width:9%;">{{$PV->visit_date}}</td>
+                    <td style="text-align: center;width:9%;">@if(!$PV->receipt)@else{{$PV->receipt->receipt_number}}@endif</td>
                     <td style="width:40%;">
                         <?php $sum1 = 0; $sum2 = 0; $sum3 = 0; $sum4 = 0;?>
                         @foreach($PV->service as $serser)
@@ -95,14 +98,20 @@
                             @endif
                         @endforeach
                     </td>
-                    <td style="text-align: right;width:10%;">{{number_format($sum1, 2)}}</td>
-                    <td style="text-align: right;width:10%;">{{number_format($sum2, 2)}}</td>
-                    <td style="text-align: right;width:10%;">{{number_format($sum3, 2)}}</td>
-                    <td style="text-align: right;width:10%;">{{number_format($sum4, 2)}}</td>
+                    <td style="text-align: right;width:6%;">{{number_format($sum1, 2)}}</td>
+                    <td style="text-align: right;width:6%;">{{number_format($sum2, 2)}}</td>
+                    <td style="text-align: right;width:6%;">{{number_format($sum3, 2)}}</td>
+                    <td style="text-align: right;width:6%;">{{number_format($sum4, 2)}}</td>
+                    <td style="text-align: right;width:6%;">{{number_format($PV->totalbill, 2)}}</td>
+                    <td style="text-align: right;width:6%;">{{number_format($PV->discounted_price, 2)}}</td>
+                    <td style="text-align: right;width:6%;">{{number_format($PV->discounted_total, 2)}}</td>
                     <?php $total1 += floatval($sum1); ?>
                     <?php $total2 += floatval($sum2); ?>
                     <?php $total3 += floatval($sum3); ?>
                     <?php $total4 += floatval($sum4); ?>
+                    <?php $total5 += floatval($PV->totalbill); ?>
+                    <?php $total6 += floatval($PV->discounted_price); ?>
+                    <?php $total7 += floatval($PV->discounted_total); ?>
                 </tr>
             @endforeach
                 <tr>
@@ -113,6 +122,9 @@
                     <td style="text-align: right;color:red;font-weight: bold;">{{number_format($total2, 2)}}</td>
                     <td style="text-align: right;color:red;font-weight: bold;">{{number_format($total3, 2)}}</td>
                     <td style="text-align: right;color:red;font-weight: bold;">{{number_format($total4, 2)}}</td>
+                    <td style="text-align: right;color:red;font-weight: bold;">{{number_format($total5, 2)}}</td>
+                    <td style="text-align: right;color:red;font-weight: bold;">{{number_format($total6, 2)}}</td>
+                    <td style="text-align: right;color:red;font-weight: bold;">{{number_format($total7, 2)}}</td>
                 </tr>
             </tbody>
         </table>

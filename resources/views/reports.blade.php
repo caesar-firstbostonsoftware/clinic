@@ -16,7 +16,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @include('adminlte::layouts.partials.mainheader')
 
 <aside class="main-sidebar">
-     <ul class="sidebar-menu">
+    <ul class="sidebar-menu">
         <li class="header"><b style="color: white;font-size: 7.5pt;">NEGROS FAMILY HEALTH SERVICES, INC.</b></li>
         @if(Session::get('position') == "Doctor" && Session::get('user') == 1)
         <li><a href="/dashboard"><img src="{{ asset('/img/2001.png') }}" height="20" width="20"> <span>Dashboard</span></a></li>
@@ -91,6 +91,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </li>
                     <li role="presentation">
                         <a href="#servicereports" role="tab" data-toggle="tab" style="font-size: 8pt;">Service Reports</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#companyreport" role="tab" data-toggle="tab" style="font-size: 8pt;">Company Reports</a>
                     </li>
                 @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
                     <li role="presentation" class="active">
@@ -245,6 +248,47 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                                 <div class="form-group">
                                     <div class="col-md-12 ser_appendreports"></div>
+                                </div>
+                            </form>
+                        </div>
+
+                    <!-- Comapny Reports -->
+                        <div role="tabpanel" class="tab-pane fade" id="companyreport">
+                            <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
+                                {!! csrf_field() !!}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Company Name :</label>
+                                    <div class="col-sm-3">
+                                        <select class="form-control company_name">
+                                            <option value="">--Select One--</option>
+                                            @foreach($Company as $comcom)
+                                                <option value="{{$comcom->id}}">{{$comcom->complete_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Date From :</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="datepickercompany" class="form-control company_datefrom"  placeholder="YYYY-MM-DD" readonly="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Date To :</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" id="datepickercompany1" class="form-control company_dateto"  placeholder="YYYY-MM-DD" readonly="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-2">
+                                        <!-- <button class="btn btn-xs btn-primary company_generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button> -->
+                                        <a href="/pdf/view" class="btn btn-xs btn-success company_printrep" id="btn-submit-personal_info" type="button" disabled="" target="_blank">Print</a>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-12 company_appendreports"></div>
                                 </div>
                             </form>
                         </div>
@@ -449,6 +493,50 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     }
     });
 
+        $(".company_datefrom").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        $('.company_Pcount').empty();
+                        $('.company_Income').empty();
+                        $('.company_appendreports').empty();
+                        var datefrom = $(this).val();
+                        var dateto = $('.company_dateto').val();
+                        if (datefrom <= dateto) {
+                            $('.company_generate').removeAttr('disabled');
+                            $('.company_printrep').removeAttr('disabled');
+                        }
+                        else {
+                            $('.company_generate').attr('disabled','disabled');
+                            $('.company_printrep').attr('disabled','disabled');
+                        }
+                    }
+    });
+
+        $(".company_dateto").datepicker({
+        dateFormat: "yy-mm-dd",
+        yearRange: "1950:2050",
+        changeYear: true,
+        changeMonth: true,
+        onSelect: function() {
+                        $('.company_Pcount').empty();
+                        $('.company_Income').empty();
+                        $('.company_appendreports').empty();
+                        var dateto = $(this).val();
+                        var datefrom = $('.company_datefrom').val();
+                        if (datefrom <= dateto) {
+                            $('.company_generate').removeAttr('disabled');
+                            $('.company_printrep').removeAttr('disabled');
+                        }
+                        else {
+                            $('.company_generate').attr('disabled','disabled');
+                            $('.company_printrep').attr('disabled','disabled');
+                        }
+                    }
+    });
+
         $('.inc_generate').on('click',function() {
             var id = $('.inc_user_id').val();
             var datefrom = $(".inc_datefrom").val();
@@ -541,13 +629,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.ledg_appendreports').append('<table class="table table-striped">\
                     <thead>\
                         <tr>\
-                            <th style="width:10%;">Date</th>\
-                            <th style="width:10%;">OR No.</th>\
-                            <th style="width:40%;">Service(s)</th>\
-                            <th style="text-align: right;width:10%;">Laboratory</th>\
-                            <th style="text-align: right;width:10%;">Ultrasound</th>\
-                            <th style="text-align: right;width:10%;">Xray</th>\
-                            <th style="text-align: right;width:10%;">ECG</th>\
+                            <th style="width:9%;font-size:8pt;">Date</th>\
+                            <th style="width:9%;font-size:8pt;">OR No.</th>\
+                            <th style="width:40%;font-size:8pt;">Service(s)</th>\
+                            <th style="text-align: right;width:6%;font-size:8pt;">Laboratory</th>\
+                            <th style="text-align: right;width:6%;font-size:8pt;">Ultrasound</th>\
+                            <th style="text-align: right;width:6%;font-size:8pt;">Xray</th>\
+                            <th style="text-align: right;width:6%;font-size:8pt;">ECG</th>\
+                            <th style="text-align: right;width:6%;font-size:8pt;">Amount</th>\
+                            <th style="text-align: right;width:6%;font-size:8pt;">Discount</th>\
+                            <th style="text-align: right;width:6%;font-size:8pt;">Total</th>\
                         </tr>\
                     </thead>\
                     <tbody class="ledg_tbodyreports">\
@@ -557,6 +648,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 var total2 = 0;
                 var total3 = 0;
                 var total4 = 0;
+                var total5 = 0;
+                var total6 = 0;
+                var total7 = 0;
                 $.each(data.PatientVisit, function(index, ledgerreport){
                     if (!ledgerreport.receipt) {
                         var rere = '';
@@ -565,18 +659,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         var rere = ledgerreport.receipt.receipt_number;
                     }
                         $('.ledg_tbodyreports').append('<tr>\
-                            <td style="width:10%;">'+ledgerreport.visit_date+'</td>\
-                            <td style="width:10%;">'+rere+'</td>\
-                            <td style="width:40%;" class="putservice"></td>\
-                            <td style="text-align: right;width:10%;" class="putlab"></td>\
-                            <td style="text-align: right;width:10%;" class="putultra"></td>\
-                            <td style="text-align: right;width:10%;" class="putxray"></td>\
-                            <td style="text-align: right;width:10%;" class="putecg"></td>\
+                            <td style="width:9%;font-size:8pt;">'+ledgerreport.visit_date+'</td>\
+                            <td style="width:9%;font-size:8pt;">'+rere+'</td>\
+                            <td style="width:40%;font-size:8pt;" class="putservice"></td>\
+                            <td style="text-align: right;width:6%;font-size:8pt;" class="putlab"></td>\
+                            <td style="text-align: right;width:6%;font-size:8pt;" class="putultra"></td>\
+                            <td style="text-align: right;width:6%;font-size:8pt;" class="putxray"></td>\
+                            <td style="text-align: right;width:6%;font-size:8pt;" class="putecg"></td>\
+                            <td style="text-align: right;width:6%;font-size:8pt;">'+ReplaceNumberWithCommas(ledgerreport.totalbill)+'</td>\
+                            <td style="text-align: right;width:6%;font-size:8pt;">'+ReplaceNumberWithCommas(ledgerreport.discounted_price)+'</td>\
+                            <td style="text-align: right;width:6%;font-size:8pt;">'+ReplaceNumberWithCommas(ledgerreport.discounted_total)+'</td>\
                         </tr>');
                         var sum1 = 0;
                         var sum2 = 0;
                         var sum3 = 0;
                         var sum4 = 0;
+                        total5 += parseFloat(ledgerreport.totalbill);
+                        total6 += parseFloat(ledgerreport.discounted_price);
+                        total7 += parseFloat(ledgerreport.discounted_total);
                         $.each(ledgerreport.service, function(index, ledgerservice){
                             $.each(data.AdminPanel, function(index, adminpanel){
                                 if (ledgerreport.visitid == ledgerservice.visit_id) {
@@ -636,18 +736,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         total4 += parseFloat(sum4);
                 })
                 $('.ledg_tbodyreports').append('<tr>\
-                                <td></td>\
-                                <td></td>\
-                                <td style="text-align: right;"><b>TOTAL (Php)</b></td>\
-                                <td style="text-align: right;color:red;font-weight: bold;" class="putlab_total"></td>\
-                                <td style="text-align: right;color:red;font-weight: bold;" class="putultra_total"></td>\
-                                <td style="text-align: right;color:red;font-weight: bold;" class="putxray_total"></td>\
-                                <td style="text-align: right;color:red;font-weight: bold;" class="putecg_total"></td>\
+                                <td style="font-size:8pt;"></td>\
+                                <td style="font-size:8pt;"></td>\
+                                <td style="text-align: right;font-size:8pt;"><b>TOTAL (Php)</b></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;font-size:8pt;" class="putlab_total"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;font-size:8pt;" class="putultra_total"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;font-size:8pt;" class="putxray_total"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;font-size:8pt;" class="putecg_total"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;font-size:8pt;" class="put_amount"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;font-size:8pt;" class="put_discount"></td>\
+                                <td style="text-align: right;color:red;font-weight: bold;font-size:8pt;" class="put_total"></td>\
                         </tr>');
                 $('.putlab_total:last').append(''+ReplaceNumberWithCommas(total1)+'');
                 $('.putultra_total:last').append(''+ReplaceNumberWithCommas(total2)+'');
                 $('.putxray_total:last').append(''+ReplaceNumberWithCommas(total3)+'');
                 $('.putecg_total:last').append(''+ReplaceNumberWithCommas(total4)+'');
+                $('.put_amount:last').append(''+ReplaceNumberWithCommas(total5)+'');
+                $('.put_discount:last').append(''+ReplaceNumberWithCommas(total6)+'');
+                $('.put_total:last').append(''+ReplaceNumberWithCommas(total7)+'');
             });    
         })
 
@@ -679,6 +785,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var dateto = $('.ledg_dateto').val();
             $(this).removeAttr('href','href');
             $(this).attr('href','/pdf/viewledger/'+datefrom+'/'+dateto+'');
+        })
+
+        $('.company_printrep').on('click',function() {
+            var datefrom = $(".company_datefrom").val();
+            var dateto = $('.company_dateto').val();
+            var company_id = $('.company_name option:selected').val();
+            $(this).removeAttr('href','href');
+            $(this).attr('href','/pdf/viewcompanyreport/'+datefrom+'/'+dateto+'/'+company_id+'');
         })
     </script>
 @show
