@@ -36,13 +36,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
-        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
         <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
         @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -496,17 +496,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="col-md-3">
             <div class="box box-widget widget-user-2">
                 <div class="widget-user-header bg-light-blue">
-                    <h3 class="box-title"><b>Electrocardiographic</b></h3>
+                    <h3 class="box-title"><b>Chemistry II</b></h3>
                 </div>
                 <div class="box-footer no-padding">
                     <div class="col-sm-12">
                         <?php $counter = 1;?>
-                        @foreach($ecg as $patientecg)
+                        @foreach($chemistryii as $patientchemistryii)
                         <?php
                             $id = $counter++;
                             $zero_id = sprintf("%03d", $id);
                         ?>
-                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientecg->patient->id}}/{{$patientecg->visit_id}}" target="_blank"> {{$patientecg->patient->l_name}}, {{$patientecg->patient->f_name}}</a>
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientchemistryii->patient->id}}/{{$patientchemistryii->visit_id}}" target="_blank"> {{$patientchemistryii->patient->l_name}}, {{$patientchemistryii->patient->f_name}}</a> --
+                            <b>Services:</b>
+                            @foreach($chemistryiiservice as $chemiiser)
+                                @if($patientchemistryii->patient_id == $chemiiser->patient_id)
+                                    {{$chemiiser->xrayservice1001->name}},
+                                @endif
+                            @endforeach
                             <br>
                         @endforeach
                     </div>
@@ -542,26 +548,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div>
 
         <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="box box-widget widget-user-2">
                 <div class="widget-user-header bg-light-blue">
-                    <h3 class="box-title"><b>Chemistry II</b></h3>
+                    <h3 class="box-title"><b>Electrocardiographic</b></h3>
                 </div>
                 <div class="box-footer no-padding">
                     <div class="col-sm-12">
                         <?php $counter = 1;?>
-                        @foreach($chemistryii as $patientchemistryii)
+                        @foreach($ecg as $patientecg)
                         <?php
                             $id = $counter++;
                             $zero_id = sprintf("%03d", $id);
                         ?>
-                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientchemistryii->patient->id}}/{{$patientchemistryii->visit_id}}" target="_blank"> {{$patientchemistryii->patient->l_name}}, {{$patientchemistryii->patient->f_name}}</a> --
-                            <b>Services:</b>
-                            @foreach($chemistryiiservice as $chemiiser)
-                                @if($patientchemistryii->patient_id == $chemiiser->patient_id)
-                                    {{$chemiiser->xrayservice1001->name}},
-                                @endif
-                            @endforeach
+                            <b style="font-size: 12pt;color: red;">{{$zero_id}}.</b><a href="/visit/{{$patientecg->patient->id}}/{{$patientecg->visit_id}}" target="_blank"> {{$patientecg->patient->l_name}}, {{$patientecg->patient->f_name}}</a>
                             <br>
                         @endforeach
                     </div>

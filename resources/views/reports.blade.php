@@ -24,13 +24,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
-        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
         <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
         @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -92,9 +92,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li role="presentation">
                         <a href="#servicereports" role="tab" data-toggle="tab" style="font-size: 8pt;">Service Reports</a>
                     </li>
-                    <li role="presentation">
+                    <!-- <li role="presentation">
                         <a href="#companyreport" role="tab" data-toggle="tab" style="font-size: 8pt;">Company Reports</a>
-                    </li>
+                    </li> -->
                 @elseif(Session::get('user') > 1 && Session::get('position') == "Doctor")
                     <li role="presentation" class="active">
                         <a href="#xrareports" role="tab" data-toggle="tab" style="font-size: 8pt;">X-Ray Reports</a>
@@ -108,6 +108,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </li>
                 @endif
                 </ul>
+                
                 <div class="tab-content">
                     <!-- Income Reports -->
                     @if(Session::get('user') == 1)
@@ -254,7 +255,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                     <!-- Comapny Reports -->
                         <div role="tabpanel" class="tab-pane fade" id="companyreport">
-                            <form id="frm_personal_info" class="form-horizontal" method="post" action="#">
+                            <form id="frm_companyreport" class="form-horizontal" method="post" action="/reports/{{$id}}/companyreport">
                                 {!! csrf_field() !!}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Company Name :</label>
@@ -267,28 +268,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </select>
                                     </div>
                                 </div>
+                                <hr>
+                                <div class="form-group">
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-xs btn-primary edit_appendservice">Add Service</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Service :</label>
+                                </div>
+                                <div class="form-group appendservicehere">
+                                </div>
+                                <hr>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Date From :</label>
                                     <div class="col-sm-3">
-                                        <input type="text" id="datepickercompany" class="form-control company_datefrom"  placeholder="YYYY-MM-DD" readonly="">
+                                        <input type="text" id="datepickercompany" class="form-control company_datefrom" name="company_datefrom"  placeholder="YYYY-MM-DD" readonly="">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Date To :</label>
                                     <div class="col-sm-3">
-                                        <input type="text" id="datepickercompany1" class="form-control company_dateto"  placeholder="YYYY-MM-DD" readonly="">
+                                        <input type="text" id="datepickercompany1" class="form-control company_dateto" name="company_dateto"  placeholder="YYYY-MM-DD" readonly="">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label"></label>
                                     <div class="col-sm-2">
-                                        <!-- <button class="btn btn-xs btn-primary company_generate" id="btn-submit-personal_info" type="button" disabled="">Generate</button> -->
-                                        <a href="/pdf/view" class="btn btn-xs btn-success company_printrep" id="btn-submit-personal_info" type="button" disabled="" target="_blank">Print</a>
+                                        <button type="submit" form="frm_companyreport" class="btn btn-xs btn-success">Print</button>
                                     </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-md-12 company_appendreports"></div>
                                 </div>
                             </form>
                         </div>
@@ -787,12 +795,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $(this).attr('href','/pdf/viewledger/'+datefrom+'/'+dateto+'');
         })
 
-        $('.company_printrep').on('click',function() {
-            var datefrom = $(".company_datefrom").val();
-            var dateto = $('.company_dateto').val();
-            var company_id = $('.company_name option:selected').val();
-            $(this).removeAttr('href','href');
-            $(this).attr('href','/pdf/viewcompanyreport/'+datefrom+'/'+dateto+'/'+company_id+'');
+        $('.edit_appendservice').on('click',function() {
+            $.get('../../api/allservice', function(dataall){
+                $('.appendservicehere').append('<div class="form-group">\
+                                            <label class="col-sm-2 control-label"></label>\
+                                            <div class="col-sm-5">\
+                                                <select class="form-control serser_name service_name" name="service_name[]" required="">\
+                                                </select>\
+                                            </div>\
+                                        </div>');
+                    $('.serser_name:last').append('<option value="">--Select One--</option>');
+                        $.each(dataall,function(index,serser) {
+                                $('.serser_name:last').append('<option value="'+serser.id+'">'+serser.name+'</option>');
+                        })
+            });
         })
     </script>
 @show

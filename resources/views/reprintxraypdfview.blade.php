@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <body>
-    @if(!$Patientxray->finding)
 	<table>
 		<tbody>
 			<tr>
@@ -41,42 +40,6 @@
             <tr><td></td></tr>
         </tbody>
     </table>
-    @else
-    <table>
-        <tbody>
-            <tr>
-                <td>
-                    <h2></h2>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td style="width: 16%;"></td>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 16%;"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 16%;"></td>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 16%;"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 16%;"></td>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 16%;"></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-        </tbody>
-    </table>
-    @endif
 
     <table>
         <tbody>
@@ -85,9 +48,7 @@
                     Result / Finding: <b style="font-size: 14pt;">{{$Patientxray->finding}}</b>
                 </td>
                 <td style="width: 50%;">
-                    @if(!$Patientxray->finding)
                     PLATE: <b>{{$Patientxray->plate}}</b>
-                    @endif
                 </td>
             </tr>
             <tr><td></td></tr>
@@ -99,22 +60,11 @@
             <tr>
                 <td style="text-align: justify;">{{$Patientxray->finding_info}}</td>
             </tr>
-            @if(!$Patientxray->finding)
             <tr><td></td></tr>
             <tr><td></td></tr>
             <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            @endif
 		</tbody>
 	</table>
-    
-    @if(!$Patientxray->finding)
     <table>
         <tbody>
             <tr>
@@ -131,6 +81,5 @@
             </tr>
         </tbody>
     </table>
-    @endif
 </body>
 </html>

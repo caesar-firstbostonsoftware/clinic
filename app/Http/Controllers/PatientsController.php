@@ -45,6 +45,7 @@ use App\Company;
 use App\ForQueue;
 use App\PackageService;
 
+
 class MYPDF extends TCPDF {
                 public function Header() {
 
@@ -153,9 +154,9 @@ class PatientsController extends Controller
             else {
                 $asd = $request->input('discount');
             }
-            $discount = str_replace('.', '', $asd);
-            $aa = '.'.$discount;
-            $discounted_price = $totalprice * $aa;
+            //$discount = str_replace('.', '', $asd);
+            //$aa = '.'.$discount;
+            $discounted_price = $totalprice * $asd;
             $discounted_total = $totalprice - $discounted_price;
 
             $patient = new Patient;
@@ -243,7 +244,7 @@ class PatientsController extends Controller
                             $service->department = $department_pack;
                             $service->date_reg = $datenow;
                             $service->price_amount = $key->price;
-                            $service->qty = 1;
+                            $service->qty = $request->input('ser_qty')[$i];
                             $service->save();
                         }
                     }
@@ -328,7 +329,7 @@ class PatientsController extends Controller
                             $service->department = $department_pack;
                             $service->date_reg = $datenow;
                             $service->price_amount = $key->price;
-                            $service->qty = 1;
+                            $service->qty = $request->input('ser_qty')[$i];
                             $service->save();
                         }
                     }
@@ -372,9 +373,9 @@ class PatientsController extends Controller
             else {
                 $asd = $request->input('discount');
             }
-            $discount = str_replace('.', '', $asd);
-            $aa = '.'.$discount;
-            $discounted_price = $totalprice * $aa;
+            //$discount = str_replace('.', '', $asd);
+            //$aa = '.'.$discount;
+            $discounted_price = $totalprice * $asd;
             $discounted_total = $totalprice - $discounted_price;
 
 
@@ -444,7 +445,7 @@ class PatientsController extends Controller
                             $service->department = $department_pack;
                             $service->date_reg = $datenow;
                             $service->price_amount = $key->price;
-                            $service->qty = 1;
+                            $service->qty = $request->input('ser_qty')[$i];
                             $service->save();
                         }
                     }
@@ -529,7 +530,7 @@ class PatientsController extends Controller
                             $service->department = $department_pack;
                             $service->date_reg = $datenow;
                             $service->price_amount = $key->price;
-                            $service->qty = 1;
+                            $service->qty = $request->input('ser_qty')[$i];
                             $service->save();
                         }
                     }
@@ -572,6 +573,7 @@ class PatientsController extends Controller
             if ($doctor_id != 1 && $doctor_pos == "Doctor") {
                 $patientlist = Doctor::join('patientxrays','doctors.id','=','patientxrays.physician_id')
                 ->leftJoin('patients','patientxrays.patient_id','=','patients.id')
+                ->where('patients.status','Active')
                 ->where('doctors.id',$doctor_id)
                 ->select('patients.*')
                 ->get();
@@ -580,13 +582,13 @@ class PatientsController extends Controller
                 $adminpanelcat = AdminPanelCategory::all();
                 $adminpanel = AdminPanel::all();
                 $sub = AdminPanelSub::all();
-                $patientlist = Patient::with('lastvisit')->get();
+                $patientlist = Patient::where('status','Active')->with('lastvisit')->get();
             }
             else {
                 $adminpanelcat = AdminPanelCategory::all();
                 $adminpanel = AdminPanel::all();
                 $sub = AdminPanelSub::all();
-                $patientlist = Patient::with('lastvisit')->get();
+                $patientlist = Patient::where('status','Active')->with('lastvisit')->get();
             }
             return view('patientlistpage',compact('patientlist','adminpanelcat','adminpanel','sub','latsvisit'));
             
@@ -690,7 +692,14 @@ class PatientsController extends Controller
         $Patientultrasound = Patientultrasound::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->get();
         $Patientultrasoundcount = Patientultrasound::where('patient_id',$id)->where('visit_id',$vid)->count();
         $Aptt = Aptt::where('patient_id',$id)->where('visit_id',$vid)->first();
-    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry','Patientultrasound','Aptt','Patientultrasoundcount'));
+        $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+        if (!$receipt) {
+            $receipt_number = '';
+        }
+        else {
+            $receipt_number = $receipt->receipt_number;
+        }
+    	return view('patientvisitpage',compact('id','vid','patientxray','patient','doctor','reasonforconsulation','PMH','PMH_sur','PMH_hos','PMH_dis','PMH_vacc','SH','PE','diagnosis','plan','xraycount','Urinalysis','uricount','adminpanel','PatientService','Medication','PatientService1002','PatientService1003','Urinalyses','Fecalyses','Chemistry','Ogtt','Hematology','Labtest','seroser','patientserologyhead','patientserologybody','ecg','SecondChemistry','Patientultrasound','Aptt','Patientultrasoundcount','receipt_number'));
 
         }
         else {
@@ -1367,10 +1376,11 @@ class PatientsController extends Controller
             $now = date("Y-m-d");
         
             $patientxray = Patientxray::where('id',$xray_id)->first();
+            $patientxray->physician_id = $request->input('physician_edit');
             $patientxray->finding = $finding;
             $patientxray->finding_info = $comm;
-            $patientxray->status = 'Old';
-            $patientxray->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
+            //$patientxray->status = 'Old';
+            //$patientxray->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
             $patientxray->plate = $request->input('plate');
             $patientxray->save();
 
@@ -1643,9 +1653,9 @@ class PatientsController extends Controller
         else {
             $asd = $request->input('discount');
         }
-        $discount = str_replace('.', '', $asd);
-        $aa = '.'.$discount;
-        $discounted_price = $totalprice * $aa;
+        //$discount = str_replace('.', '', $asd);
+        //$aa = '.'.$discount;
+        $discounted_price = $totalprice * $asd;
         $discounted_total = $totalprice - $discounted_price;
 
         $mainservice = count($request->input('mainservice'));
@@ -1678,6 +1688,7 @@ class PatientsController extends Controller
             $service->date_reg = $now;
             $AdminPanel = AdminPanel::where('id',$request->input('service_name')[$i])->with('price123')->first();
             $service->price_amount = $AdminPanel->price123->price;
+            $service->qty = $request->input('ser_qty')[$i];
             $service->save();
 
             $checking = AdminPanel::where('id',$request->input('service_name')[$i])->first();
@@ -1698,7 +1709,7 @@ class PatientsController extends Controller
                     $service->department = $department_pack;
                     $service->date_reg = $now;
                     $service->price_amount = $key->price;
-                    $service->qty = 1;
+                    $service->qty = $request->input('ser_qty')[$i];
                     $service->save();
                 }
             }
@@ -1945,6 +1956,65 @@ class PatientsController extends Controller
     {   
         if(Session::has('user')){
 
+            $Patientxray = Patientxray::where('id',$id)->with('patient','doctor','xraydate')->first();
+            $receipt = ReceiptNumber::where('patient_id',$Patientxray->patient_id)->where('visit_id',$Patientxray->visitid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Patient Xray');
+
+            if (!$Patientxray->finding) {
+            }
+            else {
+                $pdf->setPrintHeader(false);
+            }
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 26, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 10);
+            $pdf->AddPage();
+            
+            $pdf->writeHTML(view('xraypdfview',compact('Patientxray','receipt_number'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientXray.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+        
+    }
+
+    public function reprintxraypdfview(Request $request,$id)
+    {   
+        if(Session::has('user')){
+
             $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -1971,12 +2041,19 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage();
 
             $Patientxray = Patientxray::where('id',$id)->with('patient','doctor','xraydate')->first();
+            $receipt = ReceiptNumber::where('patient_id',$Patientxray->patient_id)->where('visit_id',$Patientxray->visitid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
             
-            $pdf->writeHTML(view('xraypdfview',compact('Patientxray'))->render());
+            $pdf->writeHTML(view('reprintxraypdfview',compact('Patientxray','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('PatientXray.pdf','I');
 
@@ -2849,6 +2926,13 @@ class PatientsController extends Controller
             $service->save();
         }
 
+        $ForQueue = ForQueue::where('patient_id',$PatientVisit->patient_id)->where('visit_id',$PatientVisit->visitid)->get();
+        foreach ($ForQueue as $key) {
+            $service = ForQueue::where('id',$key->id)->first();
+            $service->date_reg = $request->input('vdate');
+            $service->save();
+        }
+
         return redirect()->action('PatientsController@patientlist');
 
         }
@@ -2897,6 +2981,14 @@ class PatientsController extends Controller
             $service->status = 'Canceled';
             $service->save();
         }
+
+        $ForQueue = ForQueue::where('patient_id',$id)->where('visit_id',$vid)->get();
+        foreach ($ForQueue as $key2) {
+            $forqueue = ForQueue::where('id',$key2->id)->first();
+            $forqueue->status = 'Canceled';
+            $forqueue->save();
+        }
+
         return Response::json($PatientVisit, 200, array(), JSON_PRETTY_PRINT);
 
         }
@@ -3478,12 +3570,20 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $ecg =Electrocardiographic::where('patient_id',$id)->where('visit_id',$vid)->first();
-            $pdf->writeHTML(view('ecgdonepdf',compact('info','ecg'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('ecgdonepdf',compact('info','ecg','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('ECGPDF.pdf','I');
 
@@ -3522,12 +3622,20 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $SecondChemistry =SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
-            $pdf->writeHTML(view('chemistryiidonepdf',compact('info','SecondChemistry'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('chemistryiidonepdf',compact('info','SecondChemistry','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('CHEMISTRYIIPDF.pdf','I');
 
@@ -3566,13 +3674,21 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $Serology = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
             $serser = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('adminpanel')->get();
-            $pdf->writeHTML(view('serologydonepdf',compact('info','Serology','serser'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('serologydonepdf',compact('info','Serology','serser','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('SEROLOGYPDF.pdf','I');
 
@@ -3611,12 +3727,21 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $Hematology = Hematology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
-            $pdf->writeHTML(view('hematologydonepdf',compact('info','Hematology'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+
+            $pdf->writeHTML(view('hematologydonepdf',compact('info','Hematology','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('HEMATOLOGYPDF.pdf','I');
 
@@ -3655,12 +3780,20 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $Ogtt = Ogtt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
-            $pdf->writeHTML(view('ogttdonepdf',compact('info','Ogtt'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('ogttdonepdf',compact('info','Ogtt','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('ORALGLUCOSETOLERANCETESTPDF.pdf','I');
 
@@ -3699,12 +3832,20 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $Chemistry = Chemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
-            $pdf->writeHTML(view('chemistryidonepdf',compact('info','Chemistry'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('chemistryidonepdf',compact('info','Chemistry','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('CHEMISTRYIPDF.pdf','I');
 
@@ -3743,12 +3884,20 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $Fecalyses = Fecalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
-            $pdf->writeHTML(view('fecalysisdonepdf',compact('info','Fecalyses'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('fecalysisdonepdf',compact('info','Fecalyses','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('FECALYSISPDF.pdf','I');
 
@@ -3787,12 +3936,20 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $Urinalyses = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
-            $pdf->writeHTML(view('urinalysisdonepdf',compact('info','Urinalyses'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('urinalysisdonepdf',compact('info','Urinalyses','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('URINALYSISPDF.pdf','I');
 
@@ -3825,7 +3982,8 @@ class PatientsController extends Controller
           $patientultrasound->finding = $finding;
           $patientultrasound->finding_info = $comm;
           $patientultrasound->visit_id = $vid;
-          $patientultrasound->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
+          //$patientultrasound->phy_fee = floatval(preg_replace("/[^-0-9\.]/","",$request->input('pfee')));
+          $patientultrasound->ultraservice = $request->input('ultraservice');
           $patientultrasound->save();
 
           $logs = new UltrasoundLog;
@@ -3866,9 +4024,11 @@ class PatientsController extends Controller
             $now = date("Y-m-d");
         
             $patientultrasound = Patientultrasound::where('id',$ultrasound_id)->first();
+            $patientultrasound->physician_id = $request->input('physician');
             $patientultrasound->finding = $finding;
             $patientultrasound->finding_info = $comm;
             $patientultrasound->ultrasound_date = $now;
+            $patientultrasound->ultraservice = $request->input('ultraservice');
             $patientultrasound->save();
 
             $logs = new UltrasoundLog;
@@ -3886,6 +4046,73 @@ class PatientsController extends Controller
     }
 
     public function ultrasoundpdfview(Request $request,$id)
+    {   
+        if(Session::has('user')){
+
+            $Patientultrasound = Patientultrasound::where('id',$id)->with('doctor','patient')->first();
+            $receipt = ReceiptNumber::where('patient_id',$Patientultrasound->patient_id)->where('visit_id',$Patientultrasound->visit_id)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle('NFHSI Patient Ultrasound');
+
+            if (!$Patientultrasound->finding) {
+            }
+            else {
+                $pdf->setPrintHeader(false);
+            }
+
+            $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+            $pdf->SetMargins(10, 26, 10, true);
+            $pdf->SetHeaderMargin(12);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+            if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+                require_once(dirname(__FILE__).'/lang/eng.php');
+                $pdf->setLanguageArray($l);
+            }
+
+            $pdf->SetFont('Courier', '', 10);
+            $pdf->AddPage();
+
+            $now = date("Y-m-d");
+
+            $logs = new UltrasoundLog;
+            $logs->ultrasound_id = $Patientultrasound->id;
+            $logs->user_id = Session::get('user');
+            $logs->date = $now;
+            $logs->action = "Printed";
+            $logs->save();
+            
+            $pdf->writeHTML(view('ultrasoundpdfview',compact('Patientultrasound','receipt_number'))->render());
+            ob_end_clean();
+            $pdf->Output('PatientUltrasound.pdf','I');
+
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }   
+    }
+
+    public function reprintultrasoundpdfview(Request $request,$id)
     {   
         if(Session::has('user')){
 
@@ -3915,11 +4142,18 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage();
 
             $now = date("Y-m-d");
             $Patientultrasound = Patientultrasound::where('id',$id)->with('doctor','patient')->first();
+            $receipt = ReceiptNumber::where('patient_id',$Patientultrasound->patient_id)->where('visit_id',$Patientultrasound->visit_id)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
 
             $logs = new UltrasoundLog;
             $logs->ultrasound_id = $Patientultrasound->id;
@@ -3928,7 +4162,7 @@ class PatientsController extends Controller
             $logs->action = "Printed";
             $logs->save();
             
-            $pdf->writeHTML(view('ultrasoundpdfview',compact('Patientultrasound'))->render());
+            $pdf->writeHTML(view('reprintultrasoundpdfview',compact('Patientultrasound','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('PatientUltrasound.pdf','I');
 
@@ -4286,15 +4520,38 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 10);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
             $Aptt = Aptt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
-            $pdf->writeHTML(view('apttdonepdf',compact('info','Aptt'))->render());
+            $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
+            if (!$receipt) {
+                $receipt_number = '';
+            }
+            else {
+                $receipt_number = $receipt->receipt_number;
+            }
+
+            $pdf->writeHTML(view('apttdonepdf',compact('info','Aptt','receipt_number'))->render());
             ob_end_clean();
             $pdf->Output('HEMATOLOGYPDF.pdf','I');
 
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function disabledpatient($id)
+    {   
+        if(Session::has('user')){
+            $Patient = Patient::where('id',$id)->first();
+            $Patient->status = 'Not Active';
+            $Patient->save();
+
+            Session::flash('alert-success', 'Patient Successfully Disabled.');
+            return redirect()->action('PatientsController@patientlist');
         }
         else {
             return redirect()->action('Auth@checklogin');

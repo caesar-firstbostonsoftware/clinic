@@ -33,13 +33,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
-        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
         <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
         @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
                 <li class="active"><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -130,15 +130,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li role="presentation">
                                     <a href="#xray" role="tab" data-toggle="tab" style="font-size: 8pt;">X-ray</a>
                                 </li>
+                                <li role="presentation">
+                                    <a href="#ultrasound" role="tab" data-toggle="tab" style="font-size: 8pt;">Ultrasound</a>
+                                </li>
                             @elseif($service->department == 'labtest')
                                 <li role="presentation">
                                     <a href="#labtest" role="tab" data-toggle="tab" style="font-size: 8pt;">Lab Test</a>
                                 </li>
                                 <li role="presentation">
                                     <a href="#ecg" role="tab" data-toggle="tab" style="font-size: 8pt;">ECG</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#ultrasound" role="tab" data-toggle="tab" style="font-size: 8pt;">Ultrasound</a>
                                 </li>
                             @endif
                         @endforeach
@@ -151,6 +151,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </li>
                             @endif
                         @endforeach
+                        <li role="presentation">
+                            <a href="#ultrasound" role="tab" data-toggle="tab" style="font-size: 8pt;">Ultrasound</a>
+                        </li>
+
                     @elseif(Session::get('position') == "Labtest")
                         @foreach($PatientService as $service)
                             @if($service->department == 'labtest')
@@ -161,9 +165,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         @endforeach
                         <li role="presentation">
                             <a href="#ecg" role="tab" data-toggle="tab" style="font-size: 8pt;">ECG</a>
-                        </li>
-                        <li role="presentation">
-                            <a href="#ultrasound" role="tab" data-toggle="tab" style="font-size: 8pt;">Ultrasound</a>
                         </li>
                     @endif
                     @endif
@@ -1505,6 +1506,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 @else
                                                     <button type="button" class="btn btn-xs btn-primary btn-xs editpatientxray" data-toggle="modal" data-target="#modal_xraynew_edit" data-backdrop="static" data-id="{{$xray->id}}">Edit</button>
                                                     <a href="/xray/pdf/view/{{$xray->id}}" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                                    <a href="/xray/pdf/view/{{$xray->id}}/reprint" target="_blank" class="btn btn-xs btn-default">Re-Print</a>
                                                     <button type="button" class="btn btn-xs btn-warning patientxraylog" data-toggle="modal" data-target="#modal_patientxraylog" data-backdrop="static" data-id="{{$xray->id}}">Logs</button>
                                                     <!-- @if($xray->status == 'New')
                                                     <a href="/visit/{{$xray->patient_id}}/{{$xray->visitid}}/xraydone" class="btn btn-xs btn-default">Done</a>
@@ -1548,7 +1550,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-3">
-                                                                <input type="text" name="orno_edit" class="form-control orno_edit" placeholder="O.R. No." readonly="">
+                                                                <input type="text" name="orno_edit" class="form-control orno_edit" placeholder="O.R. No." value="{{$receipt_number}}" readonly="">
                                                             </div>
                                                         </div>
 
@@ -1568,16 +1570,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="form-group divxrayinfo">
                                                             <label class="col-sm-1 control-label">Physician:</label>
                                                             <div class="col-sm-6">
-                                                                <select id="physician" name="physician_edit" class="form-control physician_edit" required="" disabled=""> 
-                                                                    
+                                                                <select id="physician" name="physician_edit" class="form-control physician_edit">
+                                                                    @if(Session::get('position') == "Doctor")
+                                                                        @foreach($doctor as $doc)
+                                                                            @if(Session::get('user') == $doc->id)
+                                                                                <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    @else
+                                                                        <option value="">-- Select One --</option>
+                                                                        @foreach($doctor as $doc)
+                                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endforeach
+                                                                    @endif
                                                                 </select>
                                                             </div>
                                                             <label class="col-sm-2 control-label">Date:</label>
                                                             <div class="col-sm-3">
-                                                                <input type="text" name="xraydate_edit" class="form-control xraydate_edit" required="" value="" disabled="">
+                                                                <?php $datenow = date("Y-m-d"); ?>
+                                                                <input type="text" name="xraydate_edit" class="form-control xraydate_edit" required="" value="{{$datenow}}" disabled="">
                                                             </div>
                                                         </div>
-                                                        <div class="form-group divxrayinfo">
+                                                        <!-- <div class="form-group divxrayinfo">
                                                             <label class="col-sm-1 control-label">Phys.Fee:</label>
                                                             <div class="col-sm-3">
                                                                 <input type="text" name="pfee" class="form-control pfee_edit stopalpha" placeholder="0.00" required="">
@@ -1587,7 +1601,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             <?php $datenow = date("Y-m-d"); ?>
                                                                 <input type="text" id="datepickerxray" name="xraydate_edit_edit" class="form-control xraydate" required="" value="{{$datenow}}" readonly="" disabled="">
                                                             </div>
-                                                        </div>
+                                                        </div> -->
                                                         <div class="form-group divxrayinfo">
                                                             <label class="col-sm-1 control-label">PLATE</label>
                                                             <div class="col-sm-3">
@@ -1605,8 +1619,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                                                         <div class="form-group divxrayinfo results_info_edit"></div>
 
-                                                        <div class="form-group phyname divxrayinfo"></div>
-                                                        <div class="form-group phypos"></div>
+                                                        <!-- <div class="form-group phyname divxrayinfo"></div>
+                                                        <div class="form-group phypos"></div> -->
 
                                                         <div class="form-group">
                                                             <label for="inputEmail3" class="control-label"></label>
@@ -1652,7 +1666,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 </div>
                                                 <label class="col-sm-2 control-label">O.R. No.</label>
                                                 <div class="col-sm-3">
-                                                    <input type="text" name="orno" class="form-control" placeholder="O.R. No." autocomplete="off">
+                                                    <input type="text" name="orno" class="form-control" placeholder="O.R. No." autocomplete="off" readonly="" value="{{$receipt_number}}">
                                                 </div>
                                             </div>
                                             <div class="form-group divxrayinfo">
@@ -1670,7 +1684,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="form-group divxrayinfo">
                                                 <label class="col-sm-1 control-label">Physician:</label>
                                                 <div class="col-sm-6">
-                                                    <select id="physician" name="physician" class="form-control physician" required="">
+                                                    <select id="physician" name="physician" class="form-control physician">
                                                         @if(Session::get('position') == "Doctor")
                                                             @foreach($doctor as $doc)
                                                                 @if(Session::get('user') == $doc->id)
@@ -1691,12 +1705,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <input type="text" id="datepicker" name="xraydate" class="form-control xraydate" required="" value="{{$datenow}}" disabled="">
                                                 </div>
                                             </div>
-                                            <div class="form-group divxrayinfo">
+                                            <!-- <div class="form-group divxrayinfo">
                                                 <label class="col-sm-1 control-label">Phys.Fee:</label>
                                                 <div class="col-sm-3">
                                                     <input type="text" name="pfee" class="form-control pfee" placeholder="0.00" required="" autocomplete="off">
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="form-group divxrayinfo">
                                                 <label class="col-sm-1 control-label">PLATE</label>
                                                 <div class="col-sm-3">
@@ -1718,17 +1732,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             
                                             <div class="form-group divxrayinfo">
                                                 <div class="col-sm-12 fnnormal">
-                                                    <textarea class="form-control txtcommnor" name="comm" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
-                                                    </textarea>
+                                                    <textarea class="form-control txtcommnor" name="comm" rows="5" id="comment"></textarea>
                                                 </div>
                                                 <div class="col-sm-12 fnnotnormal" style="display: none;">
-                                                    <textarea class="form-control txtcommnotnor" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
-                                                    </textarea>
+                                                    <textarea class="form-control txtcommnotnor" rows="5" id="comment"></textarea>
                                                 </div>
                                             </div>
 
-                                            <div class="form-group phyname divxrayinfo"></div>
-                                            <div class="form-group phypos"></div>
+                                            <!-- <div class="form-group phyname divxrayinfo"></div>
+                                            <div class="form-group phypos"></div> -->
 
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="control-label"></label>
@@ -1906,7 +1918,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-3">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -2067,7 +2079,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="col-sm-4">
-                                                                        <label class="control-label">Amorphous Materials </label>
+                                                                        <label class="control-label">Amorphous_Materials</label>
                                                                     </div>
                                                                     <div class="col-sm-6">
                                                                         <input type="text" name="AM" class="form-control AM" placeholder="Amorphous Materials" value="" autocomplete="off">
@@ -2247,7 +2259,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-3">
-                                                                <input type="text" name="orno" class="form-control uri_orno" value="{{$Urinalyses->or_no}}" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" value="{{$receipt_number}}" readonly="" placeholder="O.R. No.">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -2412,7 +2424,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="col-sm-4">
-                                                                        <label class="control-label">Amorphous Materials </label>
+                                                                        <label class="control-label">Amorphous_Materials</label>
                                                                     </div>
                                                                     <div class="col-sm-6">
                                                                         <input type="text" name="AM" class="form-control AM" placeholder="Amorphous Materials" value="{{$Urinalyses->amorphous_material}}" autocomplete="off">
@@ -2625,7 +2637,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -2808,7 +2820,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Fecalyses->or_no}}">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -3012,7 +3024,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -3384,7 +3396,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Chemistry->or_no}}">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -3861,7 +3873,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -4072,7 +4084,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Ogtt->or_no}}">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -4340,7 +4352,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -4677,7 +4689,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Hematology->or_no}}">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -5097,7 +5109,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control sero_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control sero_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -5174,20 +5186,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________</label>
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________, RMT</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">[ NAME ]</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">Pathologist</label>
+                                                                    ________________________________________, RMT
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -5208,7 +5212,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control sero_orno" placeholder="O.R. No." value="{{$patientserologyhead->or_no}}">
+                                                                <input type="text" name="orno" class="form-control sero_orno" placeholder="O.R. No." value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -5281,20 +5285,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________</label>
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________, RMT</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">[ NAME ]</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">Pathologist</label>
+                                                                    ________________________________________, RMT
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -5336,7 +5332,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -5552,20 +5548,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________</label>
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________, RMT</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">[ NAME ]</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">Pathologist</label>
+                                                                    ________________________________________, RMT
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -5587,7 +5575,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$SecondChemistry->or_no}}">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -5799,20 +5787,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________</label>
+                                                                    ________________________________________<br>
+                                                                    <b>ROGELIO S. McNTIRE, M.D.,FPSP</b><br>
+                                                                    <i style="font-size: 9pt;">Pathologist</i>
                                                                 </div>
                                                                 <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________, RMT</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">[ NAME ]</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">Pathologist</label>
+                                                                    ________________________________________, RMT
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -5855,7 +5835,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." readonly="" value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -6175,7 +6155,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
                                                             <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$Aptt->or_no}}">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -6569,13 +6549,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <input type="text" name="ecg_id" value="" class="ecg_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
-                                                            <div class="col-sm-6">
+                                                            <div class="col-sm-5">
                                                                 <input type="text" name="P_id" value="{{$id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
-                                                            <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No.">
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}" readonly="">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -6611,12 +6591,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <textarea class="form-control ecg_diagnosis" name="ecg_diagnosis"></textarea>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group divxrayinfo">
+                                                        <!-- <div class="form-group divxrayinfo">
                                                             <label class="col-sm-2 control-label">Phys.Fee:</label>
                                                             <div class="col-sm-3">
                                                                 <input type="text" name="phyfee_ecg" class="form-control phyfee_ecg stopalpha" placeholder="0.00" autocomplete="off">
                                                             </div>
-                                                        </div>
+                                                        </div> -->
 
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
@@ -6673,23 +6653,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <textarea class="form-control interpretation" name="interpretation"></textarea>
                                                             </div>
                                                         </div>
-
-                                                        <br><br>
-                                                        <div class=" divxrayinfo">
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________</label>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________, M.D.</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">Date Taken</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                         <br>
                                     
                                                         <div class="form-group">
@@ -6702,13 +6665,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <input type="text" name="ecg_id" value="{{$ecg->id}}" class="ecg_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
-                                                            <div class="col-sm-6">
+                                                            <div class="col-sm-5">
                                                                 <input type="text" name="P_id" value="{{$id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
-                                                            <div class="col-sm-2">
-                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$ecg->or_no}}">
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="orno" class="form-control uri_orno" placeholder="O.R. No." value="{{$receipt_number}}" readonly="">
                                                             </div>
                                                         </div>
                                                         <div class="form-group divxrayinfo">
@@ -6744,12 +6707,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <textarea class="form-control ecg_diagnosis" name="ecg_diagnosis">{{$ecg->diagnosis}}</textarea>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group divxrayinfo">
+                                                        <!-- <div class="form-group divxrayinfo">
                                                             <label class="col-sm-2 control-label">Phys.Fee:</label>
                                                             <div class="col-sm-3">
                                                                 <input type="text" name="phyfee_ecg" class="form-control phyfee_ecg stopalpha" placeholder="0.00" autocomplete="off" value="{{$ecg->phy_fee}}">
                                                             </div>
-                                                        </div>
+                                                        </div> -->
 
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
@@ -6806,23 +6769,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 <textarea class="form-control interpretation" name="interpretation">{{$ecg->interpretation}}</textarea>
                                                             </div>
                                                         </div>
-
-                                                        <br><br>
-                                                        <div class=" divxrayinfo">
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________</label>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">__________________________________, M.D.</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row"> 
-                                                                <div class="col-sm-6">
-                                                                    <label class="control-label">Date Taken</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                         <br>
                                     
                                                         <div class="form-group">
@@ -6843,7 +6789,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <h3> Ultrasound
                                 <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_ultrasoundnew" data-backdrop="static">Add New</button>
                                 @if($Patientultrasoundcount != 0)
-                                <a href="/visit/{{$id}}/{{$vid}}/ultrasounddone" class="btn btn-xs btn-default">Done</a>
+                                <a href="/visit/{{$patient->id}}/{{$vid}}/ultrasounddone" class="btn btn-xs btn-default">Done</a>
                                 @endif
                                 </h3>
                                 <div class="table-responsive">
@@ -6860,17 +6806,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </thead>
                                         <tbody id="medication_list">
                                             @foreach($Patientultrasound as $ultrasound)
+                                            <?php
+                                                $id = $ultrasound->id;
+                                                $zero_id = sprintf("%04d", $id);
+                                            ?>
                                                 <tr>
-                                                    <td class="text-center">{{$ultrasound->id}}</td>
+                                                    <td>{{$zero_id}}</td>
                                                     <td class="text-center">{{$ultrasound->ultrasound_date}}</td>
-                                                    <td class="text-center">{{$ultrasound->doctor->f_name}} {{$ultrasound->doctor->m_name}} {{$ultrasound->doctor->l_name}}, {{$ultrasound->doctor->credential}}</td>
+                                                    <td class="text-center">
+                                                        @if(!$ultrasound->doctor)
+                                                        @else
+                                                        {{$ultrasound->doctor->f_name}} {{$ultrasound->doctor->m_name}} {{$ultrasound->doctor->l_name}}, {{$ultrasound->doctor->credential}}
+                                                        @endif
+                                                    </td>
                                                     <td class="text-center">{{$ultrasound->finding}}</td>
                                                     <td class="text-center">{{$ultrasound->status}}</td>
-                                                    <td>
+                                                    <td class="text-center">
                                                         @if(!Session::get('user'))
                                                         @else
                                                             <button type="button" class="btn btn-xs btn-primary btn-xs editpatientultrasound" data-toggle="modal" data-target="#modal_ultrasoundnew_edit" data-backdrop="static" data-id="{{$ultrasound->id}}">Edit</button>
                                                             <a href="/ultrasound/pdf/view/{{$ultrasound->id}}" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                                            <a href="/ultrasound/pdf/view/{{$ultrasound->id}}/reprint" target="_blank" class="btn btn-xs btn-default">Re-Print</a>
                                                             <button type="button" class="btn btn-xs btn-warning patientultrasoundlog" data-toggle="modal" data-target="#modal_patientultrasoundlog" data-backdrop="static" data-id="{{$ultrasound->id}}">Logs</button>
                                                         @endif
                                                     </td>
@@ -6900,17 +6856,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                                 <h4><b>ULTRASOUND</b></h4>
 
-                                                <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/ultrasound">
+                                                <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/ultrasound">
                                                 {!! csrf_field() !!}
                                                     <div class="form-group">
                                                         <label class="col-sm-1 control-label">Name:</label>
                                                         <div class="col-sm-6">
-                                                            <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                            <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                             <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                         </div>
                                                         <label class="col-sm-2 control-label">O.R. No.</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" name="orno" class="form-control" placeholder="O.R. No." autocomplete="off">
+                                                            <input type="text" name="orno" class="form-control" placeholder="O.R. No." autocomplete="off" value="{{$receipt_number}}" readonly="">
                                                         </div>
                                                     </div>
                                                     <div class="form-group divxrayinfo">
@@ -6928,7 +6884,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <div class="form-group divxrayinfo">
                                                         <label class="col-sm-1 control-label">Physician:</label>
                                                         <div class="col-sm-6">
-                                                            <select id="physician" name="physician" class="form-control physician" required="">
+                                                            <select id="physician" name="physician" class="form-control physician">
                                                                 @if(Session::get('position') == "Doctor")
                                                                     @foreach($doctor as $doc)
                                                                     @if(Session::get('user') == $doc->id)
@@ -6950,11 +6906,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         </div>
                                                     </div>
                                                     <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Service(s)</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" name="ultraservice" class="form-control ultraservice" placeholder="Service(s)" autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="form-group divxrayinfo">
                                                         <label class="col-sm-1 control-label">Phys.Fee:</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" name="pfee" class="form-control pfee" placeholder="0.00" required="" autocomplete="off">
                                                         </div>
-                                                    </div>
+                                                    </div> -->
 
                                                     <h5><b>Result / Finding :</b></h5>
 
@@ -6970,17 +6932,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             
                                                     <div class="form-group divxrayinfo">
                                                         <div class="col-sm-12 fnnormal_ULTRA">
-                                                            <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
-                                                            </textarea>
+                                                            <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment"></textarea>
                                                         </div>
                                                         <div class="col-sm-12 fnnotnormal_ULTRA" style="display: none;">
-                                                            <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
-                                                            </textarea>
+                                                            <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment"></textarea>
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group phyname divxrayinfo"></div>
-                                                    <div class="form-group phypos"></div>
+                                                    <!-- <div class="form-group phyname divxrayinfo"></div>
+                                                    <div class="form-group phypos"></div> -->
 
                                                     <div class="form-group">
                                                         <label for="inputEmail3" class="control-label"></label>
@@ -7014,7 +6974,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
                                                 <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                                 <h4><b>ULTRASOUND</b></h4>
-                                                <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/ultrasoundedit">
+                                                <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/ultrasoundedit">
                                                 {!! csrf_field() !!}
                                                     <div class="form-group">
                                                         <label class="col-sm-1 control-label">Name:</label>
@@ -7024,7 +6984,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         </div>
                                                         <label class="col-sm-2 control-label">O.R. No.</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" name="orno_edit_ultra" class="form-control orno_edit_ultra" placeholder="O.R. No." readonly="" autocomplete="off">
+                                                            <input type="text" name="orno_edit_ultra" class="form-control orno_edit_ultra" placeholder="O.R. No." readonly="" value="{{$receipt_number}}" autocomplete="off">
                                                         </div>
                                                     </div>
 
@@ -7044,20 +7004,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <div class="form-group divxrayinfo">
                                                         <label class="col-sm-1 control-label">Physician:</label>
                                                         <div class="col-sm-6">
-                                                            <select id="physician" name="physician_edit_ultra" class="form-control physician_edit_ultra" required="" disabled=""></select>
+                                                            <select id="physician" name="physician" class="form-control physician_edit_ultra">
+                                                                @if(Session::get('position') == "Doctor")
+                                                                    @foreach($doctor as $doc)
+                                                                    @if(Session::get('user') == $doc->id)
+                                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                        @endif
+                                                                @endforeach
+                                                                @else
+                                                                    <option value="">-- Select One --</option>
+                                                                    @foreach($doctor as $doc)
+                                                                            <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
                                                         </div>
                                                         <label class="col-sm-2 control-label">Date:</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" name="ultrasound_edit_date" class="form-control ultrasound_edit_date" required="" value="" disabled="">
+                                                            <?php $datenow = date("Y-m-d"); ?>
+                                                            <input type="text" name="ultrasound_edit_date" class="form-control ultrasound_edit_date" value="{{$datenow}}" disabled="">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group divxrayinfo">
+                                                        <label class="col-sm-1 control-label">Service(s)</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" name="ultraservice" class="form-control ultraservice_edit" placeholder="Service(s)" autocomplete="off">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- <div class="form-group divxrayinfo">
                                                         <label class="col-sm-1 control-label">Phys.Fee:</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" name="phyfee_edit_ultra" class="form-control phyfee_edit_ultra" placeholder="0.00" required="" autocomplete="off">
                                                         </div>
-                                                    </div>
+                                                    </div> -->
 
                                                     <h5><b>Result / Finding :</b></h5>
 
@@ -7497,22 +7478,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $('.editpatientxray').on('click',function() {
         var dataid = $(this).data('id');
-        $('.physician_edit').empty();
+        $('.physician_edit option[value=""]').prop("selected", true);
         $('.results_edit').empty();
         $('.results_info_edit').empty();
         $('.phyname').empty();
         $('.phypos').empty();
         $('.xray_id').removeAttr('value');
-        $('.orno_edit').removeAttr('value');
+        //$('.orno_edit').removeAttr('value');
         $('.pfee_edit').removeAttr('value');
         $('.plate_edit').removeAttr('value');
         $.get('../../api/modalxrayedit?dataid=' + dataid, function(data){
             $('.xray_id').attr('value',data.xray_id);
-            $('.orno_edit').attr('value',data.or_no);
-            $('.xraydate_edit').val(data.xray_date);
+            //$('.orno_edit').attr('value',data.or_no);
+            if (!data.xray_date) {
+            }
+            else {
+                $('.xraydate_edit').val(data.xray_date);
+            }
             $('.pfee_edit').val(data.phy_fee);
             $('.plate_edit').val(data.plate);
-            $('.physician_edit').append('<option>'+data.f_name+' '+data.m_name+' '+data.l_name+', '+data.credential+'</option>');
+            $('.physician_edit option[value="'+data.id+'"]').prop("selected", true);
+            //$('.physician_edit').append('<option>'+data.f_name+' '+data.m_name+' '+data.l_name+', '+data.credential+'</option>');
 
             $('.phyname').append('<label class="col-sm-5 control-label" style="text-align: left;"><b>'+data.f_name+' '+data.m_name+' '+data.l_name+', '+data.credential+'</b></label>');
             $('.phypos').append('<label class="col-sm-5 control-label" style="text-align: left; margin-top: -2.5%; font-size: 8pt;">'+data.specialization+'</label>');
@@ -7527,20 +7513,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <textarea class="form-control txtcommnor" name="comm" rows="5" id="comment">'+data.finding_info+'</textarea>\
                 </div>\
                 <div class="col-sm-12 fnnotnormal" style="display: none;">\
-                    <textarea class="form-control txtcommnotnor" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.</textarea>\
+                    <textarea class="form-control txtcommnotnor" rows="5" id="comment"></textarea>\
                 </div>');
             }
-            else {
+            else if (data.finding == "Not Normal") {
                 $('.results_edit').append('<label>\
                 <input type="checkbox" name="finding" value="Normal" class="noramlfinding">\
                 Normal</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
                 <label><input type="checkbox" checked="" value="Not Normal" class="notnoramlfinding">Not Normal</label>');
 
                 $('.results_info_edit').append('<div class="col-sm-12 fnnormal" style="display: none;">\
-                    <textarea class="form-control txtcommnor" name="comm" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.</textarea>\
+                    <textarea class="form-control txtcommnor" name="comm" rows="5" id="comment"></textarea>\
                 </div>\
                 <div class="col-sm-12 fnnotnormal">\
                     <textarea class="form-control txtcommnotnor" rows="5" id="comment">'+data.finding_info+'</textarea>\
+                </div>');
+            }
+            else {
+                $('.results_edit').append('<label>\
+                <input type="checkbox" name="finding" value="Normal" class="noramlfinding">\
+                Normal</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+                <label><input type="checkbox" value="Not Normal" class="notnoramlfinding">Not Normal</label>');
+
+                $('.results_info_edit').append('<div class="col-sm-12 fnnormal" style="display: none;">\
+                    <textarea class="form-control txtcommnor" name="comm" rows="5" id="comment"></textarea>\
+                </div>\
+                <div class="col-sm-12 fnnotnormal">\
+                    <textarea class="form-control txtcommnotnor" rows="5" id="comment"></textarea>\
                 </div>');
             }
 
@@ -8318,19 +8317,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
     $('.editpatientultrasound').on('click',function() {
         var dataid = $(this).data('id');
         $('.ultrasound_id').val('');
-        $('.orno_edit_ultra').val('');
-        $('.physician_edit_ultra').empty();
+        //$('.orno_edit_ultra').val('');
+        //$('.physician_edit_ultra').empty();
+        $('.physician_edit_ultra option[value=""]').prop("selected", true);
         $('.ultrasound_edit_date').val('');
         $('.phyfee_edit_ultra').val('');
         $('.results_edit_ultra').empty();
         $('.results_info_edit_ultra').empty();
+        $('.plate_edit').removeAttr('value');
 
         $.get('../../api/ultrasoundedit?dataid=' + dataid, function(data){
             $('.ultrasound_id').val(data.id);
-            $('.orno_edit_ultra').val(data.or_no);
-            $('.physician_edit_ultra').append('<option value="'+data.doctor.id+'">'+data.doctor.f_name+' '+data.doctor.m_name+' '+data.doctor.l_name+', '+data.doctor.credential+'</option>');
-            $('.ultrasound_edit_date').val(data.ultrasound_date);
+            //$('.orno_edit_ultra').val(data.or_no);
+            //$('.physician_edit_ultra').append('<option value="'+data.doctor.id+'">'+data.doctor.f_name+' '+data.doctor.m_name+' '+data.doctor.l_name+', '+data.doctor.credential+'</option>');
+            $('.physician_edit_ultra option[value="'+data.physician_id+'"]').prop("selected", true);
+            if (!data.ultrasound_date) {
+            }
+            else {
+                $('.ultrasound_edit_date').val(data.ultrasound_date);
+            }
+            //$('.ultrasound_edit_date').val(data.ultrasound_date);
             $('.phyfee_edit_ultra').val(data.phy_fee);
+            $('.ultraservice_edit').val(data.ultraservice);
 
             if (data.finding == "Normal") {
                 $('.results_edit_ultra').append('<label>\
@@ -8342,20 +8350,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment">'+data.finding_info+'</textarea>\
                 </div>\
                 <div class="col-sm-12 fnnotnormal_ULTRA" style="display: none;">\
-                    <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment">123Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.</textarea>\
+                    <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment"></textarea>\
                 </div>');
             }
-            else {
+            else if (data.finding == "Not Normal") {
                 $('.results_edit_ultra').append('<label>\
                 <input type="checkbox" name="finding" value="Normal" class="noramlfinding_ULTRA">\
                 Normal</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
                 <label><input type="checkbox" checked="" value="Not Normal" class="notnoramlfinding_ULTRA">Not Normal</label>');
 
                 $('.results_info_edit_ultra').append('<div class="col-sm-12 fnnormal_ULTRA" style="display: none;">\
-                    <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.</textarea>\
+                    <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment"></textarea>\
                 </div>\
                 <div class="col-sm-12 fnnotnormal_ULTRA">\
                     <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment">'+data.finding_info+'</textarea>\
+                </div>');
+            }
+            else {
+                $('.results_edit_ultra').append('<label>\
+                <input type="checkbox" name="finding" value="Normal" class="noramlfinding_ULTRA">\
+                Normal</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+                <label><input type="checkbox" value="Not Normal" class="notnoramlfinding_ULTRA">Not Normal</label>');
+
+                $('.results_info_edit_ultra').append('<div class="col-sm-12 fnnormal_ULTRA" style="display: none;">\
+                    <textarea class="form-control txtcommnor_ULTRA" name="comm" rows="5" id="comment"></textarea>\
+                </div>\
+                <div class="col-sm-12 fnnotnormal_ULTRA">\
+                    <textarea class="form-control txtcommnotnor_ULTRA" rows="5" id="comment"></textarea>\
                 </div>');
             }
 

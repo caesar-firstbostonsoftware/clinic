@@ -83,25 +83,32 @@ class DoctorsController extends Controller
             $pdf->setLanguageArray($l);
         }
 
-        $pdf->SetFont('Courier', '', 8);
+        $pdf->SetFont('Courier', '', 12);
 
         $pdf->AddPage();
 
         if (Session::get('position') == 'Cashier') {
+            // $Patientxray = DB::select("SELECT patient_visits.visit_date AS visit_date,COUNT(patient_visits.id) as counter
+            // FROM patient_visits
+            // WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.cashier_id = '$id'
+            // GROUP BY patient_visits.visit_date");
+            // $counter = 0;
+            // $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('cashier_id',$id)->sum('discounted_total');
+
             $Patientxray = DB::select("SELECT patient_visits.visit_date AS visit_date,COUNT(patient_visits.id) as counter
             FROM patient_visits
-            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.cashier_id = '$id'
+            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.status != 'Canceled'
             GROUP BY patient_visits.visit_date");
             $counter = 0;
-            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('cashier_id',$id)->sum('discounted_total');
+            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('status','!=','Canceled')->sum('discounted_total');
         }
         else {
             $Patientxray = DB::select("SELECT patient_visits.visit_date AS visit_date,COUNT(patient_visits.id) as counter
             FROM patient_visits
-            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto'
+            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.status != 'Canceled'
             GROUP BY patient_visits.visit_date");
             $counter = 0;
-            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->sum('discounted_total');
+            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('status','!=','Canceled')->sum('discounted_total');
         }
 
         $pdf->writeHTML(view('printreport',compact('Patientxray','id','counter','income','datefrom','dateto'))->render());
@@ -435,20 +442,27 @@ class DoctorsController extends Controller
         $datefrom = $request->input('datefrom');
         $dateto = $request->input('dateto');
         if (Session::get('position') == 'Cashier') {
+            // $Patientxray = DB::select("SELECT patient_visits.visit_date AS visit_date,COUNT(patient_visits.id) as counter
+            // FROM patient_visits
+            // WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.cashier_id = '$id'
+            // GROUP BY patient_visits.visit_date");
+            // $counter = 0;
+            // $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('cashier_id',$id)->sum('discounted_total');
+
             $Patientxray = DB::select("SELECT patient_visits.visit_date AS visit_date,COUNT(patient_visits.id) as counter
             FROM patient_visits
-            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.cashier_id = '$id'
+            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.status != 'Canceled'
             GROUP BY patient_visits.visit_date");
             $counter = 0;
-            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('cashier_id',$id)->sum('discounted_total');
+            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('status','!=','Canceled')->sum('discounted_total');
         }
         else {
             $Patientxray = DB::select("SELECT patient_visits.visit_date AS visit_date,COUNT(patient_visits.id) as counter
             FROM patient_visits
-            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto'
+            WHERE patient_visits.visit_date >= '$datefrom' AND patient_visits.visit_date <= '$dateto' AND patient_visits.status != 'Canceled'
             GROUP BY patient_visits.visit_date");
             $counter = 0;
-            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->sum('discounted_total');
+            $income = DB::table('patient_visits')->where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('status','!=','Canceled')->sum('discounted_total');
         }
 
         return Response::json(['patientxray'=>$Patientxray,'id'=>$id,'counter'=>$counter,'income'=>$income], 200, array(), JSON_PRETTY_PRINT);
@@ -537,13 +551,13 @@ class DoctorsController extends Controller
             if ($id == 1) {
                 $Patientxray = DB::select("SELECT for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
                 FROM for_queues
-                WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.admin_panel_id = 5
+                WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.admin_panel_id = 5 AND for_queues.status != 'Canceled'
                 GROUP BY for_queues.date_reg");
             }
             else {
                 $Patientxray = DB::select("SELECT patientxrays.xray_date AS date_reg,COUNT(patientxrays.id) as counter
                 FROM patientxrays
-                WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id'
+                WHERE patientxrays.xray_date >= '$datefrom' AND patientxrays.xray_date <= '$dateto' AND patientxrays.physician_id = '$id' 
                 GROUP BY patientxrays.xray_date");
             }
 
@@ -593,7 +607,7 @@ class DoctorsController extends Controller
             if ($id == 1) {
                 $Patientxray = DB::select("SELECT for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
                 FROM for_queues
-                WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.admin_panel_id = 5
+                WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.admin_panel_id = 5 AND for_queues.status != 'Canceled'
                 GROUP BY for_queues.date_reg");
             }
             else {
@@ -624,7 +638,7 @@ class DoctorsController extends Controller
             $Patientxray = DB::select("SELECT admin_panels.name as service_name,for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
             FROM for_queues
             INNER JOIN admin_panels ON for_queues.admin_panel_sub_id = admin_panels.id
-            WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto'
+            WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.status != 'Canceled'
             GROUP BY for_queues.admin_panel_sub_id, admin_panels.name, for_queues.date_reg");
 
             return Response::json($Patientxray, 200, array(), JSON_PRETTY_PRINT);
@@ -671,7 +685,7 @@ class DoctorsController extends Controller
             $Patientxray = DB::select("SELECT admin_panels.name as service_name,for_queues.date_reg AS date_reg,COUNT(for_queues.id) as counter
             FROM for_queues
             INNER JOIN admin_panels ON for_queues.admin_panel_sub_id = admin_panels.id
-            WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto'
+            WHERE for_queues.date_reg >= '$datefrom' AND for_queues.date_reg <= '$dateto' AND for_queues.status != 'Canceled'
             GROUP BY for_queues.admin_panel_sub_id, admin_panels.name, for_queues.date_reg");
 
             $pdf->writeHTML(view('printservicereport',compact('Patientxray','datefrom','dateto'))->render());
@@ -692,7 +706,7 @@ class DoctorsController extends Controller
             $datefrom = $request->input('datefrom');
             $dateto = $request->input('dateto');
 
-            $PatientVisit = PatientVisit::where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->with('receipt','service')->get();
+            $PatientVisit = PatientVisit::where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('status','!=','Canceled')->with('receipt','service')->get();
             $AdminPanel = AdminPanel::with('package')->get();
 
             return Response::json(['PatientVisit'=>$PatientVisit,'AdminPanel'=>$AdminPanel], 200, array(), JSON_PRETTY_PRINT);
@@ -753,7 +767,7 @@ class DoctorsController extends Controller
     {   
         if(Session::has('user')){
 
-            $PatientVisit = PatientVisit::where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->with('receipt','service')->get()->sortBy('visit_date');
+            $PatientVisit = PatientVisit::where('visit_date','>=',$datefrom)->where('visit_date','<=',$dateto)->where('status','!=','Canceled')->with('receipt','service')->get()->sortBy('visit_date');
             $AdminPanel = AdminPanel::with('package')->get();
 
             return view('printledgerreport',compact('PatientVisit','AdminPanel','datefrom','dateto'));

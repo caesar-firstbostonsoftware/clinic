@@ -36,13 +36,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
-        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
         <li class="active"><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
         @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -80,7 +80,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">List of Company 
-                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1 || Session::get('position') == 'Labtest')
                                 <button type="button" class="btn btn-primary btn-xs addcompany" data-toggle="modal" data-target="#modal_addcompany" data-backdrop="static">Add New</button>
                             @endif
                         </h3>

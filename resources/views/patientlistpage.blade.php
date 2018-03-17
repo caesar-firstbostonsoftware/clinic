@@ -24,13 +24,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest" || Session::get('position') == "Cashier")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
-        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
         <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
         @endif
         
         <li class="treeview active"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li class="active"><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -78,7 +78,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">List of Patients 
-                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1 || Session::get('position') == 'Labtest')
                             <a href="/newvisit" class="btn btn-primary btn-xs">Add New</a>
                             @endif
                         </h3>
@@ -134,6 +134,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <td>
                                                         @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
                                                         <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
+                                                        <a href="/NFHSI/{{$patient->id}}/disabled" class="btn btn-xs btn-danger disdis">Disable</a>
                                                         @endif
                                                         <button id="viewvisit" class="btn btn-xs btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                     </td>
@@ -156,6 +157,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <td>
                                                         @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
                                                         <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
+                                                        <a href="/NFHSI/{{$patient->id}}/disabled" class="btn btn-xs btn-danger disdis">Disable</a>
                                                         @endif
                                                         <button id="viewvisit" class="btn btn-xs btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                     </td>
@@ -183,7 +185,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <span aria-hidden="true">×</span>
                         </button>
                         <h4 class="modal-title" id="myModalLabel">Patient Visits 
-                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                            @if(Session::get('position') == 'Cashier' || Session::get('user') == 1 || Session::get('position') == 'Labtest')
                                 <a href="#" class="btn btn-primary btn-xs addnewvisit">Add New Visit</a>
                             @endif
                         </h4>
@@ -289,7 +291,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <h4 class="modal-title" id="myModalLabel">Edit Personal Info</h4>
                     </div>
                     <div class="modal-body">
-                            <form class="form-horizontal posteditpatient" id="posteditpatient" method="post" action="/NFHSI">
+                            <form class="form-horizontal" id="posteditpatient" method="post" action="/NFHSI">
                             {!! csrf_field() !!}
                             <input class="edit_p_id" name="p_id" type="text" style="display: none;">
                                 <div class="form-group">
@@ -305,7 +307,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="form-group 67890">
                                     <label class="col-sm-2 control-label">Company</label>
                                     <div class="col-sm-4">
-                                        <select id="company" name="company" class="form-control company" required=""> 
+                                        <select id="company" name="company" class="form-control company"> 
                                             <option value="">- Select -</option>
                                         </select>
                                     </div>
@@ -534,7 +536,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:green;"><b>'+visit.status+'</b></td>\
                     <td>\
+                        <button class="btn btn-xs btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="#" class="btn btn-xs btn-danger cancelvisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Cancel</a>\
                         <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
                         <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
                     </td>\
@@ -581,13 +585,108 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             $('.finalprint').removeAttr('href');
                             $('.finalprint').attr('onclick','return false;');
                             $('.receipt_no').removeAttr('value');
-                            $('.receipt_no').removeAttr('readonly');
                             $('.receipt_no').val('');
                         }
                         else {
                             $('.receipt_no').removeAttr('value');
                             $('.receipt_no').val(data.receipt_number);
-                            $('.receipt_no').attr('readonly','readonly');
+                            $('.finalprint').removeAttr('href');
+                            $('.finalprint').removeAttr('onclick');
+                            $('.finalprint').attr('href','/patientreceipt/pdf/view/'+data.patient_id+'/'+data.visit_id+'/'+data.receipt_number+'');
+                        }
+                    });
+                })
+
+                })
+            }
+            else if (ses_pos == 'Labtest') {
+                $.each(data, function(index, visit){
+                if (visit.status == 'Pending') {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>\
+                        <a href="#" class="visit_date" data-id="'+visit.id+'" data-datedate="'+visit.visit_date+'" data-toggle="modal" data-target="#modal_visit_date" data-backdrop="static">'+visit.visit_date+'</a>\
+                    </td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="text-align:right;">'+visit.totalbill+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
+                    <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
+                    <td style="color:red;"><b>'+visit.status+'</b></td>\
+                    <td>\
+                        <button class="btn btn-xs btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="#" class="btn btn-xs btn-danger cancelvisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Cancel</a>\
+                        <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
+                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
+                    </td>\
+                    </tr>');
+                }
+                else if (visit.status == 'Paid') {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="text-align:right;">'+visit.totalbill+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
+                    <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
+                    <td style="color:green;"><b>'+visit.status+'</b></td>\
+                    <td>\
+                        <button class="btn btn-xs btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
+                        <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="#" class="btn btn-xs btn-danger cancelvisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Cancel</a>\
+                        <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
+                        <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
+                    </td>\
+                    </tr>');
+                }
+                else {
+                    $('.visitlist_modal').append('<tr>\
+                    <td>'+visit.visitid+'</td>\
+                    <td>'+visit.visit_date+'</td>\
+                    <td>'+visit.purpose_visit+'</td>\
+                    <td style="text-align:right;">'+visit.totalbill+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.discount)+'</td>\
+                    <td style="text-align:right;">'+parseFloat(visit.wh_discount)+'</td>\
+                    <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
+                    <td style="color:gold;"><b>'+visit.status+'</b></td>\
+                    <td></td>\
+                    </tr>');
+                }
+
+                $('.receipt_no').on('change',function() {
+                    var receipt_no = $(this).val();
+                    var patient_id = $(this).data('p_id');
+                    var visit_id = $(this).data('v_id');
+                    if (!receipt_no) {
+                        $('.finalprint').removeAttr('href');
+                        $('.finalprint').attr('onclick','return false;');
+                    }
+                    else {
+                        $('.finalprint').removeAttr('href');
+                        $('.finalprint').removeAttr('onclick');
+                        $('.finalprint').attr('href','/patientreceipt/pdf/view/'+patient_id+'/'+visit_id+'/'+receipt_no+'');
+                    }
+                })
+
+                $('.addreceipt').on('click',function() {
+                    var patient_id = $(this).data('p_id');
+                    var visit_id = $(this).data('v_id');
+                    $('.receipt_no').removeAttr('data-p_id');
+                    $('.receipt_no').removeAttr('data-v_id');
+                    $('.receipt_no').attr('data-p_id',patient_id);
+                    $('.receipt_no').attr('data-v_id',visit_id);
+                    $.get('api/checkreceipt?patient_id=' + patient_id +'&visit_id=' + visit_id, function(data){
+                        if (!data.id) {
+                            $('.finalprint').removeAttr('href');
+                            $('.finalprint').attr('onclick','return false;');
+                            $('.receipt_no').removeAttr('value');
+                            $('.receipt_no').val('');
+                        }
+                        else {
+                            $('.receipt_no').removeAttr('value');
+                            $('.receipt_no').val(data.receipt_number);
                             $('.finalprint').removeAttr('href');
                             $('.finalprint').removeAttr('onclick');
                             $('.finalprint').attr('href','/patientreceipt/pdf/view/'+data.patient_id+'/'+data.visit_id+'/'+data.receipt_number+'');
@@ -631,7 +730,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td style="text-align:right;font-size:12pt;"><b>'+visit.discounted_total+'</b></td>\
                     <td style="color:green;"><b>'+visit.status+'</b></td>\
                     <td>\
+                        <button class="btn btn-xs btn-primary editvisit" data-toggle="modal" data-target="#modal_editvisit" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Edit</button>\
                         <a href="/visit/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-info">View</a>\
+                        <a href="#" class="btn btn-xs btn-danger cancelvisit" data-patient_id="'+visit.patient_id+'" data-visit_id="'+visit.visitid+'">Cancel</a>\
                         <a href="/patient/pdf/view/'+visit.patient_id+'/'+visit.visitid+'" target="_blank" class="btn btn-xs btn-success">Print</a>\
                         <button type="button" class="btn btn-success btn-xs addreceipt" data-toggle="modal" data-target="#modal_addreceipt" data-backdrop="static" data-p_id="'+visit.patient_id+'" data-v_id="'+visit.visitid+'">Print Receipt</button>\
                     </td>\
@@ -678,13 +779,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             $('.finalprint').removeAttr('href');
                             $('.finalprint').attr('onclick','return false;');
                             $('.receipt_no').removeAttr('value');
-                            $('.receipt_no').removeAttr('readonly');
                             $('.receipt_no').val('');
                         }
                         else {
                             $('.receipt_no').removeAttr('value');
                             $('.receipt_no').val(data.receipt_number);
-                            $('.receipt_no').attr('readonly','readonly');
                             $('.finalprint').removeAttr('href');
                             $('.finalprint').removeAttr('onclick');
                             $('.finalprint').attr('href','/patientreceipt/pdf/view/'+data.patient_id+'/'+data.visit_id+'/'+data.receipt_number+'');
@@ -763,13 +862,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             $('.finalprint').removeAttr('href');
                             $('.finalprint').attr('onclick','return false;');
                             $('.receipt_no').removeAttr('value');
-                            $('.receipt_no').removeAttr('readonly');
                             $('.receipt_no').val('');
                         }
                         else {
                             $('.receipt_no').removeAttr('value');
                             $('.receipt_no').val(data.receipt_number);
-                            $('.receipt_no').attr('readonly','readonly');
                             $('.finalprint').removeAttr('href');
                             $('.finalprint').removeAttr('onclick');
                             $('.finalprint').attr('href','/patientreceipt/pdf/view/'+data.patient_id+'/'+data.visit_id+'/'+data.receipt_number+'');
@@ -917,7 +1014,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $.each(data.adminpanel,function(index,selser) {
                     $.getJSON('/api/submainservices?main_id=' + selser.APC_ID, function(data){
                         $('.'+selser.APC_ID+'').append('<div class="row wawsee">\
-                                        <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="'+selser.SER_QTY+'" readonly></div>\
+                                        <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="'+selser.SER_QTY+'"></div>\
                                         <div class="col-sm-4">\
                                             <select class="form-control serser_name service_name'+selser.APC_ID+'" name="service_name[]" required="">\
                                             </select>\
@@ -1017,6 +1114,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     });
                 })
             })
+                $('.discount').on('change',function() {
+                    var aa = $(this).val();
+                    var bb = aa / 100;
+                    var cc = bb.toString();
+                    $(this).val(cc);
+                })
             });
 
         })
@@ -1126,12 +1229,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $('.co').removeAttr('checked');
                 $('.12345').show();
                 $('.67890').hide();
+                $('.company').removeAttr('required');
             }
             else {
                 $('.co').prop("checked", true);
                 $('.walk').removeAttr('checked');
                 $('.12345').hide();
                 $('.67890').show();
+                $('.company').attr('required','required');
             }
 
             $('.type').on('click',function() {
@@ -1139,10 +1244,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 if (type == 'Walk-in') {
                     $('.12345').show();
                     $('.67890').hide();
+                    $('.company').removeAttr('required');
                 }
                 else {
                     $('.12345').hide();
                     $('.67890').show();
+                    $('.company').attr('required','required');
                 }
             })
 
@@ -1167,7 +1274,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             var main_id = $(this).data('mainid');
             $(this).attr('disabled','disabled');     
             $('.'+main_id+'').append('<div class="row">\
-                                    <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1" readonly></div>\
+                                    <div class="col-sm-2"><input class="form-control ser_qty" type="number" name="ser_qty[]" min="1" value="1"></div>\
                                     <div class="col-sm-4">\
                                         <select class="form-control serser_name service_name'+main_id+'" name="service_name[]" required="">\
                                         </select>\
@@ -1267,6 +1374,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $('.finalprint').on('click',function() {
         window.location.reload();
+    })
+
+    $('.disdis').on('click',function() {
+        var r = confirm("Disable this Patient?");
+        if (r == true) {
+            return true;
+        } 
+        else {
+            return false;
+        }
     })
 </script>
 @show

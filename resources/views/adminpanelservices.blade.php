@@ -32,16 +32,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         @if(Session::get('position') == "Doctor" || Session::get('position') == "Xray" || Session::get('position') == "Labtest")
         <li><a href="/myinfo"><img src="{{ asset('/img/2009.png') }}" height="20" width="20"> <span>My Info</span></a></li>
         @endif
-        @if(Session::get('user') == 1 || Session::get('position') == "Cashier")
+        @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
         <li><a href="/company"><img src="{{ asset('/img/company.png') }}" height="20" width="20"> <span>Company</span></a></li>
         @endif
         
         <li class="treeview"><a href="/NFHSI"><img src="{{ asset('/img/2010.png') }}" height="20" width="20"> <span>Patients</span><span class="pull-right-container"></span></a>
             <ul style="display: block;" class="treeview-menu menu-open">
-            @if(Session::get('user') == 1)
-                <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
-            @endif
-            @if(!Session::get('user'))
+            @if(Session::get('user') == 1 || Session::get('position') == "Cashier" || Session::get('position') == 'Labtest')
                 <li><a href="/newvisit"><i class="fa fa-circle-o"></i> New Visit</a></li>
             @endif
                 <li><a href="/NFHSI"><i class="fa fa-circle-o"></i> Patient List</a></li>
@@ -295,14 +292,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Package Description</label>
                                         <div class="col-sm-8">
-                                            <input class="form-control sub_mainedit_id" name="sub_mainedit_id" type="text" style="display: none;">
-                                            <input class="form-control subname_pack" name="subname" type="text" placeholder="Package Description" autocomplete="off">
+                                            <input class="form-control sub_mainedit_id" type="text" style="display: none;">
+                                            <input class="form-control subname_pack" type="text" placeholder="Package Description" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Price</label>
                                         <div class="col-sm-4">
-                                            <input class="form-control price_service_pack stopalpha" id="price_service" name="price_service" type="text" placeholder="0.00" autocomplete="off" style="text-align: right;">
+                                            <input class="form-control price_service_pack stopalpha" id="price_service" type="text" placeholder="0.00" autocomplete="off" style="text-align: right;">
                                         </div>
                                     </div>
                                 </div>
@@ -415,10 +412,32 @@ scratch. This page gets rid of all links and provides the needed markup only.
             if (type == 'Service') {
                 $('.divservice').show();
                 $('.divpackage').hide();
+
+                $('.sub_mainedit_id').removeAttr('name');
+                $('.subname').removeAttr('name');
+                $('.price_service').removeAttr('name');
+
+                $('.sub_mainedit_id').attr('name','sub_mainedit_id');
+                $('.subname').attr('name','subname');
+                $('.price_service').attr('name','price_service');
+
+                $('.subname_pack').removeAttr('name');
+                $('.price_service_pack').removeAttr('name');
             }
             else {
                 $('.divservice').hide();
                 $('.divpackage').show();
+
+                $('.sub_mainedit_id').removeAttr('name');
+                $('.subname_pack').removeAttr('name');
+                $('.price_service_pack').removeAttr('name');
+
+                $('.sub_mainedit_id').attr('name','sub_mainedit_id');
+                $('.subname_pack').attr('name','subname');
+                $('.price_service_pack').attr('name','price_service');
+                    
+                $('.subname').removeAttr('name');
+                $('.price_service').removeAttr('name');
             }
         })
 
@@ -441,6 +460,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     $('.edit_divpackage').hide();
                     $('.edit_name_service').val(data.name);
                     $('.edit_price_service').val(data.price);
+                    
+                    $('.edit_id_service').removeAttr('name');
+                    $('.edit_name_service').removeAttr('name');
+                    $('.edit_price_service').removeAttr('name');
+
+                    $('.edit_id_service').attr('name','id_service');
+                    $('.edit_name_service').attr('name','name_service');
+                    $('.edit_price_service').attr('name','price_service');
+
+
+                    $('.edit_id_service_pack').removeAttr('name');
+                    $('.edit_name_service_pack').removeAttr('name');
+                    $('.edit_price_service_pack').removeAttr('name');
                 }
                 else {
                     $('.edit_id_service_pack').val(data.id);
@@ -456,6 +488,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     $('.edit_divpackage').show();
                     $('.edit_name_service_pack').val(data.name);
                     $('.edit_price_service_pack').val(data.price);
+
+                    $('.edit_id_service_pack').removeAttr('name');
+                    $('.edit_name_service_pack').removeAttr('name');
+                    $('.edit_price_service_pack').removeAttr('name');
+
+                    $('.edit_id_service_pack').attr('name','id_service');
+                    $('.edit_name_service_pack').attr('name','name_service');
+                    $('.edit_price_service_pack').attr('name','price_service');
+
+                    $('.edit_id_service').removeAttr('name');
+                    $('.edit_name_service').removeAttr('name');
+                    $('.edit_price_service').removeAttr('name');
+
                     $('.edit_appendservicehere').empty();
                     $.get('../../api/servicepackage?package_id=' + main_id, function(dataser){
                         $.each(dataser,function(index,packser) {
@@ -508,10 +553,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     if (type == 'Service') {
                         $('.edit_divservice').show();
                         $('.edit_divpackage').hide();
+
+                        $('.edit_id_service').removeAttr('name');
+                        $('.edit_name_service').removeAttr('name');
+                        $('.edit_price_service').removeAttr('name');
+
+                        $('.edit_id_service').attr('name','id_service');
+                        $('.edit_name_service').attr('name','name_service');
+                        $('.edit_price_service').attr('name','price_service');
+
+
+                        $('.edit_id_service_pack').removeAttr('name');
+                        $('.edit_name_service_pack').removeAttr('name');
+                        $('.edit_price_service_pack').removeAttr('name');
                     }
                     else {
                         $('.edit_divservice').hide();
                         $('.edit_divpackage').show();
+
+                        $('.edit_id_service_pack').removeAttr('name');
+                        $('.edit_name_service_pack').removeAttr('name');
+                        $('.edit_price_service_pack').removeAttr('name');
+
+                        $('.edit_id_service_pack').attr('name','id_service');
+                        $('.edit_name_service_pack').attr('name','name_service');
+                        $('.edit_price_service_pack').attr('name','price_service');
+
+                        $('.edit_id_service').removeAttr('name');
+                        $('.edit_name_service').removeAttr('name');
+                        $('.edit_price_service').removeAttr('name');
                     }
                 })
 

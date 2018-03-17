@@ -14,22 +14,22 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:20%;">Name:</td>
-                <td style="width:50%;">{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}</td>
-                <td style="width:11%;">O.R. No.:</td>
-                <td style="width:19%;">{{$Serology->or_no}}</td>
+                <td style="width:15%;"><b>Name:</b></td>
+                <td style="width:45%;"><b style="font-size: 12pt;">{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}</b></td>
+                <td style="width:16%;"><b>O.R. No.:</b></td>
+                <td style="width:24%;">{{$receipt_number}}</td>
             </tr>
             <tr>
-                <td style="width:20%;">Address:</td>
-                <td style="width:50%;">{{$info->address}}</td>
-                <td style="width:11%;">Sex:</td>
-                <td style="width:19%;">{{$info->gender}}</td>
+                <td style="width:15%;"><b>Address:</b></td>
+                <td style="width:45%;">{{$info->address}}</td>
+                <td style="width:16%;"><b>Sex / Age:</b></td>
+                <td style="width:24%;">{{$info->gender}} / {{$info->age}}</td>
             </tr>
             <tr>
-                <td style="width:20%;"></td>
-                <td style="width:50%;"></td>
-                <td style="width:11%;">Date:</td>
-                <td style="width:19%;">{{$Serology->serology_date}}</td>
+                <td style="width:15%;"></td>
+                <td style="width:45%;"></td>
+                <td style="width:16%;"><b>Date:</b></td>
+                <td style="width:24%;">{{$Serology->serology_date}}</td>
             </tr>
             <tr><td></td></tr>
         </tbody>
@@ -49,8 +49,8 @@
             @foreach($serser as $sero)
             <tr>
                 <td style="border: 1px solid black;"> <b>{{$sero->adminpanel->name}}</b></td>
-                <td style="border: 1px solid black;"> {{$sero->result}}</td>
-                <td style="border: 1px solid black;"> {{$sero->remark}}</td>
+                <td style="border: 1px solid black;text-align: center;"> {{$sero->result}}</td>
+                <td style="border: 1px solid black;text-align: center;"> {{$sero->remark}}</td>
             </tr>
             @endforeach
             <tr><td></td></tr>
@@ -60,12 +60,8 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;text-align: center;">___________________________________________</td>
-                <td style="width:50%;">___________________________________________, RMT</td>
-            </tr>
-            <tr>
-                <td style="width:50%;text-align:center;"><b>ROGELIO S. McNTIRE, M.D.,FPSP</b></td>
-                <td style="width:50%;"></td>
+                <td style="width:50%;text-align: center;"><u><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b></u></td>
+                <td style="width:50%;"> ____________________________________, RMT</td>
             </tr>
             <tr>
                 <td style="width:50%;text-align:center;">Pathologist</td>

@@ -91,6 +91,8 @@ Route::post('/visit/{id}/{vid}/serology', 'PatientsController@newserology');
 Route::post('/visit/{id}/{vid}/ecg', 'PatientsController@newecg');
 Route::post('/visit/{id}/{vid}/chemtwo', 'PatientsController@newchemtwo');
 
+Route::get('/NFHSI/{id}/disabled', 'PatientsController@disabledpatient');
+
 // --- PDF ---
 Route::get('/pdf/view/{id}/{datefrom}/{dateto}', 'DoctorsController@printreport');
 Route::get('/patient/pdf/view/{id}/{vid}', 'PatientsController@patientprintreport');
@@ -102,6 +104,7 @@ Route::get('/pdf/viewservice/{datefrom}/{dateto}', 'DoctorsController@viewservic
 Route::get('/NFHSI/doctors', 'DoctorsController@doctoruserpage');
 
 Route::get('/xray/pdf/view/{id}', 'PatientsController@xraypdfview');
+Route::get('/xray/pdf/view/{id}/reprint', 'PatientsController@reprintxraypdfview');
 Route::get('/urinalysis/pdf/view/{id}', 'PatientsController@urinalysispdfview');
 
 Route::get('/visit/{id}/{vid}/ecgdone/pdf', 'PatientsController@ecgdonepdf');
@@ -115,6 +118,7 @@ Route::get('/visit/{id}/{vid}/urinalysisdone/pdf', 'PatientsController@urinalysi
 Route::get('/visit/{id}/{vid}/apttdone/pdf', 'PatientsController@apttdonepdf');
 
 Route::get('/ultrasound/pdf/view/{id}', 'PatientsController@ultrasoundpdfview');
+Route::get('/ultrasound/pdf/view/{id}/reprint', 'PatientsController@reprintultrasoundpdfview');
 
 Route::get('/pdf/viewledger/{datefrom}/{dateto}', 'DoctorsController@viewledger');
 

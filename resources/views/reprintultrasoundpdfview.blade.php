@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <body>
-    @if(!$Patientultrasound->finding)
 	<table>
 		<tbody>
 			<tr>
@@ -40,42 +39,6 @@
             <tr><td></td></tr>
         </tbody>
     </table>
-    @else
-    <table>
-        <tbody>
-            <tr>
-                <td>
-                    <h2></h2>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td style="width: 16%;"></td>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 16%;"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 16%;"></td>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 16%;"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 16%;"></td>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 16%;"></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-        </tbody>
-    </table>
-    @endif
 
     <table>
         <tbody>
@@ -84,9 +47,7 @@
                     Result / Finding: <b style="font-size: 14pt;">{{$Patientultrasound->finding}}</b>
                 </td>
                 <td style="width: 60%;">
-                    @if(!$Patientultrasound->finding)
                     Service(s): <b>{{$Patientultrasound->ultraservice}}</b>
-                    @endif
                 </td>
             </tr>
             <tr><td></td></tr>
@@ -98,22 +59,12 @@
             <tr>
                 <td style="text-align: justify;">{{$Patientultrasound->finding_info}}</td>
             </tr>
-            @if(!$Patientultrasound->finding)
             <tr><td></td></tr>
             <tr><td></td></tr>
             <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            <tr><td></td></tr>
-            @endif
         </tbody>
     </table>
 
-    @if(!$Patientultrasound->finding)
     <table>
         <tbody>
             <tr>
@@ -130,7 +81,6 @@
             </tr>
         </tbody>
     </table>
-    @endif
 
 </body>
 </html>
