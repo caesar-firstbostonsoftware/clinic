@@ -38,10 +38,10 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:24.5%;"><b>PHYSICAL</b></td>
+                <td style="width:24.5%;"><b style="font-size: 14pt;">PHYSICAL</b></td>
                 <td style="width:24.5%;"></td>
                 <td style="width:1%;"></td>
-                <td style="width:25%;"><b>MICROSCOPIC</b></td>
+                <td style="width:25%;"><b style="font-size: 14pt;">MICROSCOPIC</b></td>
                 <td style="width:20%;"></td>
                 <td style="width:5%;"></td>
             </tr>
@@ -55,7 +55,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> WBC</td>
+                <td style="border: 1px solid black;width:24%;"> WBC</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->wbc)
                     Negative
@@ -63,7 +63,7 @@
                     {{$Urinalyses->wbc}}
                     @endif
                 </td>
-                <td style="width:5%;"> HPF</td>
+                <td style="width:6%;"> HPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Transparency</td>
@@ -75,7 +75,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> RBC</td>
+                <td style="border: 1px solid black;width:24%;"> RBC</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->rbc)
                     Negative
@@ -83,7 +83,7 @@
                     {{$Urinalyses->rbc}}
                     @endif
                 </td>
-                <td style="width:5%;"> HPF</td>
+                <td style="width:6%;"> HPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Specific Gravity</td>
@@ -95,7 +95,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> Epith. Cells</td>
+                <td style="border: 1px solid black;width:24%;"> Epith. Cells</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->epith_cell)
                     Negative
@@ -103,13 +103,13 @@
                     {{$Urinalyses->epith_cell}}
                     @endif
                 </td>
-                <td style="width:5%;"> HPF</td>
+                <td style="width:6%;"> HPF</td>
             </tr>
             <tr>
-                <td style="width:24.5%;"><b>CHEMICAL</b></td>
+                <td style="width:24.5%;"><b style="font-size: 14pt;">CHEMICAL</b></td>
                 <td style="width:24.5%;"></td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> Bacteria</td>
+                <td style="border: 1px solid black;width:24%;"> Bacteria</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->bacteria)
                     Negative
@@ -117,7 +117,7 @@
                     {{$Urinalyses->bacteria}}
                     @endif
                 </td>
-                <td style="width:5%;"> HPF</td>
+                <td style="width:6%;"> HPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Glucose</td>
@@ -129,7 +129,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> Cast(s)</td>
+                <td style="border: 1px solid black;width:24%;"> Cast(s)</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->cast)
                     Negative
@@ -137,7 +137,7 @@
                     {{$Urinalyses->cast}}
                     @endif
                 </td>
-                <td style="width:5%;"> LPF</td>
+                <td style="width:6%;"> LPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Bilirubin</td>
@@ -149,14 +149,14 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"></td>
+                <td style="border: 1px solid black;width:24%;"></td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->cast2)
                     @else
                     {{$Urinalyses->cast2}}
                     @endif
                 </td>
-                <td style="width:5%;"> LPF</td>
+                <td style="width:6%;"> LPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Ketone</td>
@@ -168,7 +168,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> Crystal(s)</td>
+                <td style="border: 1px solid black;width:24%;"> Crystal(s)</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->crystal)
                     Negative
@@ -176,7 +176,7 @@
                     {{$Urinalyses->crystal}}
                     @endif
                 </td>
-                <td style="width:5%;"> LPF</td>
+                <td style="width:6%;"> LPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Blood</td>
@@ -188,14 +188,14 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"></td>
+                <td style="border: 1px solid black;width:24%;"></td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->blood)
                     @else
                     {{$Urinalyses->crystal2}}
                     @endif
                 </td>
-                <td style="width:5%;"> LPF</td>
+                <td style="width:6%;"> LPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> pH</td>
@@ -207,7 +207,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> Amorphous Materials</td>
+                <td style="border: 1px solid black;width:24%;text-align: center;font-size: 10pt;">Amorphous Materials</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->amorphous_material)
                     Negative
@@ -215,7 +215,7 @@
                     {{$Urinalyses->amorphous_material}}
                     @endif
                 </td>
-                <td style="width:5%;"> HPF</td>
+                <td style="width:6%;"> HPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Protein</td>
@@ -227,7 +227,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> Mucus Thread</td>
+                <td style="border: 1px solid black;width:24%;"> Mucus Thread</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->mucus_thread)
                     Negative
@@ -235,7 +235,7 @@
                     {{$Urinalyses->mucus_thread}}
                     @endif
                 </td>
-                <td style="width:5%;"> HPF</td>
+                <td style="width:6%;"> HPF</td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Urobilingen</td>
@@ -247,7 +247,7 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"> Others</td>
+                <td style="border: 1px solid black;width:24%;"> Others</td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->other)
                     Negative
@@ -255,7 +255,7 @@
                     {{$Urinalyses->other}}
                     @endif
                 </td>
-                <td style="width:5%;"></td>
+                <td style="width:6%;"></td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Nitrites</td>
@@ -267,14 +267,14 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"></td>
+                <td style="border: 1px solid black;width:24%;"></td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->other2)
                     @else
                     {{$Urinalyses->other2}}
                     @endif
                 </td>
-                <td style="width:5%;"></td>
+                <td style="width:6%;"></td>
             </tr>
             <tr>
                 <td style="border: 1px solid black;width:24.5%;"> Leucocytes</td>
@@ -286,14 +286,14 @@
                     @endif
                 </td>
                 <td style="width:1%;"></td>
-                <td style="border: 1px solid black;width:25%;"></td>
+                <td style="border: 1px solid black;width:24%;"></td>
                 <td style="border: 1px solid black;width:20%;">
                     @if(!$Urinalyses->other3)
                     @else
                     {{$Urinalyses->other3}}
                     @endif
                 </td>
-                <td style="width:5%;"></td>
+                <td style="width:6%;"></td>
             </tr>
             <tr><td></td></tr>
             <tr>
@@ -303,11 +303,12 @@
                 <td style="width:25%;"></td>
             </tr>
             <tr>
-                <td style="width:10%;"><b>REMARKS:</b></td>
-                <td style="width:88%;"> {{$Urinalyses->preg_remark}}</td>
+                <td style="width:12%;"><b>REMARKS:</b></td>
+                <td style="width:86%;"> {{$Urinalyses->preg_remark}}</td>
                 <td style="width:1%;"></td>
                 <td style="width:1%;"></td>
             </tr>
+            <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>
     </table>
@@ -315,12 +316,8 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;text-align: center;"><u><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b></u></td>
-                <td style="width:50%;"> ____________________________________, RMT</td>
-            </tr>
-            <tr>
-                <td style="width:50%;text-align:center;">Pathologist</td>
-                <td style="width:50%;"></td>
+                <td style="width:50%;text-align: center;"><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b><br>Pathologist</td>
+                <td style="width:50%;text-align: center;"> {{$Urinalyses->user->l_name}} {{$Urinalyses->user->f_name}} {{$Urinalyses->user->m_name}}, RMT<br>PRC Number : {{$Urinalyses->user->license_number}}</td>
             </tr>
         </tbody>
     </table>

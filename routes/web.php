@@ -187,3 +187,5 @@ Route::get('api/servicepackage','AdminPanelContoller@servicepackage');
 
 Route::get('api/viewpatentlist','CompanyController@viewpatentlist');
 
+Route::get('api/getplate','PatientsController@getplate');
+

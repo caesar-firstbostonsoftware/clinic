@@ -23,11 +23,7 @@
                     		</tr>
                     		<tr>
                         		<td style="width: 16%;"><b>Physician:</b></td>
-                        		<td style="width: 50%;">
-                                    @if(!$Patientultrasound->doctor)
-                                    @else
-                                    {{$Patientultrasound->doctor->f_name}} {{$Patientultrasound->doctor->m_name}} {{$Patientultrasound->doctor->l_name}}, {{$Patientultrasound->doctor->credential}}
-                                    @endif      
+                        		<td style="width: 50%;">@if(!$Patientultrasound->doctor)@else{{$Patientultrasound->doctor->f_name}} {{$Patientultrasound->doctor->m_name}} {{$Patientultrasound->doctor->l_name}}, {{$Patientultrasound->doctor->credential}}@endif      
                                 </td>
                                 <td style="width: 16%;"><b>Date:</b></td>
                                 <td>{{$Patientultrasound->ultrasound_date}}</td>
@@ -80,10 +76,13 @@
     <table>
         <tbody>
             <tr>
-                <td style="width: 40%;">
+                <td style="width: 50%;">
+                    @if(!$Patientultrasound->finding)
+                    @else
                     Result / Finding: <b style="font-size: 14pt;">{{$Patientultrasound->finding}}</b>
+                    @endif
                 </td>
-                <td style="width: 60%;">
+                <td style="width: 50%;font-size:9pt;">
                     @if(!$Patientultrasound->finding)
                     Service(s): <b>{{$Patientultrasound->ultraservice}}</b>
                     @endif

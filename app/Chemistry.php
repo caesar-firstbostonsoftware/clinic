@@ -10,4 +10,9 @@ class Chemistry extends Model
     {
     	 return $this->belongsTo('App\Doctor','doc_id');
     }
+
+    public function user()
+    {
+    	 return $this->belongsTo('App\Doctor','user_id');
+    }
 }

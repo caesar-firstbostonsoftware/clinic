@@ -60,12 +60,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2009.png') }}" height="30" width="30"> My Info</h1>
-        <ol class="breadcrumb">
-            @if(Session::get('user') == 1)
-            <li><a href="/dashboard">Dashboard</a></li>
-            @endif
-            <li class="active"><a href="/myinfo"><b>My Info</b></a></li>
-        </ol>
     </section>
     
     <section class="content">
@@ -121,7 +115,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="col-sm-10">
                                             <input class="form-control" id="email" name="email" placeholder="Email" type="email" required="" value="{{$info->email}}" autocomplete="off" tabindex="7">
                                         </div>
-                                    </div><br>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">License Number</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" name="license_number" placeholder="License Number" type="text" value="{{$info->license_number}}" autocomplete="off" tabindex="7">
+                                        </div>
+                                    </div>
+                                    <br>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-10">

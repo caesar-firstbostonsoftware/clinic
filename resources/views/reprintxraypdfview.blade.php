@@ -22,11 +22,7 @@
                     		</tr>
                     		<tr>
                         		<td style="width: 16%;"><b>Physician:</b></td>
-                        		<td style="width: 50%;">
-                                    @if(!$Patientxray->doctor)
-                                    @else
-                                    {{$Patientxray->doctor->f_name}} {{$Patientxray->doctor->m_name}} {{$Patientxray->doctor->l_name}}, {{$Patientxray->doctor->credential}}
-                                    @endif
+                        		<td style="width: 50%;">@if(!$Patientxray->doctor)@else{{$Patientxray->doctor->f_name}} {{$Patientxray->doctor->m_name}} {{$Patientxray->doctor->l_name}}, {{$Patientxray->doctor->credential}}@endif
                                 </td>
                                 <td style="width: 16%;"><b>Date:</b></td>
                                 <td>@foreach($Patientxray->xraydate as $xray){{$xray->date}}@endforeach

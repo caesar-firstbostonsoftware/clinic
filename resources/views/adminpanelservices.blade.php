@@ -73,14 +73,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2015.png') }}" height="30" width="30"> Services</h1>
-        <ol class="breadcrumb">
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/myinfo">My Info</a></li>
-            <li><a href="/NFHSI">Patients</a></li>
-            <li><a href="/NFHSI/users">Users</a></li>
-            <li><a href="/reports/{{Session::get('user')}}">Reports</a></li>
-            <li class="active"><a href="/NFHSI/services"><b>Services</b></a></li>
-        </ol>
     </section>
     <section class="content">
         <div class="row">

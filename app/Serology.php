@@ -15,4 +15,9 @@ class Serology extends Model
     {
     	 return $this->belongsTo('App\Doctor','doctor_id');
     }
+
+    public function user()
+    {
+    	 return $this->belongsTo('App\Doctor','user_id');
+    }
 }

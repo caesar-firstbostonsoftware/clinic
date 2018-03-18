@@ -390,6 +390,7 @@ class DoctorsController extends Controller
             $doctor->specialization = $specialization;
             $doctor->address = $address;
             $doctor->email = $email;
+            $doctor->license_number = $request->input('license_number');
             $doctor->save();
 
             $user = User::where('doc_id',$doctor->id)->first();

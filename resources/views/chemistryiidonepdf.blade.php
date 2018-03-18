@@ -38,13 +38,13 @@
         <tbody>
             <tr>
                 <td style="width:50%;"></td>
-                <td style="text-align:center;width:25%;"><b style="font-size: 12pt;">Result</b></td>
-                <td style="text-align:center;width:25%;"><b style="font-size: 12pt;">Normal Value</b></td>
+                <td style="text-align:center;width:25%;"><b style="font-size: 14pt;">Result</b></td>
+                <td style="text-align:center;width:25%;"><b style="font-size: 14pt;">Normal Value</b></td>
             </tr>
             @if(!$SecondChemistry->tsh && !$SecondChemistry->t3 && !$SecondChemistry->t4)
             @else
             <tr>
-                <td style="width:50%;"><b> THYROID PANEL</b></td>
+                <td style="width:50%;"><b style="font-size: 14pt;"> THYROID PANEL</b></td>
                 <td style="width:25%;"></td>
                 <td style="width:25%;"></td>
             </tr>
@@ -72,23 +72,21 @@
                 <td style="text-align:center;width:25%;"> 66 - 181 nmd/L</td>
             </tr>
             @endif
-            <tr><td></td></tr>
             @endif
 
             @if(!$SecondChemistry->psa)
             @else
             <tr>
-                <td style="width:50%;"><b> PSA (Protate Specific Antigen)</b></td>
+                <td style="width:50%;"><b style="font-size: 14pt;"> PSA(Protate Specific Antigen)</b></td>
                 <td style="text-align:center;width:25%;">  {{$SecondChemistry->psa}}</td>
                 <td style="text-align:center;width:25%;"> < 4ng/mL</td>
             </tr>
-            <tr><td></td></tr>
             @endif
 
             @if(!$SecondChemistry->bilirubin_total && !$SecondChemistry->bilirubin_direct && !$SecondChemistry->bilirubin_indirect && !$SecondChemistry->protien_total && !$SecondChemistry->protien_albumin && !$SecondChemistry->protien_globulin && !$SecondChemistry->protien_ag_ratio)
             @else
             <tr>
-                <td style="width:50%;"><b> LIVER FUNCTION</b></td>
+                <td style="width:50%;"><b style="font-size: 14pt;"> LIVER FUNCTION</b></td>
                 <td style="width:25%;"></td>
                 <td style="width:25%;"></td>
             </tr>
@@ -158,7 +156,6 @@
                 <td style="text-align:center;width:25%;"> 1.5-3.0 :1.0 g/dl</td>
             </tr>
             @endif
-            <tr><td></td></tr>
             @endif
             <tr><td></td></tr>
         </tbody>
@@ -166,10 +163,9 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:10%;"><b>REMARKS:</b></td>
-                <td style="width:90%;">{{$SecondChemistry->remark}}</td>
+                <td style="width:15%;"><b>REMARKS:</b></td>
+                <td style="width:85%;">{{$SecondChemistry->remark}}</td>
             </tr>
-            <tr><td></td></tr>
             <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>
@@ -177,12 +173,8 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;text-align: center;"><u><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b></u></td>
-                <td style="width:50%;"> ____________________________________, RMT</td>
-            </tr>
-            <tr>
-                <td style="width:50%;text-align:center;">Pathologist</td>
-                <td style="width:50%;"></td>
+                <td style="width:50%;text-align: center;"><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b><br>Pathologist</td>
+                <td style="width:50%;text-align: center;"> {{$SecondChemistry->user->l_name}} {{$SecondChemistry->user->f_name}} {{$SecondChemistry->user->m_name}}, RMT<br>PRC Number : {{$SecondChemistry->user->license_number}}</td>
             </tr>
         </tbody>
     </table>

@@ -60,17 +60,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2014.png') }}" height="30" width="30"> Reports</h1>
-        <ol class="breadcrumb">
-            @if(Session::get('user') == 1)
-            <li><a href="/dashboard">Dashboard</a></li>
-            @endif
-            <li><a href="/myinfo">My Info</a></li>
-            <li><a href="/NFHSI">Patients</a></li>
-            @if(Session::get('user') == 1)
-            <li><a href="/NFHSI/users">Users</a></li>
-            @endif
-            <li class="active"><a href="/reports/{{Session::get('user')}}"><b>Reports</b></a></li>
-        </ol>
     </section>
     
     <section class="content">

@@ -79,9 +79,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2001.png') }}" alt="" height="30" width="30"> Dashboard</h1>
-        <ol class="breadcrumb">
-            <li class="active"><a href="/dashboard"><b>Dashboard</b></a></li>
-        </ol>
     </section>
     
     <section class="content">

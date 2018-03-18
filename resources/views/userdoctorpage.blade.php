@@ -65,12 +65,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2012.png') }}" height="30" width="30"> Users</h1>
-        <ol class="breadcrumb">
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/myinfo">My Info</a></li>
-            <li><a href="/NFHSI">Patients</a></li>
-            <li class="active"><a href="/NFHSI/users"><b>Users</b></a></li>
-        </ol>
     </section>
     <section class="content">
         <h3 class="box-title">List of Users <button class="btn btn-primary btn-xs addnew" data-toggle="modal" data-target="#addnewuser" data-backdrop="static">Add New</button></h3>

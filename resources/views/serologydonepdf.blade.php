@@ -37,35 +37,32 @@
     <table>
         <tbody>
             <tr>
-                <td><b>EXAMS :</b></td>
+                <td><b style="font-size: 14pt;">EXAMS :</b></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black;"></td>
-                <td style="border: 1px solid black;text-align:center;"><b>RESULT</b></td>
-                <td style="border: 1px solid black;text-align:center;"><b>RESULTREMARKS</b></td>
+                <td style=""></td>
+                <td style="text-align:center;"><b style="font-size: 14pt;">RESULT</b></td>
+                <td style="text-align:center;"><b style="font-size: 14pt;">RESULT REMARKS</b></td>
             </tr>
             @foreach($serser as $sero)
             <tr>
-                <td style="border: 1px solid black;"> <b>{{$sero->adminpanel->name}}</b></td>
-                <td style="border: 1px solid black;text-align: center;"> {{$sero->result}}</td>
-                <td style="border: 1px solid black;text-align: center;"> {{$sero->remark}}</td>
+                <td style=""> <b>{{$sero->adminpanel->name}}</b></td>
+                <td style="text-align: center;"> {{$sero->result}}</td>
+                <td style="text-align: center;"> {{$sero->remark}}</td>
             </tr>
             @endforeach
             <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>
     </table>
+    
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;text-align: center;"><u><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b></u></td>
-                <td style="width:50%;"> ____________________________________, RMT</td>
-            </tr>
-            <tr>
-                <td style="width:50%;text-align:center;">Pathologist</td>
-                <td style="width:50%;"></td>
+                <td style="width:50%;text-align: center;"><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b><br>Pathologist</td>
+                <td style="width:50%;text-align: center;"> {{$Serology->user->l_name}} {{$Serology->user->f_name}} {{$Serology->user->m_name}}, RMT<br>PRC Number : {{$Serology->user->license_number}}</td>
             </tr>
         </tbody>
     </table>

@@ -44,6 +44,7 @@ use App\Aptt;
 use App\Company;
 use App\ForQueue;
 use App\PackageService;
+use App\Plate;
 
 
 class MYPDF extends TCPDF {
@@ -740,6 +741,10 @@ class PatientsController extends Controller
             $logs->date = $patientxray->xray_date;
             $logs->action = "Create";
             $logs->save();
+
+            $Plate = Plate::first();
+            $Plate->plate_no = $Plate->plate_no + 1;
+            $Plate->save();
 	
             return redirect()->action('PatientsController@patientvisitpage',['id' => $id, 'vid' => $vid]);
 
@@ -861,7 +866,7 @@ class PatientsController extends Controller
         if(Session::has('user')){
 
             $xray_id = $request->input('dataid');
-            $patientxray = Patientxray::join('doctors','patientxrays.physician_id','=','doctors.id')
+            $patientxray = Patientxray::leftJoin('doctors','patientxrays.physician_id','=','doctors.id')
             ->where('patientxrays.id',$xray_id)
             ->select('doctors.*','patientxrays.id as xray_id','patientxrays.xray_date','patientxrays.finding','patientxrays.finding_info','patientxrays.or_no as or_no','patientxrays.phy_fee','patientxrays.plate')
             ->first();
@@ -1527,6 +1532,8 @@ class PatientsController extends Controller
             else {
                 $Urinalysis = Urinalyses::where('id',$uri_id)->first();
 
+                $Urinalysis->user_id = Session::get('user');
+
                 $Urinalysis->physical = $phy;
                 $Urinalysis->color = $color;
                 $Urinalysis->transparency = $transparency;
@@ -1997,7 +2004,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage();
             
             $pdf->writeHTML(view('xraypdfview',compact('Patientxray','receipt_number'))->render());
@@ -2041,7 +2048,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage();
 
             $Patientxray = Patientxray::where('id',$id)->with('patient','doctor','xraydate')->first();
@@ -2173,6 +2180,7 @@ class PatientsController extends Controller
 
                 $Fecalyses->feca_other = $request->input('others_desc');
                 $Fecalyses->remark = $request->input('remarks');
+                $Fecalyses->user_id = Session::get('user');
                 $Fecalyses->save();
             }
             else {
@@ -2195,6 +2203,7 @@ class PatientsController extends Controller
 
                 $Fecalyses->feca_other = $request->input('others_desc');
                 $Fecalyses->remark = $request->input('remarks');
+                $Fecalyses->user_id = Session::get('user');
                 $Fecalyses->save();
             }
     
@@ -2437,6 +2446,7 @@ class PatientsController extends Controller
 
                 $Chemistry->chem_other = $request->input('chem_others');
                 $Chemistry->remark = $request->input('chem_remarks');
+                $Chemistry->user_id = Session::get('user');
                 $Chemistry->save();
             }
             else {
@@ -2492,6 +2502,7 @@ class PatientsController extends Controller
 
                 $Chemistry->chem_other = $request->input('chem_others');
                 $Chemistry->remark = $request->input('chem_remarks');
+                $Chemistry->user_id = Session::get('user');
                 $Chemistry->save();
             }
     
@@ -2622,6 +2633,7 @@ class PatientsController extends Controller
                 $Ogtt->oh_second_hour_result = $request->input('secondhour_oggt_grams_result');
                 $Ogtt->oh_third_hour = $thirdhour_oggt_grams1002;
                 $Ogtt->oh_third_hour_result = $request->input('thirdhour_oggt_grams_result');
+                $Ogtt->user_id = Session::get('user');
 
                 $Ogtt->save();
             }
@@ -2651,6 +2663,7 @@ class PatientsController extends Controller
                 $Ogtt->oh_second_hour_result = $request->input('secondhour_oggt_grams_result');
                 $Ogtt->oh_third_hour = $thirdhour_oggt_grams1002;
                 $Ogtt->oh_third_hour_result = $request->input('thirdhour_oggt_grams_result');
+                $Ogtt->user_id = Session::get('user');
 
                 $Ogtt->save();
             }
@@ -2844,6 +2857,7 @@ class PatientsController extends Controller
                 $Hematology->retic_desc = $request->input('retic_desc');
                 $Hematology->rbc = $rbc1002;
                 $Hematology->rbc_desc = $request->input('rbc_desc');
+                $Hematology->user_id = Session::get('user');
 
                 $Hematology->save();
             }
@@ -2899,6 +2913,7 @@ class PatientsController extends Controller
                 $Hematology->retic_desc = $request->input('retic_desc');
                 $Hematology->rbc = $rbc1002;
                 $Hematology->rbc_desc = $request->input('rbc_desc');
+                $Hematology->user_id = Session::get('user');
 
                 $Hematology->save();
             }
@@ -3077,6 +3092,7 @@ class PatientsController extends Controller
                     $Serology->admin_panel_id = $request->input('seroser_id')[$i];
                     $Serology->result = $request->input('hemaresult')[$i];
                     $Serology->remark = $request->input('hemaremark')[$i];
+                    $Serology->user_id = Session::get('user');
                     $Serology->save();
                 }
             }
@@ -3098,6 +3114,7 @@ class PatientsController extends Controller
                     $Serology->admin_panel_id = $request->input('seroser_id')[$i];
                     $Serology->result = $request->input('hemaresult')[$i];
                     $Serology->remark = $request->input('hemaremark')[$i];
+                    $Serology->user_id = Session::get('user');
                     $Serology->save();
                 }
             }
@@ -3197,6 +3214,7 @@ class PatientsController extends Controller
                 $SecondChemistry->protien_globulin = $request->input('protien_globulin');
                 $SecondChemistry->protien_ag_ratio = $request->input('protien_ag_ratio');
                 $SecondChemistry->remark = $request->input('chemtwo_remark');
+                $SecondChemistry->user_id = Session::get('user');
                 $SecondChemistry->save();
             }
             else {
@@ -3218,6 +3236,7 @@ class PatientsController extends Controller
                 $SecondChemistry->protien_globulin = $request->input('protien_globulin');
                 $SecondChemistry->protien_ag_ratio = $request->input('protien_ag_ratio');
                 $SecondChemistry->remark = $request->input('chemtwo_remark');
+                $SecondChemistry->user_id = Session::get('user');
                 $SecondChemistry->save();
             }
 
@@ -3570,7 +3589,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3622,11 +3641,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $SecondChemistry =SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $SecondChemistry =SecondChemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
                 $receipt_number = '';
@@ -3674,11 +3693,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $Serology = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $Serology = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $serser = Serology::where('patient_id',$id)->where('visit_id',$vid)->with('adminpanel')->get();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
@@ -3727,11 +3746,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $Hematology = Hematology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $Hematology = Hematology::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
                 $receipt_number = '';
@@ -3780,11 +3799,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $Ogtt = Ogtt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $Ogtt = Ogtt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
                 $receipt_number = '';
@@ -3832,11 +3851,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $Chemistry = Chemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $Chemistry = Chemistry::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
                 $receipt_number = '';
@@ -3884,11 +3903,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $Fecalyses = Fecalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $Fecalyses = Fecalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
                 $receipt_number = '';
@@ -3936,11 +3955,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $Urinalyses = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $Urinalyses = Urinalyses::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
                 $receipt_number = '';
@@ -4090,7 +4109,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage();
 
             $now = date("Y-m-d");
@@ -4142,7 +4161,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage();
 
             $now = date("Y-m-d");
@@ -4393,6 +4412,7 @@ class PatientsController extends Controller
                 
                 $Aptt->rbc = $rbc1002;
                 $Aptt->rbc_desc = $request->input('rbc_desc');
+                $Aptt->user_id = Session::get('user');
 
                 $Aptt->save();
             }
@@ -4445,6 +4465,7 @@ class PatientsController extends Controller
                 
                 $Aptt->rbc = $rbc1002;
                 $Aptt->rbc_desc = $request->input('rbc_desc');
+                $Aptt->user_id = Session::get('user');
 
                 $Aptt->save();
             }
@@ -4520,11 +4541,11 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 10);
+            $pdf->SetFont('Courier', '', 12);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
-            $Aptt = Aptt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor')->first();
+            $Aptt = Aptt::where('patient_id',$id)->where('visit_id',$vid)->with('doctor','user')->first();
             $receipt = ReceiptNumber::where('patient_id',$id)->where('visit_id',$vid)->first();
             if (!$receipt) {
                 $receipt_number = '';
@@ -4552,6 +4573,17 @@ class PatientsController extends Controller
 
             Session::flash('alert-success', 'Patient Successfully Disabled.');
             return redirect()->action('PatientsController@patientlist');
+        }
+        else {
+            return redirect()->action('Auth@checklogin');
+        }
+    }
+
+    public function getplate(Request $request)
+    {   
+        if(Session::has('user')){
+            $Plate = Plate::first();
+            return Response::json($Plate, 200, array(), JSON_PRETTY_PRINT);
         }
         else {
             return redirect()->action('Auth@checklogin');

@@ -69,14 +69,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2010.png') }}" height="30" width="30"> Patients</h1>
-        <ol class="breadcrumb">
-            
-            @if(Session::get('position') == "Doctor")
-            <li><a href="/dashboard">Dashboard</a></li>
-            @endif
-            <li><a href="/myinfo">My Info</a></li>
-            <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
-        </ol>
     </section>
 
     <!-- Main content -->
@@ -1466,7 +1458,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
                                     @endif
                                 @endif -->
-                                <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
+                                <button type="button" class="btn btn-primary btn-xs addnewxrayplate" data-toggle="modal" data-target="#modal_xraynew" data-backdrop="static">Add New</button>
                                 @if($xraycount != 0)
                                 <a href="/visit/{{$id}}/{{$vid}}/xraydone" class="btn btn-xs btn-default">Done</a>
                                 @endif
@@ -1605,7 +1597,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="form-group divxrayinfo">
                                                             <label class="col-sm-1 control-label">PLATE</label>
                                                             <div class="col-sm-3">
-                                                                <input type="text" name="plate" class="form-control plate_edit" placeholder="PLATE" autocomplete="off">
+                                                                <input type="text" name="plate" class="form-control plate_edit" placeholder="PLATE" autocomplete="off" readonly="">
                                                             </div>
                                                         </div>
 
@@ -1714,7 +1706,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="form-group divxrayinfo">
                                                 <label class="col-sm-1 control-label">PLATE</label>
                                                 <div class="col-sm-3">
-                                                    <input type="text" name="plate" class="form-control plate" placeholder="PLATE" autocomplete="off">
+                                                    <input type="text" name="plate" class="form-control plate" placeholder="PLATE" autocomplete="off" readonly="">
                                                 </div>
                                             </div>
 
@@ -8425,6 +8417,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <td class="text-center">'+logsss.action+'</td>\
                                 </tr>');
             });
+        });
+    })
+
+    $('.addnewxrayplate').on('click',function() {
+        $('.plate').val('');
+        $.get('../../api/getplate', function(data){
+            $('.plate').val(data.plate_no);
         });
     })
 

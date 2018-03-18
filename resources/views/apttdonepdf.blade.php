@@ -40,7 +40,7 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;"><b style="font-size: 12pt;">CBC</b></td>
+                <td style="width:50%;"><b style="font-size: 14pt;">CBC</b></td>
             </tr>
             @if(!$Aptt->hematocrit_desc)
             @else
@@ -72,7 +72,6 @@
                 <td style="width:25%;text-align: center;"> 3A5 10<br> CH6 13</td>
             </tr>
             @endif
-            <tr><td></td></tr>
         </tbody>
     </table>
     @endif
@@ -82,7 +81,7 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;"><b style="font-size: 12pt;">Differential Count %</b></td>
+                <td style="width:50%;"><b style="font-size: 14pt;">Differential Count %</b></td>
             </tr>
             <tr>
                 <td style="width:5%;"></td>
@@ -114,25 +113,23 @@
             @if(!$Aptt->platelet_count)
             @else
             <tr>
-                <td style="width:25%;"><b style="font-size: 12pt;">Platelet</b> Count :</td>
-                <td style="width:20%;text-align: center;"> <i><b>{{$Aptt->platelet_count}}</b></i></td>
-                <td style="width:15%;text-align: center;"> N:150-400 <br> T/mm*</td>
+                <td style="width:25%;"><b style="font-size: 14pt;">Platelet</b> Count :</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->platelet_count}}</b></i></td>
+                <td style="width:25%;text-align: center;"> N:150-400 T/mm*</td>
             </tr>
-            <tr><td></td></tr>
             @endif
             @if(!$Aptt->rbc_desc)
             @else
             <tr>
-                <td style="width:25%;"><b style="font-size: 12pt;">RBC</b></td>
-                <td style="width:20%;text-align: center;"> <i><b>{{$Aptt->rbc_desc}}</b></i></td>
-                <td style="width:15%;text-align: center;"> MIL/mm4</td>
+                <td style="width:25%;"><b style="font-size: 14pt;">RBC</b></td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->rbc_desc}}</b></i></td>
+                <td style="width:20%;text-align: center;"> MIL/mm4</td>
             </tr>
             <tr>
                 <td style="width:25%;"></td>
-                <td style="width:20%;text-align: center;">F4-5.5 M4.5-6.0</td>
-                <td style="width:15%;"></td>
+                <td style="width:25%;text-align: center;">F4-5.5 M4.5-6.0</td>
+                <td style="width:20%;"></td>
             </tr>
-            <tr><td></td></tr>
             @endif
         </tbody>
     </table>
@@ -145,15 +142,15 @@
             @if(!$Aptt->control_desc && !$Aptt->patient_desc && !$Aptt->a_desc)
             @else
             <tr>
-                <td style="width:50%;"><b style="font-size: 12pt;">PRO TIME</b></td>
+                <td style="width:50%;"><b style="font-size: 14pt;">PRO TIME</b></td>
             </tr>
             @if(!$Aptt->control_desc)
             @else
             <tr>
                 <td style="width:5%;"></td>
                 <td style="width:20%;">&nbsp;Control</td>
-                <td style="width:20%;text-align: center;"> <i><b>{{$Aptt->control_desc}}</b></i></td>
-                <td style="width:15%;text-align: center;"> sec.</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->control_desc}}</b></i></td>
+                <td style="width:20%;text-align: center;"> sec.</td>
             </tr>
             @endif
             @if(!$Aptt->patient_desc)
@@ -161,8 +158,8 @@
             <tr>
                 <td style="width:5%;"></td>
                 <td style="width:20%;">&nbsp;Patient</td>
-                <td style="width:20%;text-align: center;"> <i><b>{{$Aptt->patient_desc}}</b></i></td>
-                <td style="width:15%;text-align: center;"> sec.</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->patient_desc}}</b></i></td>
+                <td style="width:20%;text-align: center;"> sec.</td>
             </tr>
             @endif
             @if(!$Aptt->a_desc)
@@ -170,7 +167,7 @@
             <tr>
                 <td style="width:5%;"></td>
                 <td style="width:20%;">&nbsp;%A</td>
-                <td style="width:35%;text-align: center;"> <i><b>{{$Aptt->a_desc}}</b></i></td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->a_desc}}</b></i></td>
             </tr>
             @endif
             @endif
@@ -184,8 +181,8 @@
             <tr>
                 <td style="width:5%;"></td>
                 <td style="width:20%;">&nbsp;MCV</td>
-                <td style="width:20%;text-align: center;"> <i><b>{{$Aptt->mcv_desc}}</b></i></td>
-                <td style="width:15%;text-align: center;"> 80 - 90</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->mcv_desc}}</b></i></td>
+                <td style="width:20%;text-align: center;"> 80 - 90</td>
             </tr>
             @endif
             @if(!$Aptt->mch_desc)
@@ -193,8 +190,8 @@
             <tr>
                 <td style="width:5%;"></td>
                 <td style="width:20%;">&nbsp;INDICES MCH</td>
-                <td style="width:20%;text-align: center;"> <i><b>{{$Aptt->mch_desc}}</b></i></td>
-                <td style="width:15%;text-align: center;"> 21 - 31 pg</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->mch_desc}}</b></i></td>
+                <td style="width:20%;text-align: center;"> 21 - 31 pg</td>
             </tr>
             @endif
             @if(!$Aptt->mchc_desc)
@@ -202,60 +199,60 @@
             <tr>
                 <td style="width:5%;"></td>
                 <td style="width:20%;">&nbsp;MCHC</td>
-                <td style="width:20%;text-align: center;"> <i><b>{{$Aptt->mchc_desc}}</b></i></td>
-                <td style="width:15%;text-align: center;"> 33 - 38 %</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->mchc_desc}}</b></i></td>
+                <td style="width:20%;text-align: center;"> 33 - 38 %</td>
             </tr>
             @endif
             @endif
-            <tr><td></td></tr>
         </tbody>
     </table>
     @endif
 
-    @if(!$Aptt->clottinglw_time && !$Aptt->clotting_time && !$Aptt->bleedingdm_time && !$Aptt->grp_desc && !$Aptt->rh_desc && !$Aptt->esr_desc)
+    @if(!$Aptt->clottinglw_time && !$Aptt->clotting_time && !$Aptt->bleedingdm_time && !$Aptt->grp_desc && !$Aptt->rh_desc)
     @else
     <table>
         <tbody>
+            <tr><td></td></tr>
             @if(!$Aptt->clottinglw_time)
             @else
             <tr>
-                <td style="width:40%;"> <b>Clotting(Lee & White)</b><br> Time : <i><b>{{$Aptt->clottinglw_time}}</b></i></td>
+                <td style="width:50%;"> <b>Clotting(Lee & White)</b><br> Time : <i><b>{{$Aptt->clottinglw_time}}</b></i></td>
                 <td style="width:20%;text-align: center;"> N:6-17 min.</td>
             </tr>
             @endif
             @if(!$Aptt->clotting_time)
             @else
             <tr>
-                <td style="width:40%;"> <b>Clotting</b><br> Time : <i><b>{{$Aptt->clotting_time}}</b></i></td>
+                <td style="width:50%;"> <b>Clotting</b><br> Time : <i><b>{{$Aptt->clotting_time}}</b></i></td>
                 <td style="width:20%;text-align: center;"> N:3-5 min.</td>
             </tr>
             @endif
             @if(!$Aptt->bleedingdm_time)
             @else
             <tr>
-                <td style="width:40%;"> <b>Bleeding(Duke Method)</b><br> Time : <i><b>{{$Aptt->bleedingdm_time}}</b></i></td>
+                <td style="width:50%;"> <b>Bleeding(Duke Method)</b><br> Time : <i><b>{{$Aptt->bleedingdm_time}}</b></i></td>
                 <td style="width:20%;text-align: center;"> N:1-3 min.</td>
             </tr>
             @endif
+            <tr><td></td></tr>
             @if(!$Aptt->grp_desc)
             @else
             <tr>
-                <td style="width:40%;"> <b>GRP : </b> <i><b>{{$Aptt->grp_desc}}</b></i></td>
+                <td style="width:50%;"> <b>GRP : </b> <i><b>{{$Aptt->grp_desc}}</b></i></td>
             </tr>
             @endif
             @if(!$Aptt->rh_desc)
             @else
             <tr>
-                <td style="width:40%;"> <b>Rh. : </b> <i><b>{{$Aptt->rh_desc}}</b></i></td>
+                <td style="width:50%;"> <b>Rh. : </b> <i><b>{{$Aptt->rh_desc}}</b></i></td>
             </tr>
             @endif
             @if(!$Aptt->esr_desc)
             @else
             <tr>
-                <td style="width:40%;"> <b>APTT : </b> <i><b>{{$Aptt->esr_desc}}</b></i></td>
+                <td style="width:50%;"> <b>APTT : </b><i><b>{{$Aptt->esr_desc}}</b></i></td>
             </tr>
             @endif
-            <tr><td></td></tr>
         </tbody>
     </table>
     @endif
@@ -270,12 +267,8 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;text-align: center;"><u><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b></u></td>
-                <td style="width:50%;"> ____________________________________, RMT</td>
-            </tr>
-            <tr>
-                <td style="width:50%;text-align:center;">Pathologist</td>
-                <td style="width:50%;"></td>
+                <td style="width:50%;text-align: center;"><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b><br>Pathologist</td>
+                <td style="width:50%;text-align: center;"> {{$Aptt->user->l_name}} {{$Aptt->user->f_name}} {{$Aptt->user->m_name}}, RMT<br>PRC Number : {{$Aptt->user->license_number}}</td>
             </tr>
         </tbody>
     </table>

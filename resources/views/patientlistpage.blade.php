@@ -60,14 +60,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2010.png') }}" height="30" width="30"> Patients</h1>
-        <ol class="breadcrumb">
-            
-            @if(Session::get('user') == 1)
-            <li><a href="/dashboard">Dashboard</a></li>
-            @endif
-            <li><a href="/myinfo">My Info</a></li>
-            <li class="active"><a href="/NFHSI"><b>Patients</b></a></li>
-        </ol>
     </section>
 
     <!-- Main content -->
@@ -132,7 +124,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
                                                     <td>
-                                                        @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                                                        @if(Session::get('position') == 'Cashier' || Session::get('user') == 1 || Session::get('position') == 'Labtest')
                                                         <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
                                                         <a href="/NFHSI/{{$patient->id}}/disabled" class="btn btn-xs btn-danger disdis">Disable</a>
                                                         @endif
@@ -155,9 +147,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <span class="label label-success">{{$patient->status}}</span>
                                                     </td>
                                                     <td>
-                                                        @if(Session::get('position') == 'Cashier' || Session::get('user') == 1)
+                                                        @if(Session::get('position') == 'Cashier' || Session::get('user') == 1 || Session::get('position') == 'Labtest')
                                                         <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
-                                                        <a href="/NFHSI/{{$patient->id}}/disabled" class="btn btn-xs btn-danger disdis">Disable</a>
                                                         @endif
                                                         <button id="viewvisit" class="btn btn-xs btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                     </td>

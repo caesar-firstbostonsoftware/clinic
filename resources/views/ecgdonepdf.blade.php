@@ -14,36 +14,26 @@
     <table>
         <tbody>
             <tr>
-                <td style="width: 20%;"><b>Name:</b></td>
-                <td style="width: 40%;"><b style="font-size: 12pt;">{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}</b></td>
-                <td style="width: 1%;"></td>
-                <td style="width: 1%;"></td>
-                <td style="width: 15%;"><b>O.R. No.:</b></td>
-                <td style="width: 23%;">{{$receipt_number}}</td>
+                <td style="width:25%;"><b>Name:</b></td>
+                <td style="width:40%;"><b style="font-size: 12pt;">{{$info->f_name}} {{$info->m_name}} {{$info->l_name}}</b></td>
+                <td style="width:15%;"><b>O.R. No.:</b></td>
+                <td style="width:20%;">{{$receipt_number}}</td>
             </tr>
             <tr>
-                <td style="width: 20%;"><b>Address:</b></td>
-                <td style="width: 40%;">{{$info->address}}</td>
-                <td style="width:6%;"><b>Sex:</b></td>
-                <td style="width:14%;">{{$info->gender}}</td>
-                <td style="width:6%;"><b>Age:</b></td>
-                <td style="width:14%;">{{$info->age}}</td>
+                <td style="width:25%;"><b>Address:</b></td>
+                <td style="width:40%;">{{$info->address}}</td>
+                <td style="width:15%;"><b>Sex / Age:</b></td>
+                <td style="width:20%;">{{$info->gender}} / {{$info->age}}</td>
             </tr>
             <tr>
-                <td style="width: 20%;"><b>Requesting M.D.:</b></td>
-                <td style="width: 58%;">{{$ecg->req_doc}}</td>
-                <td style="width:1%;"></td>
-                <td style="width:1%;"></td>
-                <td style="width:6%;"><b>Date:</b></td>
-                <td style="width:14%;">{{$ecg->ecg_date}}</td>
+                <td style="width:25%;"><b>Requesting M.D.:</b></td>
+                <td style="width:40%;">{{$ecg->req_doc}}</td>
+                <td style="width:15%;"><b>Date:</b></td>
+                <td style="width:20%;">{{$ecg->ecg_date}}</td>
             </tr>
             <tr>
-                <td style="width: 20%;"><b>Diagnosis:</b></td>
-                <td style="width:76%;">{{$ecg->diagnosis}}</td>
-                <td style="width:1%;"></td>
-                <td style="width:1%;"></td>
-                <td style="width:1%;"></td>
-                <td style="width:1%;"></td>
+                <td style="width:25%;"><b>Diagnosis:</b></td>
+                <td style="width:75%;">{{$ecg->diagnosis}}</td>
             </tr>
             <tr><td></td></tr>
         </tbody>
@@ -74,20 +64,20 @@
     <table>
         <tbody>
             <tr>
-                <td style="width:25%;"><b>Significant Findings:</b></td>
-                <td style="width:75%;">{{$ecg->significant_finding}}</td>
+                <td style="width:30%;"><b>Significant Findings:</b></td>
+                <td style="width:70%;">{{$ecg->significant_finding}}</td>
             </tr>
             <tr>
-                <td style="width:25%;"><b>Interpretations:</b></td>
-                <td style="width:75%;">{{$ecg->interpretation}}</td>
+                <td style="width:30%;"><b>Interpretations:</b></td>
+                <td style="width:70%;">{{$ecg->interpretation}}</td>
             </tr>
             <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>
         <tbody>
             <tr>
-                <td style="width:50%;text-align: center;">_____________________________________</td>
-                <td style="width:50%;">_____________________________________, M.D.</td>
+                <td style="width:50%;text-align: center;">_____________________________</td>
+                <td style="width:50%;">_____________________________, M.D.</td>
             </tr>
             <tr>
                 <td style="width:50%;text-align:center;">Date Taken</td>

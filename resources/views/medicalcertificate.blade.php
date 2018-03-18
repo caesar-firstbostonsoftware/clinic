@@ -65,15 +65,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><img src="{{ asset('/img/2010.png') }}" height="30" width="30"> Patients</h1>
-        <ol class="breadcrumb">
-            
-            @if(Session::get('position') == "Doctor")
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/myinfo">My Info</a></li>
-            @endif
-            <li><a href="/NFHSI">Patients</a></li>
-            <li class="active"><a href="/generate/medcert"><b>Medical Certificate</b></a></li>
-        </ol>
     </section>
 
     <!-- Main content -->

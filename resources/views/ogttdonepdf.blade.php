@@ -39,13 +39,13 @@
         <tbody>
             <tr>
                 <td style=""></td>
-                <td style="text-align:center;"><b style="font-size: 12pt;">Result</b></td>
-                <td style="text-align:center;"><b style="font-size: 12pt;">Normal Value</b></td>
+                <td style="text-align:center;"><b style="font-size: 14pt;">Result</b></td>
+                <td style="text-align:center;"><b style="font-size: 14pt;">Normal Value</b></td>
             </tr>
             @if(!$Ogtt->first_hour_result)
             @else
             <tr>
-                <td><b>50 GRAMS</b></td>
+                <td><b style="font-size: 14pt;">50 GRAMS</b></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -54,13 +54,12 @@
                 <td style="text-align: center;"> {{$Ogtt->first_hour_result}}</td>
                 <td style="text-align: center;"> 90 - 165 mg / dl</td>
             </tr>
-            <tr><td></td></tr>
             @endif
 
             @if(!$Ogtt->fasting_result && !$Ogtt->sv_first_hour_result && !$Ogtt->sv_second_hour_result )
             @else
             <tr>
-                <td><b>75 GRAMS</b></td>
+                <td><b style="font-size: 14pt;">75 GRAMS</b></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -88,13 +87,12 @@
                 <td style="text-align: center;"> < 155 mg / dl</td>
             </tr>
             @endif
-            <tr><td></td></tr>
             @endif
 
             @if(!$Ogtt->oh_fasting_result && !$Ogtt->oh_first_hour_result && !$Ogtt->oh_second_hour_result && !$Ogtt->oh_third_hour_result)
             @else
             <tr>
-                <td><b>100 GRAMS</b></td>
+                <td><b style="font-size: 14pt;">100 GRAMS</b></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -130,20 +128,17 @@
                 <td style="text-align: center;"> < 155 mg / dl</td>
             </tr>
             @endif
-            <tr><td></td></tr>
             @endif
+            <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>
     </table>
+    
     <table>
         <tbody>
             <tr>
-                <td style="width:50%;text-align: center;"><u><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b></u></td>
-                <td style="width:50%;"> ____________________________________, RMT</td>
-            </tr>
-            <tr>
-                <td style="width:50%;text-align:center;">Pathologist</td>
-                <td style="width:50%;"></td>
+                <td style="width:50%;text-align: center;"><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b><br>Pathologist</td>
+                <td style="width:50%;text-align: center;"> {{$Ogtt->user->l_name}} {{$Ogtt->user->f_name}} {{$Ogtt->user->m_name}}, RMT<br>PRC Number : {{$Ogtt->user->license_number}}</td>
             </tr>
         </tbody>
     </table>
