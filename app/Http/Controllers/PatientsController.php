@@ -1621,7 +1621,7 @@ class PatientsController extends Controller
             $pdf->setLanguageArray($l);
         }
 
-        $pdf->SetFont('Courier', '', 8);
+        $pdf->SetFont('Courier', '', 11);
         $pdf->AddPage();
 
         $patient = Patient::where('id',$id)->first();
@@ -2004,7 +2004,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage();
             
             $pdf->writeHTML(view('xraypdfview',compact('Patientxray','receipt_number'))->render());
@@ -2048,7 +2048,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage();
 
             $Patientxray = Patientxray::where('id',$id)->with('patient','doctor','xraydate')->first();
@@ -3589,7 +3589,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3641,7 +3641,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3693,7 +3693,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3746,7 +3746,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3799,7 +3799,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3851,7 +3851,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3903,7 +3903,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -3955,7 +3955,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -4109,7 +4109,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage();
 
             $now = date("Y-m-d");
@@ -4161,7 +4161,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage();
 
             $now = date("Y-m-d");
@@ -4541,7 +4541,7 @@ class PatientsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 12);
+            $pdf->SetFont('Courier', '', 11);
             $pdf->AddPage('P');
 
             $info = Patient::where('id',$id)->first();
@@ -4570,6 +4570,32 @@ class PatientsController extends Controller
             $Patient = Patient::where('id',$id)->first();
             $Patient->status = 'Not Active';
             $Patient->save();
+
+            $PatientVisit = PatientVisit::where('patient_id',$id)->get();
+            foreach ($PatientVisit as $key) {
+                if ($key->status == 'Pending' || $key->status == 'Paid') {
+                    $PatientVisit->status = 'Canceled';
+                    $PatientVisit->save();
+                }
+            }
+
+            $PatientService = PatientService::where('patient_id',$id)->get();
+            foreach ($PatientService as $key) {
+                if ($key->status == 'Pending' || $key->status == 'Done') {
+                    $service = PatientService::where('id',$key->id)->first();
+                    $service->status = 'Canceled';
+                    $service->save();
+                }
+            }
+
+            $ForQueue = ForQueue::where('patient_id',$id)->get();
+            foreach ($ForQueue as $key2) {
+                if ($key->status == 'Pending' || $key->status == 'Done') {
+                    $forqueue = ForQueue::where('id',$key2->id)->first();
+                    $forqueue->status = 'Canceled';
+                    $forqueue->save();
+                }
+            }
 
             Session::flash('alert-success', 'Patient Successfully Disabled.');
             return redirect()->action('PatientsController@patientlist');

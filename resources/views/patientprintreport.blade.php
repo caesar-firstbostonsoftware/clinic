@@ -135,7 +135,7 @@
                         		</td>
                     		</tr>
                     		<tr>
-                        		<td style="text-align: right;"><b>Previous Hospitalization:&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                        		<td style="text-align: right;"><b>Previous Hospitalization:&nbsp;&nbsp;</b></td>
                         		<td>
                         			@if(!$past)
                         				N / A

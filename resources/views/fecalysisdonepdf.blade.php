@@ -8,7 +8,6 @@
                     <h2><i>FECALYSIS</i></h2>
                 </td>
             </tr>
-            <tr><td></td></tr>
         </tbody>
     </table>
     <table>
@@ -26,14 +25,10 @@
                 <td style="width:24%;">{{$info->gender}} / {{$info->age}}</td>
             </tr>
             <tr>
-                <td style="width:15%;"></td>
-                <td style="width:45%;"></td>
-                <td style="width:16%;"><b>Date:</b></td>
+                <td style="width:21%;"><b>Requesting M.D.:</b></td>
+                <td style="width:45%;">{{$Fecalyses->req_doc}}</td>
+                <td style="width:10%;"><b>Date:</b></td>
                 <td style="width:24%;">{{$Fecalyses->date_reg}}</td>
-            </tr>
-            <tr>
-                <td style="width:25%;"><b>Requesting M.D.:</b></td>
-                <td style="width:50%;">{{$Fecalyses->req_doc}}</td>
             </tr>
             <tr><td></td></tr>
         </tbody>
@@ -41,35 +36,35 @@
     <table>
         <tbody>
             <tr>
-                <td><b style="font-size: 14pt;"> ROUTINE</b></td>
+                <td><b style="font-size: 12pt;"> ROUTINE</b></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black;width:20%;"> &nbsp;Consistency</td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->consistency}}</td>
-                <td style="border: 1px solid black;width:20%;"> Color</td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->color}}</td>
+                <td style="width:20%;"> &nbsp;Consistency</td>
+                <td style="width:30%;"> <b>{{$Fecalyses->consistency}}</b></td>
+                <td style="width:20%;"> Color</td>
+                <td style="width:30%;"> <b>{{$Fecalyses->color}}</b></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black;width:20%;"> &nbsp;Red Cells</td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->red_cell}}</td>
-                <td style="border: 1px solid black;width:20%;"> Ascaris</td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->ascari}}</td>
+                <td style="width:20%;"> &nbsp;Red Cells</td>
+                <td style="width:30%;"> <b>{{$Fecalyses->red_cell}}</b></td>
+                <td style="width:20%;"> Ascaris</td>
+                <td style="width:30%;"> <b>{{$Fecalyses->ascari}}</b></td>
             </tr>
             <tr>
-                <td style="border: 1px solid black;width:20%;"> &nbsp;Pus Cells</td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->pus_cell}}</td>
-                <td style="border: 1px solid black;width:20%;"> Trichuris</td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->trichuri}}</td>
+                <td style="width:20%;"> &nbsp;Pus Cells</td>
+                <td style="width:30%;"> <b>{{$Fecalyses->pus_cell}}</b></td>
+                <td style="width:20%;"> Trichuris</td>
+                <td style="width:30%;"> <b>{{$Fecalyses->trichuri}}</b></td>
             </tr>
             <tr><td></td></tr>
             <tr>
-                <td style="border: 1px solid black;width:20%;"> <b style="font-size: 14pt;">Amoeba</b></td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->amoeba_desc}}</td>
-                <td style="border: 1px solid black;width:20%;"> Hookworm</td>
-                <td style="border: 1px solid black;width:30%;"> {{$Fecalyses->hookworm}}</td>
+                <td style="width:20%;"> <b style="font-size: 12pt;">Amoeba</b></td>
+                <td style="width:30%;"> <b>{{$Fecalyses->amoeba_desc}}</b></td>
+                <td style="width:20%;"> Hookworm</td>
+                <td style="width:30%;"> <b>{{$Fecalyses->hookworm}}</b></td>
             </tr>
             <tr><td></td></tr>
         </tbody>
@@ -78,11 +73,11 @@
         <tbody>
             <tr>
                 <td style="width:15%;"><b>OTHERS:</b></td>
-                <td style="width:85%;">{{$Fecalyses->feca_other}}</td>
+                <td style="width:85%;"><b>{{$Fecalyses->feca_other}}</b></td>
             </tr>
             <tr>
                 <td style="width:15%;"><b>REMARKS:</b></td>
-                <td style="width:85%;">{{$Fecalyses->remark}}</td>
+                <td style="width:85%;"><b>{{$Fecalyses->remark}}</b></td>
             </tr>
             <tr><td></td></tr>
             <tr><td></td></tr>

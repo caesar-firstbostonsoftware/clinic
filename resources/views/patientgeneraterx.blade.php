@@ -101,11 +101,11 @@
 
                 <tr>
                     <td>
-                        <b style="text-transform: uppercase;font-size:10pt;"><u>{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</u></b><br>
+                        <b style="text-transform: uppercase;font-size:10pt;">___________________________</b><br><br>
                         <span>License No.:</span>
                     </td>
                     <td>
-                        <b style="text-transform: uppercase;font-size:10pt;"><u>{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</u></b><br>
+                        <b style="text-transform: uppercase;font-size:10pt;">___________________________</b><br><br>
                         <span>License No.:</span>
                     </td>
                 </tr>
