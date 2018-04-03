@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr><td></td></tr>
             <tr>
@@ -28,7 +28,7 @@
 
     @if(!$Hematology->hematocrit_desc && !$Hematology->hemoglobin_desc && !$Hematology->wbc_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr>
                 <td style="width:50%;"><b style="font-size: 12pt;">CBC</b></td>
@@ -69,7 +69,7 @@
 
     @if(!$Hematology->dc_band && !$Hematology->dc_pmn && !$Hematology->dc_baso && !$Hematology->dc_eos && !$Hematology->dc_mono && !$Hematology->dc_lymph)
     @else
-    <table>
+    <table cellpadding="-1">
         <tbody>
             <tr>
                 <td style="width:50%;"><b style="font-size: 12pt;">Differential Count %</b></td>
@@ -135,7 +135,7 @@
 
     @if(!$Hematology->platelet_count && !$Hematology->rbc_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
             @if(!$Hematology->platelet_count)
             @else
@@ -161,40 +161,8 @@
 
     @if(!$Hematology->control_desc && !$Hematology->patient_desc && !$Hematology->a_desc && !$Hematology->mcv_desc && !$Hematology->mch_desc && !$Hematology->mchc_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
-            @if(!$Hematology->control_desc && !$Hematology->patient_desc && !$Hematology->a_desc)
-            @else
-            <tr>
-                <td style="width:50%;"><b style="font-size: 12pt;">PRO TIME</b></td>
-            </tr>
-            @if(!$Hematology->control_desc)
-            @else
-            <tr>
-                <td style="width:5%;"></td>
-                <td style="width:20%;">&nbsp;Control</td>
-                <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->control_desc}}</b></i></td>
-                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
-            </tr>
-            @endif
-            @if(!$Hematology->patient_desc)
-            @else
-            <tr>
-                <td style="width:5%;"></td>
-                <td style="width:20%;">&nbsp;Patient</td>
-                <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->patient_desc}}</b></i></td>
-                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
-            </tr>
-            @endif
-            @if(!$Hematology->a_desc)
-            @else
-            <tr>
-                <td style="width:5%;"></td>
-                <td style="width:20%;">&nbsp;%A</td>
-                <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->a_desc}}</b></i></td>
-            </tr>
-            @endif
-            @endif
             @if(!$Hematology->mcv_desc && !$Hematology->mch_desc && !$Hematology->mchc_desc)
             @else
             <tr>
@@ -231,13 +199,45 @@
             </tr>
             @endif
             @endif
+            @if(!$Hematology->control_desc && !$Hematology->patient_desc && !$Hematology->a_desc)
+            @else
+            <tr>
+                <td style="width:50%;"><b style="font-size: 12pt;">PRO TIME</b></td>
+            </tr>
+            @if(!$Hematology->control_desc)
+            @else
+            <tr>
+                <td style="width:5%;"></td>
+                <td style="width:20%;">&nbsp;Control</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->control_desc}}</b></i></td>
+                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
+            </tr>
+            @endif
+            @if(!$Hematology->patient_desc)
+            @else
+            <tr>
+                <td style="width:5%;"></td>
+                <td style="width:20%;">&nbsp;Patient</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->patient_desc}}</b></i></td>
+                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
+            </tr>
+            @endif
+            @if(!$Hematology->a_desc)
+            @else
+            <tr>
+                <td style="width:5%;"></td>
+                <td style="width:20%;">&nbsp;%A</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->a_desc}}</b></i></td>
+            </tr>
+            @endif
+            @endif
         </tbody>
     </table>
     @endif
 
     @if(!$Hematology->clottinglw_time && !$Hematology->clotting_time && !$Hematology->bleedingdm_time && !$Hematology->grp_desc && !$Hematology->rh_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr><td></td></tr>
             @if(!$Hematology->clottinglw_time)
@@ -278,14 +278,14 @@
     </table>
     @endif
 
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>
     </table>
 
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr>
                 <td style="width:50%;text-align: center;"><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b><br>Pathologist</td>

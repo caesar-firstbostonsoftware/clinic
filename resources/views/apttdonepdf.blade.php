@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr><td></td></tr>
             <tr>
@@ -28,7 +28,7 @@
 
     @if(!$Aptt->hematocrit_desc && !$Aptt->hemoglobin_desc && !$Aptt->wbc_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr>
                 <td style="width:50%;"><b style="font-size: 12pt;">CBC</b></td>
@@ -69,7 +69,7 @@
 
     @if(!$Aptt->dc_band && !$Aptt->dc_pmn && !$Aptt->dc_baso && !$Aptt->dc_eos && !$Aptt->dc_mono && !$Aptt->dc_lymph)
     @else
-    <table>
+    <table cellpadding="-1">
         <tbody>
             <tr>
                 <td style="width:50%;"><b style="font-size: 12pt;">Differential Count %</b></td>
@@ -135,7 +135,7 @@
 
     @if(!$Aptt->platelet_count && !$Aptt->rbc_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
             @if(!$Aptt->platelet_count)
             @else
@@ -161,40 +161,8 @@
 
     @if(!$Aptt->control_desc && !$Aptt->patient_desc && !$Aptt->a_desc && !$Aptt->mcv_desc && !$Aptt->mch_desc && !$Aptt->mchc_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
-            @if(!$Aptt->control_desc && !$Aptt->patient_desc && !$Aptt->a_desc)
-            @else
-            <tr>
-                <td style="width:50%;"><b style="font-size: 12pt;">PRO TIME</b></td>
-            </tr>
-            @if(!$Aptt->control_desc)
-            @else
-            <tr>
-                <td style="width:5%;"></td>
-                <td style="width:20%;">&nbsp;Control</td>
-                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->control_desc}}</b></i></td>
-                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
-            </tr>
-            @endif
-            @if(!$Aptt->patient_desc)
-            @else
-            <tr>
-                <td style="width:5%;"></td>
-                <td style="width:20%;">&nbsp;Patient</td>
-                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->patient_desc}}</b></i></td>
-                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
-            </tr>
-            @endif
-            @if(!$Aptt->a_desc)
-            @else
-            <tr>
-                <td style="width:5%;"></td>
-                <td style="width:20%;">&nbsp;%A</td>
-                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->a_desc}}</b></i></td>
-            </tr>
-            @endif
-            @endif
             @if(!$Aptt->mcv_desc && !$Aptt->mch_desc && !$Aptt->mchc_desc)
             @else
             <tr>
@@ -231,13 +199,45 @@
             </tr>
             @endif
             @endif
+            @if(!$Aptt->control_desc && !$Aptt->patient_desc && !$Aptt->a_desc)
+            @else
+            <tr>
+                <td style="width:50%;"><b style="font-size: 12pt;">PRO TIME</b></td>
+            </tr>
+            @if(!$Aptt->control_desc)
+            @else
+            <tr>
+                <td style="width:5%;"></td>
+                <td style="width:20%;">&nbsp;Control</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->control_desc}}</b></i></td>
+                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
+            </tr>
+            @endif
+            @if(!$Aptt->patient_desc)
+            @else
+            <tr>
+                <td style="width:5%;"></td>
+                <td style="width:20%;">&nbsp;Patient</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->patient_desc}}</b></i></td>
+                <td style="width:6%;text-align: center;font-size: 7pt;"> sec.</td>
+            </tr>
+            @endif
+            @if(!$Aptt->a_desc)
+            @else
+            <tr>
+                <td style="width:5%;"></td>
+                <td style="width:20%;">&nbsp;%A</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Aptt->a_desc}}</b></i></td>
+            </tr>
+            @endif
+            @endif
         </tbody>
     </table>
     @endif
 
     @if(!$Aptt->clottinglw_time && !$Aptt->clotting_time && !$Aptt->bleedingdm_time && !$Aptt->grp_desc && !$Aptt->rh_desc)
     @else
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr><td></td></tr>
             @if(!$Aptt->clottinglw_time)
@@ -284,14 +284,14 @@
     </table>
     @endif
 
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>
     </table>
 
-    <table>
+    <table cellpadding="-2">
         <tbody>
             <tr>
                 <td style="width:50%;text-align: center;"><b style="font-size: 12pt;">ROGELIO S. McNTIRE, M.D.,FPSP</b><br>Pathologist</td>
