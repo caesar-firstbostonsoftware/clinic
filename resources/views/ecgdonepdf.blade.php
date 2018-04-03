@@ -51,12 +51,12 @@
         </thead>
         <tbody>
             <tr>
-                <td style="border: 1px solid black;text-align: center;"> {{$ecg->auricular_rate}}</td>
-                <td style="border: 1px solid black;text-align: center;"> {{$ecg->venticular_rate}}</td>
-                <td style="border: 1px solid black;text-align: center;"> {{$ecg->rhythm}}</td>
-                <td style="border: 1px solid black;text-align: center;"> {{$ecg->pr_interval}}</td>
-                <td style="border: 1px solid black;text-align: center;"> {{$ecg->qrs_interval}}</td>
-                <td style="border: 1px solid black;text-align: center;"> {{$ecg->electrical_axis}}</td>
+                <td style="border: 1px solid black;text-align: center;height: 80px;"> {{$ecg->auricular_rate}}</td>
+                <td style="border: 1px solid black;text-align: center;height: 80px;"> {{$ecg->venticular_rate}}</td>
+                <td style="border: 1px solid black;text-align: center;height: 80px;"> {{$ecg->rhythm}}</td>
+                <td style="border: 1px solid black;text-align: center;height: 80px;"> {{$ecg->pr_interval}}</td>
+                <td style="border: 1px solid black;text-align: center;height: 80px;"> {{$ecg->qrs_interval}}</td>
+                <td style="border: 1px solid black;text-align: center;height: 80px;"> {{$ecg->electrical_axis}}</td>
             </tr>
             <tr><td></td></tr>
         </tbody>

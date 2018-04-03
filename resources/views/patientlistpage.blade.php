@@ -126,7 +126,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <td>
                                                         @if(Session::get('position') == 'Cashier' || Session::get('user') == 1 || Session::get('position') == 'Labtest')
                                                         <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
-                                                        <a href="/NFHSI/{{$patient->id}}/disabled" class="btn btn-xs btn-danger disdis">Disable</a>
                                                         @endif
                                                         <button id="viewvisit" class="btn btn-xs btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                     </td>
@@ -149,6 +148,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <td>
                                                         @if(Session::get('position') == 'Cashier' || Session::get('user') == 1 || Session::get('position') == 'Labtest')
                                                         <button class="btn btn-xs btn-primary btn-edit-patient editpatient" data-toggle="modal" data-target="#modal_edit_patient" data-id="{{$patient->id}}">Edit</button>
+                                                        @endif
+                                                        @if(Session::get('user') == 1 )
+                                                        <a href="/NFHSI/{{$patient->id}}/disabled" class="btn btn-xs btn-danger disdis">Disable</a>
                                                         @endif
                                                         <button id="viewvisit" class="btn btn-xs btn-info btn-view-visits viewvisit" data-toggle="modal" data-target="#modal_visits" data-id="{{$patient->id}}">View Visits</button>
                                                     </td>

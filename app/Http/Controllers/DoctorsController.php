@@ -83,7 +83,7 @@ class DoctorsController extends Controller
             $pdf->setLanguageArray($l);
         }
 
-        $pdf->SetFont('Courier', '', 12);
+        $pdf->SetFont('Courier', '', 11);
 
         $pdf->AddPage();
 
@@ -601,7 +601,7 @@ class DoctorsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 11);
 
             $pdf->AddPage();
 
@@ -679,7 +679,7 @@ class DoctorsController extends Controller
                 $pdf->setLanguageArray($l);
             }
 
-            $pdf->SetFont('Courier', '', 8);
+            $pdf->SetFont('Courier', '', 11);
 
             $pdf->AddPage();
 

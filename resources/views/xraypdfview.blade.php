@@ -34,7 +34,6 @@
             	</td>
             </tr>
             <tr><td></td></tr>
-            <tr><td></td></tr>
         </tbody>
     </table>
     @else
@@ -67,7 +66,6 @@
                     </table>
                 </td>
             </tr>
-            <tr><td></td></tr>
             <tr><td></td></tr>
             <tr><td></td></tr>
         </tbody>

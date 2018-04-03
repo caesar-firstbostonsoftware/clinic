@@ -1889,8 +1889,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($Urinalyses)
-                                    <a href="/visit/{{$id}}/{{$vid}}/urinalysisdone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/urinalysisdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/urinalysisdone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/urinalysisdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                             <div class="table-responsive">
                                                 <div class="col-md-12">
@@ -1899,13 +1899,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                                     <h4><b>URINALYSIS</b></h4>
                                                     @if(!$Urinalyses)
-                                                    <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/urinalysis">
+                                                    <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/urinalysis">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-1 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -2606,8 +2606,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($Fecalyses)
-                                    <a href="/visit/{{$id}}/{{$vid}}/fecalysisdone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/fecalysisdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/fecalysisdone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/fecalysisdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                         <div class="col-md-12">
                                             <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
@@ -2618,13 +2618,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                 <b>FECALYSIS</b>
                                             </h4>
                                             @if(!$Fecalyses)
-                                                <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/fecalysis">
+                                                <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/fecalysis">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -2996,8 +2996,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($Chemistry)
-                                    <a href="/visit/{{$id}}/{{$vid}}/chemistryidone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/chemistryidone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/chemistryidone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/chemistryidone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                         <div class="col-md-12">
                                             <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
@@ -3005,13 +3005,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>CHEMISTRY I</b></h4>
                                         @if(!$Chemistry)
-                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/chemistryii">
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/chemistryii">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -3845,8 +3845,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($Ogtt)
-                                    <a href="/visit/{{$id}}/{{$vid}}/ogttdone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/ogttdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/ogttdone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/ogttdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                         <div class="col-md-12">
                                             <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
@@ -3854,13 +3854,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>ORAL GLUCOSE TOLERANCE TEST</b></h4>
                                         @if(!$Ogtt)
-                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/ogtt">
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/ogtt">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -4324,8 +4324,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($Hematology)
-                                    <a href="/visit/{{$id}}/{{$vid}}/hematologydone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/hematologydone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/hematologydone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/hematologydone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                         <div class="col-md-12">
                                             <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
@@ -4333,13 +4333,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>HEMATOLOGY</b></h4>
                                         @if(!$Hematology)
-                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/hematology">
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/hematology">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -5081,22 +5081,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($patientserologyhead)
-                                    <a href="/visit/{{$id}}/{{$vid}}/serologydone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/serologydone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/serologydone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/serologydone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                         <div class="col-md-12">
                                             <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
                                             <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>SEROLOGY</b></h4>
-                                            <form class="form-horizontal" id="serologysubmit" method="POST" action="/visit/{{$id}}/{{$vid}}/serology">
+                                            <form class="form-horizontal" id="serologysubmit" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/serology">
                                                     {!! csrf_field() !!}
                                                     @if(!$patientserologyhead)
                                                     <input type="text" name="serology_id" value="" class="serology_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -5304,22 +5304,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($SecondChemistry)
-                                    <a href="/visit/{{$id}}/{{$vid}}/chemistryiidone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/chemistryiidone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/chemistryiidone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/chemistryiidone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                         <div class="col-md-12">
                                             <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
                                             <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>Chemistry II</b></h4>
-                                            <form class="form-horizontal" id="chemtwosubmit" method="POST" action="/visit/{{$id}}/{{$vid}}/chemtwo">
+                                            <form class="form-horizontal" id="chemtwosubmit" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/chemtwo">
                                                     {!! csrf_field() !!}
                                                 @if(!$SecondChemistry)
                                                     <input type="text" name="chemtwo_id" value="" class="chemtwo_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -5807,8 +5807,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="col-md-12">
                                     <div class="flash-message top-message topmessage7"></div><br>
                                     @if($Aptt)
-                                    <a href="/visit/{{$id}}/{{$vid}}/apttdone" class="btn btn-xs btn-primary">Done Service</a>
-                                    <a href="/visit/{{$id}}/{{$vid}}/apttdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/apttdone" class="btn btn-xs btn-primary">Done Service</a>
+                                    <a href="/visit/{{$patient->id}}/{{$vid}}/apttdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                     @endif
                                         <div class="col-md-12">
                                             <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
@@ -5816,13 +5816,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                             <h4><b>HEMATOLOGY APTT</b></h4>
                                         @if(!$Aptt)
-                                            <form class="form-horizontal" method="POST" action="/visit/{{$id}}/{{$vid}}/aptt">
+                                            <form class="form-horizontal" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/aptt">
                                                     {!! csrf_field() !!}
                                                     <input type="text" name="uri_id" value="" class="uri_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-6">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -6527,22 +6527,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="col-md-12">
                                 <div class="flash-message top-message topmessage7"></div><br>
                                 @if($ecg)
-                                <a href="/visit/{{$id}}/{{$vid}}/ecgdone" class="btn btn-xs btn-primary">Done Service</a>
-                                <a href="/visit/{{$id}}/{{$vid}}/ecgdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
+                                <a href="/visit/{{$patient->id}}/{{$vid}}/ecgdone" class="btn btn-xs btn-primary">Done Service</a>
+                                <a href="/visit/{{$patient->id}}/{{$vid}}/ecgdone/pdf" target="_blank" class="btn btn-xs btn-success">Print</a>
                                 @endif
                                     <div class="col-md-12">
                                         <center><h3 class="neg">NEGROS FAMILY HEALTH SERVICES INC.</h3></center>
                                         <center><p class="nor">North Road, Daro(in front of NOPH) Dumaguete City, Negros Oriental</p></center>
                                         <center><p class="nor">Tel. No. (035) 225-3544</p></center>
                                         <h4><b>Electrocardiographic Report</b></h4>
-                                            <form class="form-horizontal" id="ecgsubmit" method="POST" action="/visit/{{$id}}/{{$vid}}/ecg">
+                                            <form class="form-horizontal" id="ecgsubmit" method="POST" action="/visit/{{$patient->id}}/{{$vid}}/ecg">
                                                     {!! csrf_field() !!}
                                                 @if(!$ecg)
                                                     <input type="text" name="ecg_id" value="" class="ecg_id" style="display: none;">
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-5">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
@@ -6658,7 +6658,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label">Name:</label>
                                                             <div class="col-sm-5">
-                                                                <input type="text" name="P_id" value="{{$id}}" style="display: none;">
+                                                                <input type="text" name="P_id" value="{{$patient->id}}" style="display: none;">
                                                                 <input type="text" name="P_name" required="" class="form-control" placeholder="Name" value="{{$patient->f_name}} {{$patient->m_name}} {{$patient->l_name}}" readonly="">
                                                             </div>
                                                             <label class="col-sm-2 control-label">O.R. No.</label>
