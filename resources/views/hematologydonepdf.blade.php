@@ -230,6 +230,14 @@
                 <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->a_desc}}</b></i></td>
             </tr>
             @endif
+            @if(!$Hematology->inr_desc)
+            @else
+            <tr>
+                <td style="width:5%;"></td>
+                <td style="width:20%;">&nbsp;INR.</td>
+                <td style="width:25%;text-align: center;"> <i><b>{{$Hematology->inr_desc}}</b></i></td>
+            </tr>
+            @endif
             @endif
         </tbody>
     </table>
