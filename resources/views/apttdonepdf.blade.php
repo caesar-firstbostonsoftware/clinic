@@ -262,24 +262,20 @@
             </tr>
             @endif
             <tr><td></td></tr>
-            @if(!$Aptt->grp_desc)
-            @else
             <tr>
-                <td style="width:50%;"> <b>GRP : </b> <i><b>{{$Aptt->grp_desc}}</b></i></td>
+                @if(!$Aptt->grp_desc)
+                @else
+                    <td style="width:25%;"> <b>GRP : </b> <i><b>{{$Aptt->grp_desc}}</b></i></td>
+                @endif
+                @if(!$Aptt->rh_desc)
+                @else
+                    <td style="width:25%;"> <b>Rh. : </b> <i><b>{{$Aptt->rh_desc}}</b></i></td>
+                @endif
+                @if(!$Aptt->esr_desc)
+                @else
+                    <td style="width:25%;"> <b>APTT : </b><i><b>{{$Aptt->esr_desc}}</b></i></td>
+                @endif
             </tr>
-            @endif
-            @if(!$Aptt->rh_desc)
-            @else
-            <tr>
-                <td style="width:50%;"> <b>Rh. : </b> <i><b>{{$Aptt->rh_desc}}</b></i></td>
-            </tr>
-            @endif
-            @if(!$Aptt->esr_desc)
-            @else
-            <tr>
-                <td style="width:50%;"> <b>APTT : </b><i><b>{{$Aptt->esr_desc}}</b></i></td>
-            </tr>
-            @endif
         </tbody>
     </table>
     @endif

@@ -270,18 +270,17 @@
             </tr>
             @endif
             <tr><td></td></tr>
+            
+            <tr>
             @if(!$Hematology->grp_desc)
             @else
-            <tr>
-                <td style="width:50%;"> <b>GRP : </b> <i><b>{{$Hematology->grp_desc}}</b></i></td>
-            </tr>
+                <td style="width:25%;"> <b>GRP : </b> <i><b>{{$Hematology->grp_desc}}</b></i></td>
             @endif
             @if(!$Hematology->rh_desc)
             @else
-            <tr>
-                <td style="width:50%;"> <b>Rh. : </b> <i><b>{{$Hematology->rh_desc}}</b></i></td>
-            </tr>
+                <td style="width:25%;"> <b>Rh. : </b> <i><b>{{$Hematology->rh_desc}}</b></i></td>
             @endif
+            </tr>
         </tbody>
     </table>
     @endif
