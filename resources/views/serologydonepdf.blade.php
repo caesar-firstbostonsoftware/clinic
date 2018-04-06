@@ -33,11 +33,14 @@
                 <td style="text-align:center;"><b style="font-size: 12pt;">RESULT REMARKS</b></td>
             </tr>
             @foreach($serser as $sero)
+            @if(!$sero->result && !$sero->remark)
+            @else
             <tr>
                 <td style=""> <b>{{$sero->adminpanel->name}}</b></td>
                 <td style="text-align: center;"> <b>{{$sero->result}}</b></td>
                 <td style="text-align: center;"> <b>{{$sero->remark}}</b></td>
             </tr>
+            @endif
             @endforeach
             <tr><td></td></tr>
             <tr><td></td></tr>
