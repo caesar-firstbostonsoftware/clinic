@@ -5116,30 +5116,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <!-- <div class="form-group divxrayinfo">
-                                                            <label class="col-sm-2 control-label">Physician:</label>
-                                                            <div class="col-sm-6">
-                                                                <select id="physician" name="physician" class="form-control sero_physician" required="">
-                                                                    <option value="">-- Select One --</option>
-                                                                    @foreach($doctor as $doc)
-                                                                    @if(Session::get('position') == "Doctor")
-                                                                        @if(Session::get('user') == $doc->id)
-                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                                        @endif
-                                                                    @else
-                                                                        @if($doc->user->position == "Doctor")
-                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                                        @endif
-                                                                    @endif
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <label class="col-sm-2 control-label">Date:</label>
-                                                            <div class="col-sm-2">
-                                                            <?php $datenow = date("Y-m-d"); ?>
-                                                                <input type="text" id="datepicker" class="form-control sero_date" required="" value="{{$datenow}}" name="sero_date" readonly="">
-                                                            </div>
-                                                        </div> -->
 
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
@@ -5219,26 +5195,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <!-- <div class="form-group divxrayinfo">
-                                                            <label class="col-sm-2 control-label">Physician:</label>
-                                                            <div class="col-sm-6">
-                                                                <select id="physician" name="physician" class="form-control sero_physician" required="">
-                                                                    <option value="">-- Select One --</option>
-                                                                    @foreach($doctor as $doc)
-                                                                        @if($patientserologyhead->doctor_id == $doc->id)
-                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                                        @else
-                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                                        @endif
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <label class="col-sm-2 control-label">Date:</label>
-                                                            <div class="col-sm-2">
-                                                            <?php $datenow = date("Y-m-d"); ?>
-                                                                <input type="text" id="datepicker" class="form-control sero_date" required="" value="{{$patientserologyhead->serology_date}}" name="sero_date" readonly="">
-                                                            </div>
-                                                        </div> -->
 
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
@@ -5339,30 +5295,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <!-- <div class="form-group divxrayinfo">
-                                                            <label class="col-sm-2 control-label">Physician:</label>
-                                                            <div class="col-sm-6">
-                                                                <select id="physician" name="physician" class="form-control uri_physician" required="">
-                                                                    <option value="">-- Select One --</option>
-                                                                    @foreach($doctor as $doc)
-                                                                    @if(Session::get('position') == "Doctor")
-                                                                        @if(Session::get('user') == $doc->id)
-                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}" selected="">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                                        @endif
-                                                                    @else
-                                                                        @if($doc->user->position == "Doctor")
-                                                                        <option data-id="{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}-{{$doc->specialization}}" value="{{$doc->id}}">{{$doc->f_name}} {{$doc->m_name}} {{$doc->l_name}}, {{$doc->credential}}</option>
-                                                                        @endif
-                                                                    @endif
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <label class="col-sm-2 control-label">Date:</label>
-                                                            <div class="col-sm-2">
-                                                            <?php $datenow = date("Y-m-d"); ?>
-                                                                <input type="text" id="datepicker_chemtwo" class="form-control chemtwo_date" required="" value="{{$datenow}}" readonly="" name="chemtwo_date">
-                                                            </div>
-                                                        </div> -->
 
                                                         <div class=" divxrayinfo">
                                                             <div class="row"> 
@@ -5404,7 +5336,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     <input type="text" class="form-control" name="t3" autocomplete="off">
                                                                 </div>
                                                                 <div class="col-sm-4">
-                                                                    1.3 - 3.1 nmd/L
+                                                                    1.3 - 3.1 nmol/L
                                                                 </div>
                                                             </div>
                                                             <div class="row"> 
@@ -5417,7 +5349,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                                     <input type="text" class="form-control" name="t4" autocomplete="off">
                                                                 </div>
                                                                 <div class="col-sm-4">
-                                                                    66 - 181 nmd/L
+                                                                    66 - 181 nmol/L
                                                                 </div>
                                                             </div>
                                                             <div class="row"> 

@@ -1,4 +1,4 @@
-s<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <body>
     <table>
@@ -52,7 +52,7 @@ s<!DOCTYPE html>
             <tr>
                 <td style="width:50%;">&nbsp;&nbsp;T3(Triiodothyronine)</td>
                 <td style="text-align:center;width:25%;"> {{$SecondChemistry->t3}}</td>
-                <td style="text-align:center;width:25%;font-size: 7pt;"> 1.3 - 3.1 nmd/L</td>
+                <td style="text-align:center;width:25%;font-size: 7pt;"> 1.3 - 3.1 nmol/L</td>
             </tr>
             @endif
             @if(!$SecondChemistry->t4)
@@ -60,7 +60,7 @@ s<!DOCTYPE html>
             <tr>
                 <td style="width:50%;">&nbsp;&nbsp;T4(Thyroxine)</td>
                 <td style="text-align:center;width:25%;"> {{$SecondChemistry->t4}}</td>
-                <td style="text-align:center;width:25%;font-size: 7pt;"> 66 - 181 nmd/L</td>
+                <td style="text-align:center;width:25%;font-size: 7pt;"> 66 - 181 nmol/L</td>
             </tr>
             @endif
             @endif
