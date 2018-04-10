@@ -270,7 +270,8 @@
             </tr>
             @endif
             <tr><td></td></tr>
-            
+            @if(!$Hematology->grp_desc && !$Hematology->rh_desc)
+            @else
             <tr>
             @if(!$Hematology->grp_desc)
             @else
@@ -281,6 +282,7 @@
                 <td style="width:25%;"> <b>Rh. : </b> <i><b>{{$Hematology->rh_desc}}</b></i></td>
             @endif
             </tr>
+            @endif
         </tbody>
     </table>
     @endif
