@@ -262,6 +262,8 @@
             </tr>
             @endif
             <tr><td></td></tr>
+            @if(!$Aptt->grp_desc && !$Aptt->rh_desc && !$Aptt->esr_desc)
+            @else
             <tr>
                 @if(!$Aptt->grp_desc)
                 @else
@@ -276,6 +278,7 @@
                     <td style="width:25%;"> <b>APTT : </b><i><b>{{$Aptt->esr_desc}}</b></i></td>
                 @endif
             </tr>
+            @endif
         </tbody>
     </table>
     @endif
