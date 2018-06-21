@@ -14,7 +14,7 @@
 <body>
 
 <div style="text-align: left;">
-    <img src="{{ asset('/img/nfhsi_logo.png') }}" style="width: 15%;height: 10%;">
+    <img src="{{ asset('/img/nfhsi_LOGO.png') }}" style="width: 15%;height: 10%;">
 </div>
 <div style="margin-left: 15%;margin-top: -15%;">
     <p><b>NEGROS FAMILY HEALTH SERVICES, INC.</b></p>

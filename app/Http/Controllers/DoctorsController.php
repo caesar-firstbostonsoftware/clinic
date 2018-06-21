@@ -26,7 +26,7 @@ use App\Company;
 class MYPDF extends TCPDF {
                 public function Header() {
 
-                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $image_file = K_PATH_IMAGES.'nfhsi_LOGO.png';
                     $this->Image($image_file, 5, 5, 30, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
                     $this->SetXY(35, 12);

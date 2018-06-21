@@ -50,7 +50,7 @@ use App\Plate;
 class MYPDF extends TCPDF {
                 public function Header() {
 
-                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $image_file = K_PATH_IMAGES.'nfhsi_LOGO.png';
                     $this->Image($image_file, 5, 5, 25, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
                     $this->SetXY(30, 12);
@@ -78,10 +78,10 @@ class MYPDF extends TCPDF {
 class MYPDFreceipt extends TCPDF {
                 public function Header() {
 
-                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $image_file = K_PATH_IMAGES.'nfhsi_LOGO.png';
                     $this->Image($image_file, 7, 10, 15, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
-                    $image_file = K_PATH_IMAGES.'nfhsi_logo.png';
+                    $image_file = K_PATH_IMAGES.'nfhsi_LOGO.png';
                     $this->Image($image_file, 7, 99, 15, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 }
             }
